@@ -1,0 +1,70 @@
+package olseng.ea.adultselection;
+
+import olseng.ea.core.Population;
+import olseng.ea.genetics.Phenotype;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by Olav on 11.01.2016.
+ */
+public class RankTournamentSelector extends AdultSelector {
+
+    private int tournamentSize = 10;
+    private double randomProbability = 0.1;
+
+    /**
+     * Initializes a TournamnetSelector with specified parameters.
+     * @param tournamentSize - Size of the tournaments.
+     * @param randomProbability - Chance that a random member of the population is chosen, instead of the most fit individual.
+     */
+    public RankTournamentSelector(int tournamentSize, double randomProbability) {
+        this.tournamentSize = tournamentSize;
+        this.randomProbability = randomProbability;
+    }
+
+    public void setTournamentSize(int size) {
+        this.tournamentSize = size;
+    }
+
+    public void setRandomProbability(double randomProbability) {
+        this.randomProbability = randomProbability;
+    }
+
+    private List<Phenotype> buildTournament(Population population) {
+        List<Phenotype> tournament = new ArrayList<>(tournamentSize);
+        List<Integer> selected = new ArrayList<>(tournamentSize);
+
+        int picked = 0;
+        while(picked < tournamentSize) {
+            int index =  (int)(Math.random() * population.getPopulationSize());
+            if (selected.contains(index)) {
+                continue;
+            }
+            tournament.add(population.getIndividual(index));
+            picked++;
+        }
+        return tournament;
+    }
+
+    @Override
+    public Phenotype getIndividual() {
+        List<Phenotype> tournament = buildTournament(this.population);
+
+        if (Math.random() > randomProbability) {
+            Phenotype winner = tournament.get(0);
+
+            for (int i = 1; i < tournament.size(); i++) {
+                Phenotype opponent = tournament.get(i);
+                if(winner.getRank() > opponent.getRank()) {
+                    winner = opponent;
+                }
+            }
+
+            return winner;
+        }
+
+        return tournament.get((int) (Math.random() * tournamentSize));
+    }
+}

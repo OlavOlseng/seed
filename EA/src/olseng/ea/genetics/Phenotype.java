@@ -3,16 +3,20 @@ package olseng.ea.genetics;
 /**
  * Created by olavo on 2016-01-11.
  */
-public abstract class Phenotype<T, G extends Genotype> implements Comparable {
+public abstract class Phenotype<T, G extends Genotype> {
 
     private G genotype = null;
     private T representation = null;
 
     private float[] fitnessValues;
+    private int rank = Integer.MAX_VALUE;
 
-    public Phenotype(int fitnessValueCount, G genotype) {
-        this.fitnessValues = new float[fitnessValueCount];
+    public Phenotype(G genotype) {
         this.genotype = genotype;
+    }
+
+    public void initFitnessValues(int valueCount) {
+        this.fitnessValues = new float[valueCount];
     }
 
     public void setRepresentation(T representation) {
@@ -31,11 +35,19 @@ public abstract class Phenotype<T, G extends Genotype> implements Comparable {
         return fitnessValues.length;
     }
 
-    public void setFitnessValue(int ID, float value) {
-        fitnessValues[ID] = value;
+    public void setFitnessValue(int index, float value) {
+        fitnessValues[index] = value;
     }
 
-    public float getFitnessValue(int ID) {
-        return fitnessValues[ID];
+    public float getFitnessValue(int index) {
+        return fitnessValues[index];
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
+    }
+
+    public int getRank() {
+        return this.rank;
     }
 }
