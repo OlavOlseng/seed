@@ -3,7 +3,7 @@ package olseng.ea.genetics;
 /**
  * Created by olavo on 2016-01-11.
  */
-public abstract class Phenotype<T, G extends Genotype> {
+public abstract class Phenotype<T, G extends Genotype> implements Comparable{
 
     private G genotype = null;
     private T representation = null;

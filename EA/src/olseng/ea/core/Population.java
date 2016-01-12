@@ -3,20 +3,21 @@ package olseng.ea.core;
 import olseng.ea.genetics.Phenotype;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Created by olavo on 2016-01-11.
  */
-public class Population<P extends Phenotype> {
+public class Population {
 
-    private List<P> pool;
+    private List<Phenotype> pool;
 
     /**
      * @param populationSize - Optimizes initial memory allocation.
      */
     public Population(int populationSize) {
-        this.pool = new ArrayList<P>(populationSize);
+        this.pool = new ArrayList<>(populationSize);
     }
 
     public int getPopulationSize() {
@@ -37,11 +38,19 @@ public class Population<P extends Phenotype> {
      * Replaces all phenotypes in the current popultaion with the provided ones.
      * @param phenotypes - All phenotypes to inhabit the population.
      */
-    public void setPopulation(List<P> phenotypes) {
+    public void setPopulation(List<Phenotype> phenotypes) {
         this.pool = phenotypes;
     }
 
     public Phenotype getIndividual(int index) {
         return pool.get(index);
+    }
+
+    public void merge(List<Phenotype> newIndividuals) {
+        pool.addAll(newIndividuals);
+    }
+
+    public void sort() {
+        Collections.sort(pool);
     }
 }
