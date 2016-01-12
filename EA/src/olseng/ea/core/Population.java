@@ -24,7 +24,7 @@ public class Population<P extends Phenotype> {
     }
 
     /**
-     * Culls all individual with index > maxSize.
+     * Culls all individuals with index > maxSize.
      * @param maxSize - All entries greater than this will be removed from the list.
      */
     public void cullPopulation(int maxSize) {
