@@ -1,9 +1,8 @@
 package olseng.ea;
 
+import olseng.ea.adultselection.AdultSelector;
 import olseng.ea.core.EA;
-import olseng.ea.fitness.FitnessEvaluator;
-import olseng.ea.fitness.FitnessObjective;
-import olseng.ea.fitness.StandardFitnessEvaluator;
+import olseng.ea.fitness.*;
 import olseng.ea.genetics.DevelopmentalMethod;
 import olseng.ea.genetics.Genotype;
 import olseng.ea.genetics.OperatorPool;
@@ -22,6 +21,8 @@ public class EAFactory<G extends Genotype, P extends Phenotype> {
     public OperatorPool operatorPool = null;
     public DevelopmentalMethod developmentalMethod = null;
     public List<FitnessObjective> objectives = null;
+    public RankingModule rankingModule = null;
+    public AdultSelector adultSelector = null;
 
 
     public EAFactory() {
@@ -44,17 +45,31 @@ public class EAFactory<G extends Genotype, P extends Phenotype> {
         if (objectives.size() < 1) {
             throw new InvalidStateException("No fitness objectives were added! At least one is needed for the algorithm to run.");
         }
+        if (adultSelector == null) {
+            throw new NullPointerException("No adult selector set!");
+        }
 
         EA product = new EA();
 
-        //Assemble the pieces, should ensure proper compatibility between modules.
 
+        //Assemble the pieces, should ensure proper compatibility between modules.
         product.operatorPool = this.operatorPool;
         product.developmentalMethod = this.developmentalMethod;
 
         FitnessEvaluator evaluator = new StandardFitnessEvaluator();
         evaluator.setObjectives(objectives);
         product.fitnessEvaluator = evaluator;
+
+        if(rankingModule == null) {
+            product.rankingMode = false;
+            product.sortingModule = new SingleFitnessComparator();
+        }
+        else {
+            product.rankingMode = true;
+            product.rankingModule = rankingModule;
+        }
+
+        product.adultSelector = adultSelector;
 
         return product;
     }

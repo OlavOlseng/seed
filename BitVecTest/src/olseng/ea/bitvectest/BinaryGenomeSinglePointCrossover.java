@@ -27,7 +27,7 @@ public class BinaryGenomeSinglePointCrossover extends GeneticCrossoverOperator<B
             crossoverIndex = (int)(Math.random() * parent1.geneCount - 1) + 1;
         }
 
-        System.out.println("Crossover index: " + crossoverIndex);
+        //System.out.println("Crossover index: " + crossoverIndex);
 
         for (int geneIndex = crossoverIndex; geneIndex < child.geneCount; geneIndex++) {
             child.setGene(parent2.getGene(geneIndex), geneIndex);

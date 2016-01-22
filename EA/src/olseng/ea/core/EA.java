@@ -39,7 +39,7 @@ public class EA<G extends Genotype, P extends Phenotype> {
     public int populationElitism = 10;
     public int populationOverpopulation = 0;
 
-    private boolean rankingMode = false;
+    public boolean rankingMode = false;
     public Comparator<Phenotype> sortingModule;
 
     public EA() {
@@ -64,13 +64,23 @@ public class EA<G extends Genotype, P extends Phenotype> {
             threadPool = Executors.newFixedThreadPool(threadCount);
         }
 
-        //Set proper sortmode
+        //Set proper sortmode, currently only supports single fitness objective.
         if (rankingMode) {
             sortingModule = new RankComparator();
         }
         else {
             sortingModule = new SingleFitnessComparator();
         }
+
+        //evaluation
+        for (int i = 0; i < population.getPopulationSize(); i++) {
+            fitnessEvaluator.evaluate(population.getIndividual(i));
+        }
+        if (rankingMode) {
+            rankingModule.rankPopulation(population);
+        }
+        population.sort(sortingModule);
+        population.cullPopulation(populationMaxSize);
     }
 
     public void step() {
@@ -125,6 +135,10 @@ public class EA<G extends Genotype, P extends Phenotype> {
             throw new InvalidParameterException("Thread count can must be greater than one.");
         }
         this.threadCount = threadCount;
+    }
+
+    public void terminateThreads() {
+        threadPool.shutdown();
     }
 
 }

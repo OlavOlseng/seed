@@ -9,7 +9,6 @@ import java.util.concurrent.Callable;
  */
 public abstract class BaseTask<T> implements Callable<T> {
 
-
     protected final EA ea;
 
     public BaseTask(EA ea) {
