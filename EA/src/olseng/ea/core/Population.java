@@ -4,6 +4,7 @@ import olseng.ea.genetics.Phenotype;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -50,7 +51,7 @@ public class Population {
         pool.addAll(newIndividuals);
     }
 
-    public void sort() {
-        Collections.sort(pool);
+    public void sort(Comparator<Phenotype> comparator) {
+        Collections.sort(pool, comparator);
     }
 }

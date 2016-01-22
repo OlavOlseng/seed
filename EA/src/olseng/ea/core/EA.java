@@ -5,13 +5,16 @@ import olseng.ea.core.tasks.DevelopmentTask;
 import olseng.ea.core.tasks.EvaluationTask;
 import olseng.ea.core.tasks.OffspringCreationTask;
 import olseng.ea.fitness.FitnessEvaluator;
+import olseng.ea.fitness.RankComparator;
 import olseng.ea.fitness.RankingModule;
+import olseng.ea.fitness.SingleFitnessComparator;
 import olseng.ea.genetics.DevelopmentalMethod;
 import olseng.ea.genetics.Genotype;
 import olseng.ea.genetics.OperatorPool;
 import olseng.ea.genetics.Phenotype;
 
 import java.security.InvalidParameterException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -36,6 +39,8 @@ public class EA<G extends Genotype, P extends Phenotype> {
     public int populationElitism = 10;
     public int populationOverpopulation = 0;
 
+    private boolean rankingMode = false;
+    public Comparator<Phenotype> sortingModule;
 
     public EA() {
     }
@@ -58,10 +63,18 @@ public class EA<G extends Genotype, P extends Phenotype> {
         else {
             threadPool = Executors.newFixedThreadPool(threadCount);
         }
+
+        //Set proper sortmode
+        if (rankingMode) {
+            sortingModule = new RankComparator();
+        }
+        else {
+            sortingModule = new SingleFitnessComparator();
+        }
     }
 
     public void step() {
-
+        //######This chunk of code is paralellizable. This implementation runs on one thread!##########################
         //generate offspring
         Future<List<Genotype>> task1 = threadPool.submit(new OffspringCreationTask(this, populationMaxSize - populationElitism + populationOverpopulation));
         List<Genotype> newGenes = null;
@@ -100,8 +113,10 @@ public class EA<G extends Genotype, P extends Phenotype> {
         population.merge(newIndividuals);
 
         //ranking and culling
-        rankingModule.rankPopulation(population);
-        population.sort();
+        if (rankingMode) {
+            rankingModule.rankPopulation(population);
+        }
+        population.sort(sortingModule);
         population.cullPopulation(populationMaxSize);
     }
 
@@ -110,7 +125,6 @@ public class EA<G extends Genotype, P extends Phenotype> {
             throw new InvalidParameterException("Thread count can must be greater than one.");
         }
         this.threadCount = threadCount;
-
     }
 
 }
