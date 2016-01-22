@@ -18,7 +18,7 @@ public abstract class Genotype<T> {
      * this method must return a deep copy of the data. Returning a shallow copy will break the implementation!
      * @return A deep copy of the genotype data.
      */
-    public abstract Genotype<T> getDeepCopy();
+    public abstract T getDeepCopy();
 
     public void setData(T data) {
         this.data = data;
