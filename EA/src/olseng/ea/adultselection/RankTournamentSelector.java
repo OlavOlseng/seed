@@ -5,6 +5,7 @@ import olseng.ea.genetics.Phenotype;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by Olav on 11.01.2016.
@@ -37,8 +38,9 @@ public class RankTournamentSelector extends AdultSelector {
         List<Integer> selected = new ArrayList<>(tournamentSize);
 
         int picked = 0;
+        Random random = new Random();
         while(picked < tournamentSize) {
-            int index =  (int)(Math.random() * population.getPopulationSize());
+            int index = (random.nextInt(population.getPopulationSize()));
             if (selected.contains(index)) {
                 continue;
             }
@@ -49,10 +51,9 @@ public class RankTournamentSelector extends AdultSelector {
     }
 
     @Override
-    public Phenotype getIndividual() {
+    public Phenotype getIndividual(Random random) {
         List<Phenotype> tournament = buildTournament(this.population);
-
-        if (Math.random() > randomProbability) {
+        if (random.nextDouble() > randomProbability) {
             Phenotype winner = tournament.get(0);
 
             for (int i = 1; i < tournament.size(); i++) {
@@ -64,7 +65,6 @@ public class RankTournamentSelector extends AdultSelector {
 
             return winner;
         }
-
-        return tournament.get((int) (Math.random() * tournamentSize));
+        return tournament.get( random.nextInt(tournamentSize));
     }
 }

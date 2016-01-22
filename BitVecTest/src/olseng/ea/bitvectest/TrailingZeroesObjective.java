@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by Olav on 22.01.2016.
  */
-public class TrailingZeroes implements FitnessObjective<IntVec> {
+public class TrailingZeroesObjective implements FitnessObjective<IntVec> {
     @Override
     public float evaluate(IntVec phenotype) {
         List<Integer> values = phenotype.getRepresentation();

@@ -4,6 +4,7 @@ package olseng.ea.bitvectest;
 import olseng.ea.genetics.Genotype;
 
 import java.util.BitSet;
+import java.util.Random;
 
 /**
  * Only supports fixed size genes atm.
@@ -46,8 +47,9 @@ public class BinaryGenome extends Genotype<BitSet> {
      * Randomizes the entire genotype
      */
     public void randomize() {
+        Random rand = new Random();
         for (int i = 0; i < geneCount * geneSize; i++) {
-            getData().set(i, Math.random() < 0.5);
+            getData().set(i, rand.nextDouble() < 0.5);
         }
     }
 

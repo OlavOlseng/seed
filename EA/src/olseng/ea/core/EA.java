@@ -4,6 +4,7 @@ import olseng.ea.adultselection.AdultSelector;
 import olseng.ea.core.tasks.DevelopmentTask;
 import olseng.ea.core.tasks.EvaluationTask;
 import olseng.ea.core.tasks.OffspringCreationTask;
+import olseng.ea.core.tasks.StepTask;
 import olseng.ea.fitness.FitnessEvaluator;
 import olseng.ea.fitness.RankComparator;
 import olseng.ea.fitness.RankingModule;
@@ -14,6 +15,7 @@ import olseng.ea.genetics.OperatorPool;
 import olseng.ea.genetics.Phenotype;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.*;
@@ -32,10 +34,11 @@ public class EA<G extends Genotype, P extends Phenotype> {
     public Population population;
 
     private int threadCount = 1;
+    private int taskCounter = 1;
 
     private ExecutorService threadPool;
 
-    public int populationMaxSize = 100;
+    public int populationMaxSize = 10000;
     public int populationElitism = 10;
     public int populationOverpopulation = 0;
 
@@ -84,42 +87,39 @@ public class EA<G extends Genotype, P extends Phenotype> {
     }
 
     public void step() {
-        //######This chunk of code is paralellizable. This implementation runs on one thread!##########################
-        //generate offspring
-        Future<List<Genotype>> task1 = threadPool.submit(new OffspringCreationTask(this, populationMaxSize - populationElitism + populationOverpopulation));
-        List<Genotype> newGenes = null;
-        try {
-            newGenes = task1.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
+        //Send off tasks to run in background threads
+        int toCreatePerThread = (populationMaxSize - populationElitism + populationOverpopulation) / threadCount;
+        int remainder = (populationMaxSize - populationElitism) % toCreatePerThread;
+        List<Future<List<Phenotype>>> taskList = new ArrayList<>(threadCount);
+        if (remainder == 0) {
+            for (int i = 0; i < threadCount; i++) {
+                Future<List<Phenotype>> task = threadPool.submit(new StepTask(this, toCreatePerThread, taskCounter++));
+                taskList.add(task);
+            }
+        }
+        else {
+            for (int i = 0; i < threadCount - 1; i++) {
+                Future<List<Phenotype>> task = threadPool.submit(new StepTask(this, toCreatePerThread, taskCounter++));
+                taskList.add(task);
+            }
+            Future<List<Phenotype>> task = threadPool.submit(new StepTask(this, toCreatePerThread + remainder, taskCounter++));
+            taskList.add(task);
+        }
+        //Collect task results from threads
+        List<Phenotype> newIndividuals = new ArrayList<>();
+        for (Future<List<Phenotype>> task : taskList) {
+            try {
+                newIndividuals.addAll(task.get());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
         }
 
-        //development
-        Future<List<Phenotype>> task2 = threadPool.submit(new DevelopmentTask(this, 0, newGenes.size(), newGenes));
-        List<Phenotype> newIndividuals = null;
-        try {
-            newIndividuals = task2.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-
-        //evaluation
-        Future<?> task3 = threadPool.submit(new EvaluationTask(this, 0, newIndividuals.size(), newIndividuals));
-        try {
-            task3.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-
-        //##################END OF PARALLEL OPERATIONS!######################
-        //merge new individuals into population.
         population.cullPopulation(populationElitism);
+
+        //merge new individuals into population.
         population.merge(newIndividuals);
 
         //ranking and culling
@@ -128,6 +128,7 @@ public class EA<G extends Genotype, P extends Phenotype> {
         }
         population.sort(sortingModule);
         population.cullPopulation(populationMaxSize);
+
     }
 
     public void setThreadCount(int threadCount) {

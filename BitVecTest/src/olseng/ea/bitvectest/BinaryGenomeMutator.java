@@ -2,6 +2,8 @@ package olseng.ea.bitvectest;
 
 import olseng.ea.genetics.GeneticMutationOperator;
 
+import java.util.Random;
+
 /**
  * Created by Olav on 22.01.2016.
  */
@@ -12,10 +14,10 @@ public class BinaryGenomeMutator extends GeneticMutationOperator<BinaryGenome> {
     }
 
     @Override
-    public BinaryGenome mutate(BinaryGenome parent) {
+    public BinaryGenome mutate(BinaryGenome parent, Random rand) {
         BinaryGenome child = new BinaryGenome(parent.geneCount, parent.geneSize, parent.getDeepCopy());
-        int geneIndex = (int)(Math.random() * child.geneCount);
-        int bitIndex = (int)(Math.random() * child.geneSize);
+        int geneIndex = rand.nextInt(child.geneCount);
+        int bitIndex = rand.nextInt(child.geneSize);
         child.getData().flip(geneIndex * child.geneSize + bitIndex);
         return child;
     }
@@ -26,7 +28,7 @@ public class BinaryGenomeMutator extends GeneticMutationOperator<BinaryGenome> {
         BinaryGenome j = new BinaryGenome(20,1);
         j.randomize();
         System.out.println(j.getData());
-        BinaryGenome mutated = go.mutate(j);
+        BinaryGenome mutated = go.mutate(j, new Random());
         System.out.println(mutated.getData());
 
     }

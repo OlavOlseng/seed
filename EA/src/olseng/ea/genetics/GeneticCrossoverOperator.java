@@ -1,5 +1,7 @@
 package olseng.ea.genetics;
 
+import java.util.Random;
+
 /**
  * Created by olavo on 2016-01-11.
  */
@@ -14,6 +16,7 @@ public abstract class GeneticCrossoverOperator<G extends Genotype> extends Genet
      * PS: REMEMBER TO TAKE A DEEP COPY OF THE PARENT DATA!
      * @param parent1 - First genotype to crossover
      * @param parent2 - Second genotype to crossover
+     * @param rand - Random object that is native to the thread. Use this object when doing random calculations to optimize threading performance.
      */
-    public abstract G crossover(G parent1, G parent2);
+    public abstract G crossover(G parent1, G parent2, Random rand);
 }

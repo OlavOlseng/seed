@@ -1,5 +1,7 @@
 package olseng.ea.genetics;
 
+import java.util.Random;
+
 /**
  * Created by olavo on 2016-01-11.
  */
@@ -14,6 +16,6 @@ public abstract class GeneticMutationOperator<G extends Genotype> extends Geneti
      * PS: REMEMBER TO TAKE A DEEP COPY OF THE PARENT DATA!
      * @param parent
      */
-    public abstract G mutate(G parent);
+    public abstract G mutate(G parent, Random rand);
 
 }

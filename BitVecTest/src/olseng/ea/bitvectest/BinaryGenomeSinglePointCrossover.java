@@ -5,6 +5,7 @@ import olseng.ea.genetics.GeneticCrossoverOperator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Random;
 
 /**
  * Created by Olav on 22.01.2016.
@@ -16,7 +17,7 @@ public class BinaryGenomeSinglePointCrossover extends GeneticCrossoverOperator<B
     }
 
     @Override
-    public BinaryGenome crossover(BinaryGenome parent1, BinaryGenome parent2) {
+    public BinaryGenome crossover(BinaryGenome parent1, BinaryGenome parent2, Random rand) {
         BinaryGenome child = new BinaryGenome(parent1.geneCount, parent1.geneSize, parent1.getDeepCopy());
         int crossoverIndex;
 
@@ -24,7 +25,7 @@ public class BinaryGenomeSinglePointCrossover extends GeneticCrossoverOperator<B
             crossoverIndex = 1;
         }
         else {
-            crossoverIndex = (int)(Math.random() * parent1.geneCount - 1) + 1;
+            crossoverIndex = rand.nextInt(parent1.geneCount - 1) + 1;
         }
 
         //System.out.println("Crossover index: " + crossoverIndex);
@@ -48,7 +49,7 @@ public class BinaryGenomeSinglePointCrossover extends GeneticCrossoverOperator<B
         k.randomize();
         System.out.println(k.getData() + "\n");
 
-        BinaryGenome mutated = op.crossover(j, k);
+        BinaryGenome mutated = op.crossover(j, k, new Random());
         System.out.println("Child:");
         System.out.println(mutated.getData());
     }

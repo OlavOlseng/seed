@@ -3,6 +3,7 @@ package olseng.ea.genetics;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by olavo on 2016-01-11.
@@ -64,12 +65,13 @@ public class OperatorPool<G extends Genotype> {
     }
 
     public GeneticOperator<G> getOperator() {
+        Random rand = new Random();
         if (Math.random() < crossoverProbability) {
             //System.out.println("Crossover operator chosen.");
-            return crossovers.get((int)(Math.random() * crossovers.size()));
+            return crossovers.get(rand.nextInt(crossovers.size()));
 
         }
         //System.out.println("Mutation operator chosen.");
-        return mutators.get((int)(Math.random() * mutators.size()));
+        return mutators.get(rand.nextInt(mutators.size()));
     }
 }
