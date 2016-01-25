@@ -11,10 +11,13 @@ public class SummedFitnessComparator implements Comparator<Phenotype> {
 
     @Override
     public int compare(Phenotype o1, Phenotype o2) {
-        double val = 0;
+        float sum1 = 0;
+        float sum2 = 0;
         for (int i = 0; i < o1.getFitnessCount(); i++) {
-            val += o1.getFitnessValue(i) - o2.getFitnessValue(i);
+            sum1 += o1.getFitnessValue(i);
+            sum2 += o2.getFitnessValue(i);
         }
+        float val = sum1 - sum2;
         if(val < 0) {
             return 1;
         }

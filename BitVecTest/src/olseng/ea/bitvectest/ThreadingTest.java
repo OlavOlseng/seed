@@ -69,6 +69,7 @@ public class ThreadingTest {
             factory.operatorPool = operatorPool;
             factory.adultSelector = new TournamentSelector(2, 0.3);
             factory.rankingModule = new FastNonDominatedSort();
+            factory.sortingModule = new SummedFitnessComparator();
 
             EA<BinaryGenome, IntVec> ea = factory.build();
 

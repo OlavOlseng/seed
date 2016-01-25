@@ -113,7 +113,9 @@ public class EA<G extends Genotype, P extends Phenotype> {
         population.merge(newIndividuals);
 
         //ranking and culling
-        rankingModule.rankPopulation(population);
+        if (rankingMode) {
+            rankingModule.rankPopulation(population);
+        }
         //These two steps can be concatenated in the case that a custom sort is implemented.
         population.sort(sortingModule);
         population.cullPopulation(populationMaxSize);
