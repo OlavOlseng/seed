@@ -1,5 +1,6 @@
 package olseng.ea.genetics;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,7 +15,7 @@ public abstract class Phenotype<T, G extends Genotype> {
 
     private int rank = Integer.MAX_VALUE;
     public int dominatedByCount = 0;
-    public List<Phenotype> dominatedSet;
+    public List<Phenotype<?,?>> dominatedSet;
 
     public Phenotype(G genotype) {
         this.genotype = genotype;
@@ -55,4 +56,13 @@ public abstract class Phenotype<T, G extends Genotype> {
     public int getRank() {
         return this.rank;
     }
+
+    public void initializeDominatedSet() {
+        this.dominatedSet = new ArrayList<>();
+    }
+
+    public Phenotype getDominatedPhenotype(int index) {
+        return this.dominatedSet.get(index);
+    }
+
 }

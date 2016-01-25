@@ -5,6 +5,7 @@ import olseng.ea.adultselection.TournamentSelector;
 import olseng.ea.core.EA;
 import olseng.ea.core.Population;
 import olseng.ea.fitness.SummedFitnessComparator;
+import olseng.ea.fitness.ranking.FastNonDominatedSort;
 import olseng.ea.genetics.OperatorPool;
 import olseng.ea.genetics.Phenotype;
 
@@ -67,7 +68,7 @@ public class ThreadingTest {
             factory.developmentalMethod = new BitToIntVec();
             factory.operatorPool = operatorPool;
             factory.adultSelector = new TournamentSelector(2, 0.3);
-            factory.sortingModule = new SummedFitnessComparator();
+            factory.rankingModule = new FastNonDominatedSort();
 
             EA<BinaryGenome, IntVec> ea = factory.build();
 
@@ -87,7 +88,7 @@ public class ThreadingTest {
 
             ea.initialize(population);
 
-            for (int i = 0; i < 500; i++) {
+            for (int i = 0; i < 1000; i++) {
                 ea.step();
             }
 

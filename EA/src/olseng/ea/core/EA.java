@@ -1,14 +1,9 @@
 package olseng.ea.core;
 
 import olseng.ea.adultselection.AdultSelector;
-import olseng.ea.core.tasks.DevelopmentTask;
-import olseng.ea.core.tasks.EvaluationTask;
-import olseng.ea.core.tasks.OffspringCreationTask;
 import olseng.ea.core.tasks.StepTask;
 import olseng.ea.fitness.FitnessEvaluator;
-import olseng.ea.fitness.RankComparator;
-import olseng.ea.fitness.RankingModule;
-import olseng.ea.fitness.SingleFitnessComparator;
+import olseng.ea.fitness.ranking.RankingModule;
 import olseng.ea.genetics.DevelopmentalMethod;
 import olseng.ea.genetics.Genotype;
 import olseng.ea.genetics.OperatorPool;
@@ -118,9 +113,7 @@ public class EA<G extends Genotype, P extends Phenotype> {
         population.merge(newIndividuals);
 
         //ranking and culling
-        if (rankingMode) {
-            rankingModule.rankPopulation(population);
-        }
+        rankingModule.rankPopulation(population);
         //These two steps can be concatenated in the case that a custom sort is implemented.
         population.sort(sortingModule);
         population.cullPopulation(populationMaxSize);

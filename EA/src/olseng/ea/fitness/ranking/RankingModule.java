@@ -1,4 +1,4 @@
-package olseng.ea.fitness;
+package olseng.ea.fitness.ranking;
 
 import olseng.ea.core.Population;
 

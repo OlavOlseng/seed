@@ -3,6 +3,8 @@ package olseng.ea;
 import olseng.ea.adultselection.AdultSelector;
 import olseng.ea.core.EA;
 import olseng.ea.fitness.*;
+import olseng.ea.fitness.ranking.RankComparator;
+import olseng.ea.fitness.ranking.RankingModule;
 import olseng.ea.genetics.DevelopmentalMethod;
 import olseng.ea.genetics.Genotype;
 import olseng.ea.genetics.OperatorPool;
@@ -63,9 +65,9 @@ public class EAFactory<G extends Genotype, P extends Phenotype> {
         product.fitnessEvaluator = evaluator;
 
         if(rankingModule != null) {
-            System.out.println("EA built with with ranking mode.");
             product.rankingMode = true;
             product.rankingModule = rankingModule;
+            product.sortingModule = new RankComparator();
         }
         else if (sortingModule == null){
             throw new InvalidStateException("No ranking or sorting module was provided.");

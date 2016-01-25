@@ -1,4 +1,4 @@
-package olseng.ea.fitness;
+package olseng.ea.fitness.ranking;
 
 import olseng.ea.genetics.Phenotype;
 
@@ -11,6 +11,6 @@ public class RankComparator implements Comparator<Phenotype> {
 
     @Override
     public int compare(Phenotype o1, Phenotype o2) {
-        return o2.getRank() - o1.getRank();
+        return o1.getRank() - o2.getRank();
     }
 }
