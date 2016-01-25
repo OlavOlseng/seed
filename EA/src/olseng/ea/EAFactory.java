@@ -10,6 +10,7 @@ import olseng.ea.genetics.Phenotype;
 import sun.plugin.dom.exception.InvalidStateException;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -23,6 +24,7 @@ public class EAFactory<G extends Genotype, P extends Phenotype> {
     public List<FitnessObjective> objectives = null;
     public RankingModule rankingModule = null;
     public AdultSelector adultSelector = null;
+    public Comparator<Phenotype> sortingModule = null;
 
 
     public EAFactory() {
@@ -60,13 +62,17 @@ public class EAFactory<G extends Genotype, P extends Phenotype> {
         evaluator.setObjectives(objectives);
         product.fitnessEvaluator = evaluator;
 
-        if(rankingModule == null) {
-            product.rankingMode = false;
-            product.sortingModule = new SingleFitnessComparator();
-        }
-        else {
+        if(rankingModule != null) {
+            System.out.println("EA built with with ranking mode.");
             product.rankingMode = true;
             product.rankingModule = rankingModule;
+        }
+        else if (sortingModule == null){
+            throw new InvalidStateException("No ranking or sorting module was provided.");
+        }
+        else {
+            product.rankingMode = false;
+            product.sortingModule = sortingModule;
         }
 
         product.adultSelector = adultSelector;

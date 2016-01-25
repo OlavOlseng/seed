@@ -10,7 +10,7 @@ import java.util.Random;
 /**
  * Created by Olav on 11.01.2016.
  */
-public class SingleFitnessTournamentSelector extends AdultSelector {
+public class TournamentSelector extends AdultSelector {
 
     private int tournamentSize = 10;
     private double randomProbability = 0.1;
@@ -20,7 +20,7 @@ public class SingleFitnessTournamentSelector extends AdultSelector {
      * @param tournamentSize - Size of the tournaments.
      * @param randomProbability - Chance that a random member of the population is chosen, instead of the most fit individual.
      */
-    public SingleFitnessTournamentSelector(int tournamentSize, double randomProbability) {
+    public TournamentSelector(int tournamentSize, double randomProbability) {
         this.tournamentSize = tournamentSize;
         this.randomProbability = randomProbability;
     }
@@ -33,38 +33,39 @@ public class SingleFitnessTournamentSelector extends AdultSelector {
         this.randomProbability = randomProbability;
     }
 
-    private List<Phenotype> buildTournament(Population population) {
+    private List<Integer> buildTournament(Population population) {
         Random random = new Random();
-        List<Phenotype> tournament = new ArrayList<>(tournamentSize);
         List<Integer> selected = new ArrayList<>(tournamentSize);
+        int populationSize = population.getPopulationSize();
+
 
         int picked = 0;
         while(picked < tournamentSize) {
-            int index =  (random.nextInt(population.getPopulationSize()));
+            int index = (random.nextInt(populationSize));
             if (selected.contains(index)) {
                 continue;
             }
-            tournament.add(population.getIndividual(index));
+            selected.add(index);
             picked++;
         }
-        return tournament;
+        return selected;
     }
 
     @Override
     public Phenotype getIndividual(Random random) {
-        List<Phenotype> tournament = buildTournament(this.population);
+        List<Integer> tournament = buildTournament(this.population);
 
         if (random.nextDouble() > randomProbability) {
-            Phenotype winner = tournament.get(0);
+            int winner = tournament.get(0);
 
             for (int i = 1; i < tournament.size(); i++) {
-                Phenotype opponent = tournament.get(i);
-                if(winner.getFitnessValue(0) > opponent.getFitnessValue(0)) {
+                int opponent = tournament.get(i);
+                if(winner > opponent) {
                     winner = opponent;
                 }
             }
-            return winner;
+            return population.getIndividual(winner);
         }
-        return tournament.get(random.nextInt(tournamentSize));
+        return population.getIndividual(tournament.get(random.nextInt(tournamentSize)));
     }
 }

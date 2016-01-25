@@ -67,14 +67,6 @@ public class EA<G extends Genotype, P extends Phenotype> {
             threadPool = Executors.newFixedThreadPool(threadCount);
         }
 
-        //Set proper sortmode, currently only supports single fitness objective.
-        if (rankingMode) {
-            sortingModule = new RankComparator();
-        }
-        else {
-            sortingModule = new SingleFitnessComparator();
-        }
-
         //evaluation
         for (int i = 0; i < population.getPopulationSize(); i++) {
             fitnessEvaluator.evaluate(population.getIndividual(i));
@@ -117,7 +109,10 @@ public class EA<G extends Genotype, P extends Phenotype> {
             }
         }
 
-        population.cullPopulation(populationElitism);
+        //This code is not needed with the NSGA-II algorithm, it happens naturally.
+        if (!rankingMode) {
+            population.cullPopulation(populationElitism);
+        }
 
         //merge new individuals into population.
         population.merge(newIndividuals);
@@ -126,6 +121,7 @@ public class EA<G extends Genotype, P extends Phenotype> {
         if (rankingMode) {
             rankingModule.rankPopulation(population);
         }
+        //These two steps can be concatenated in the case that a custom sort is implemented.
         population.sort(sortingModule);
         population.cullPopulation(populationMaxSize);
 

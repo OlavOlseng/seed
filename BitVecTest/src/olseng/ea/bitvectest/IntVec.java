@@ -2,6 +2,8 @@ package olseng.ea.bitvectest;
 
 import olseng.ea.genetics.Phenotype;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -15,6 +17,6 @@ public class IntVec extends Phenotype<List<Integer>, BinaryGenome>{
 
     @Override
     public String toString() {
-        return getRepresentation().toString() + " -> " + this.getFitnessValue(0);
+        return getRepresentation().toString() + " -> " + Arrays.toString(this.fitnessValues);
     }
 }

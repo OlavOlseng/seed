@@ -1,5 +1,7 @@
 package olseng.ea.genetics;
 
+import java.util.List;
+
 /**
  * Created by olavo on 2016-01-11.
  */
@@ -8,8 +10,11 @@ public abstract class Phenotype<T, G extends Genotype> {
     private G genotype = null;
     private T representation = null;
 
-    private float[] fitnessValues;
+    protected float[] fitnessValues;
+
     private int rank = Integer.MAX_VALUE;
+    public int dominatedByCount = 0;
+    public List<Phenotype> dominatedSet;
 
     public Phenotype(G genotype) {
         this.genotype = genotype;

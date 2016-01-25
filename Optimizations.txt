@@ -1,0 +1,2 @@
+Implementing a sorting algorithm that terminates after N individuals have been selected/sorted. This can improve the performance of the population culling in ranked mode, as the current and next generation are sorted together.
+
