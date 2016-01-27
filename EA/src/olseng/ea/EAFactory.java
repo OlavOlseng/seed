@@ -2,6 +2,8 @@ package olseng.ea;
 
 import olseng.ea.adultselection.AdultSelector;
 import olseng.ea.core.EA;
+import olseng.ea.core.MaxGenerationCondition;
+import olseng.ea.core.TerminationCondition;
 import olseng.ea.fitness.*;
 import olseng.ea.fitness.ranking.RankComparator;
 import olseng.ea.fitness.ranking.RankingModule;
@@ -24,6 +26,7 @@ public class EAFactory<G extends Genotype, P extends Phenotype> {
     public OperatorPool operatorPool = null;
     public DevelopmentalMethod developmentalMethod = null;
     public List<FitnessObjective> objectives = null;
+    public List<TerminationCondition> terminationConditions = null;
     public RankingModule rankingModule = null;
     public AdultSelector adultSelector = null;
     public Comparator<Phenotype> sortingModule = null;
@@ -31,10 +34,15 @@ public class EAFactory<G extends Genotype, P extends Phenotype> {
 
     public EAFactory() {
         this.objectives = new ArrayList<>();
+        this.terminationConditions = new ArrayList<>();
     }
 
     public void addFitnessObjective(FitnessObjective<P> objective) {
         this.objectives.add(objective);
+    }
+
+    public void addTerminationCondition(TerminationCondition terminationCondition) {
+        this.terminationConditions.add(terminationCondition);
     }
 
     public EA<G, P> build() {
@@ -55,7 +63,6 @@ public class EAFactory<G extends Genotype, P extends Phenotype> {
 
         EA product = new EA();
 
-
         //Assemble the pieces, should ensure proper compatibility between modules.
         product.operatorPool = this.operatorPool;
         product.developmentalMethod = this.developmentalMethod;
@@ -63,6 +70,8 @@ public class EAFactory<G extends Genotype, P extends Phenotype> {
         FitnessEvaluator evaluator = new StandardFitnessEvaluator();
         evaluator.setObjectives(objectives);
         product.fitnessEvaluator = evaluator;
+
+        product.terminationConditions.addAll(this.terminationConditions);
 
         if(rankingModule != null) {
             product.rankingMode = true;

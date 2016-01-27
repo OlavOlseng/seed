@@ -25,6 +25,7 @@ public class EA<G extends Genotype, P extends Phenotype> {
     public AdultSelector adultSelector;
     public FitnessEvaluator fitnessEvaluator;
     public RankingModule rankingModule;
+    public List<TerminationCondition> terminationConditions;
 
     public Population population;
 
@@ -41,6 +42,7 @@ public class EA<G extends Genotype, P extends Phenotype> {
     public Comparator<Phenotype> sortingModule;
 
     public EA() {
+        this.terminationConditions = new ArrayList<>();
     }
 
     public void initialize(Population population) {
@@ -54,6 +56,9 @@ public class EA<G extends Genotype, P extends Phenotype> {
         }
         operatorPool.normalizeWeights();
         adultSelector.setPopulation(population);
+        for (TerminationCondition tc : terminationConditions) {
+            tc.reset();
+        }
 
         if(threadCount < 2) {
             threadPool = Executors.newSingleThreadExecutor();
@@ -73,7 +78,12 @@ public class EA<G extends Genotype, P extends Phenotype> {
         population.cullPopulation(populationMaxSize);
     }
 
-    public void step() {
+    /**
+     * Steps the EA one generation. Returns true if any TerminationCondition evaluates to true.
+     * @return true if termination condition is met, false else.
+     */
+    public boolean step() {
+
         //Send off tasks to run in background threads
         int toCreatePerThread = (populationMaxSize - populationElitism + populationOverpopulation) / threadCount;
         int remainder = (populationMaxSize - populationElitism) % toCreatePerThread;
@@ -120,6 +130,16 @@ public class EA<G extends Genotype, P extends Phenotype> {
         population.sort(sortingModule);
         population.cullPopulation(populationMaxSize);
 
+        return checkTermination();
+    }
+
+    public boolean checkTermination() {
+        for (TerminationCondition tc : terminationConditions) {
+            if (tc.shouldTerminate(this)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void setThreadCount(int threadCount) {

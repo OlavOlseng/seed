@@ -2,7 +2,6 @@ package olseng.ea.fitness.ranking;
 
 import olseng.ea.core.Population;
 import olseng.ea.fitness.AscendingSingleFitnessComparator;
-import olseng.ea.fitness.SingleFitnessComparator;
 import olseng.ea.genetics.Phenotype;
 
 import java.util.ArrayList;
