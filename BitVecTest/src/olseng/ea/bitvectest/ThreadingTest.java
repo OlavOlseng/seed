@@ -75,7 +75,7 @@ public class ThreadingTest {
 
             List<Phenotype> initialPhenotypes = new ArrayList<>();
             for (int i = 0; i < 100; i++) {
-                BinaryGenome g = new BinaryGenome(20, 1);
+                BinaryGenome g = new BinaryGenome(100, 1);
                 g.randomize();
                 Phenotype p = ea.developmentalMethod.develop(g);
                 initialPhenotypes.add(p);
@@ -89,7 +89,7 @@ public class ThreadingTest {
 
             ea.initialize(population);
 
-            for (int i = 0; i < 1000; i++) {
+            for (int i = 0; i < 500; i++) {
                 ea.step();
             }
 

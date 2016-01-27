@@ -7,11 +7,11 @@ import java.util.Comparator;
 /**
  * Created by Olav on 22.01.2016.
  */
-public class SingleFitnessComparator implements Comparator<Phenotype>{
+public class AscendingSingleFitnessComparator implements Comparator<Phenotype>{
 
     private int fitnessIndex;
 
-    public SingleFitnessComparator(int fitnessIndex) {
+    public AscendingSingleFitnessComparator(int fitnessIndex) {
         this.fitnessIndex = fitnessIndex;
     }
 
@@ -19,11 +19,11 @@ public class SingleFitnessComparator implements Comparator<Phenotype>{
     public int compare(Phenotype o1, Phenotype o2) {
         float val = o1.getFitnessValue(fitnessIndex) - o2.getFitnessValue(fitnessIndex);
         if(val < 0) {
-            return 1;
+            return -1;
         }
         else if (val == 0) {
             return 0;
         }
-        return -1;
+        return 1;
     }
 }

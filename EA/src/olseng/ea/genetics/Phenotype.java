@@ -16,6 +16,7 @@ public abstract class Phenotype<T, G extends Genotype> {
     private int rank = Integer.MAX_VALUE;
     public int dominatedByCount = 0;
     public List<Phenotype<?,?>> dominatedSet;
+    public float crowdingDistance = 0;
 
     public Phenotype(G genotype) {
         this.genotype = genotype;

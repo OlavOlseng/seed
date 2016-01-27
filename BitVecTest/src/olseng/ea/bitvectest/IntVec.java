@@ -17,6 +17,6 @@ public class IntVec extends Phenotype<List<Integer>, BinaryGenome>{
 
     @Override
     public String toString() {
-        return getRepresentation().toString() + " -> " + Arrays.toString(this.fitnessValues) + ", Rank: " + getRank();
+        return /**getRepresentation().toString() +**/ " -> " + Arrays.toString(this.fitnessValues) + ", Rank: " + getRank() + ", CD: " + crowdingDistance;
     }
 }

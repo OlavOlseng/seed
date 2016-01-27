@@ -1,9 +1,12 @@
 package olseng.ea.fitness.ranking;
 
 import olseng.ea.core.Population;
+import olseng.ea.fitness.AscendingSingleFitnessComparator;
+import olseng.ea.fitness.SingleFitnessComparator;
 import olseng.ea.genetics.Phenotype;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -36,6 +39,7 @@ public class FastNonDominatedSort implements RankingModule {
                 p.setRank(1);
             }
         }
+        calculateCrowdingDistances(currentFront);
 
         int frontCounter = 1;
         while (currentFront.size() > 0) {
@@ -53,8 +57,44 @@ public class FastNonDominatedSort implements RankingModule {
                     }
                 }
             }
+            calculateCrowdingDistances(currentFront);
             frontCounter++;
             currentFront = nextFront;
+        }
+    }
+
+    public void calculateCrowdingDistances(List<Phenotype> front) {
+        if (front.size() < 3) {
+            return;
+        }
+        int objectiveCount = front.get(0).getFitnessCount();
+        for (Phenotype p : front) {
+            p.crowdingDistance = 0;
+        }
+        for (int objective = 0; objective < objectiveCount; objective++) {
+            float min = Float.MAX_VALUE;
+            float max = Float.MIN_VALUE;
+
+            for (Phenotype p : front) {
+                float fitness = p.getFitnessValue(objective);
+                if (fitness < min) {
+                    min = fitness;
+                }
+                if (fitness > max) {
+                    max = fitness;
+                }
+            }
+            float range = max - min;
+            if (range == 0) {
+                continue;
+            }
+            Collections.sort(front, new AscendingSingleFitnessComparator(objective));
+            front.get(0).crowdingDistance = 1000000;
+            front.get(front.size() - 1).crowdingDistance = 1000000;
+
+            for (int i = 1; i < front.size() - 1; i++) {
+                front.get(i).crowdingDistance += (front.get(i + 1).getFitnessValue(objective) - front.get(i - 1).getFitnessValue(objective)) / range;
+            }
         }
     }
 

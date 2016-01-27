@@ -33,7 +33,7 @@ public class EA<G extends Genotype, P extends Phenotype> {
 
     private ExecutorService threadPool;
 
-    public int populationMaxSize = 10000;
+    public int populationMaxSize = 100;
     public int populationElitism = 10;
     public int populationOverpopulation = 0;
 
