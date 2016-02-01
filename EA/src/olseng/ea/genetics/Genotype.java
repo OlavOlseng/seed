@@ -6,13 +6,6 @@ package olseng.ea.genetics;
 public abstract class Genotype<T> {
 
     private T data = null;
-    private int geneCount = 0;
-
-    /**
-     * This method should calculate the genes in the genome.
-     * @param data
-     */
-    public abstract int calculateGeneCount(T data);
 
     /**
      * this method must return a deep copy of the data. Returning a shallow copy will break the implementation!
@@ -22,14 +15,17 @@ public abstract class Genotype<T> {
 
     public void setData(T data) {
         this.data = data;
-        this.geneCount = calculateGeneCount(data);
+        parseData(this.data);
     }
+
+    /**
+     * Any additional calculations or setup when the data is set for the genotype should be changed here.
+     * @param data
+     */
+    public abstract void parseData(T data);
 
     public T getData() {
         return this.data;
     }
 
-    public int getGeneCount() {
-        return this.geneCount;
-    }
 }
