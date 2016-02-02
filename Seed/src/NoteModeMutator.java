@@ -21,26 +21,26 @@ public class NoteModeMutator extends GeneticMutationOperator<MusicGenotype> {
         int startIndex = container.getNoteStartIndex(index);
         byte startValue = container.melody[startIndex];
 
-        if (value == MusicalContainer.NOTE_HOLD) {
-            if (startValue != MusicalContainer.NOTE_REST && rand.nextDouble() < 0.5) {
-                container.melody[index] = MusicalContainer.NOTE_REST;
+        if (value == MusicalContainer.MELODY_HOLD) {
+            if (startValue != MusicalContainer.MELODY_REST && rand.nextDouble() < 0.5) {
+                container.melody[index] = MusicalContainer.MELODY_REST;
             }
             else {
-                container.melody[index] = (byte)(rand.nextInt(MusicalContainer.NOTE_MAX_RANGE - MusicalContainer.NOTE_MIN_RANGE + 1) + MusicalContainer.NOTE_MIN_RANGE);
+                container.melody[index] = (byte)(rand.nextInt(MusicalContainer.MELODY_RANGE + 1) + MusicalContainer.MELODY_RANGE_MIN);
             }
         }
-        else if (value == MusicalContainer.NOTE_REST) {
+        else if (value == MusicalContainer.MELODY_REST) {
             if (rand.nextDouble() < 0.5 && startIndex > 0) {
-                container.melody[index] = MusicalContainer.NOTE_HOLD;
+                container.melody[index] = MusicalContainer.MELODY_HOLD;
             } else {
-                container.melody[index] = (byte) (rand.nextInt(MusicalContainer.NOTE_MAX_RANGE - MusicalContainer.NOTE_MIN_RANGE + 1) + MusicalContainer.NOTE_MIN_RANGE);
+                container.melody[index] = (byte) (rand.nextInt(MusicalContainer.MELODY_RANGE + 1) + MusicalContainer.MELODY_RANGE_MIN);
             }
         }
         else {
             if (rand.nextDouble() < 0.5 && startIndex > 0) {
-                container.melody[index] = MusicalContainer.NOTE_HOLD;
+                container.melody[index] = MusicalContainer.MELODY_HOLD;
             } else {
-                container.melody[index] = MusicalContainer.NOTE_REST;
+                container.melody[index] = MusicalContainer.MELODY_REST;
             }
         }
         MusicGenotype child = new MusicGenotype();
