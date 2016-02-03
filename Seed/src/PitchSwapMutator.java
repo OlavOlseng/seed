@@ -43,7 +43,7 @@ public class PitchSwapMutator extends GeneticMutationOperator<MusicGenotype> {
     }
 
     public static void main(String[] args) {
-        MusicalContainer mc = new MusicalContainer(2);
+        MusicalContainer mc = new MusicalContainer(8);
         mc.init();
         MusicGenotype mg = new MusicGenotype();
         mg.setData(mc);
