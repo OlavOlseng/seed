@@ -59,7 +59,7 @@ public class MusicParser {
     public String parseMelody(MusicalContainer container) {
         String melodyString = "";
         int noteStart = 0;
-        int noteValue = container.melody[0];
+        int pitchValue = container.melody[0];
         boolean frontTied = false;
         boolean tailTied = false;
         int duration = 1;
@@ -69,47 +69,40 @@ public class MusicParser {
             duration = i - noteStart;
             //Note done case, write the buffers
             if (container.melody[i] != MusicalContainer.MELODY_HOLD) {
-                while(duration > 4 && duration % 4 != 0) {
-                    int bufferedDuration = 0;
-                    if (duration > 12) {
-                        bufferedDuration = 12;
-                    }
-                    else if (duration > 8) {
-                        bufferedDuration = 8;
-                    }
-                    else if (duration > 6) {
-                        bufferedDuration = 6;
-                    }
-                    tailTied = true;
-                    melodyString += buildNoteString(noteValue, bufferedDuration, frontTied, tailTied);
-                    frontTied = true;
-                    tailTied = false;
-                    duration -= bufferedDuration;
-                }
-                melodyString += buildNoteString(noteValue, duration, frontTied, tailTied);
-                noteStart = i;
-                noteValue = container.melody[i];
+                melodyString += buildNoteString(pitchValue, duration, frontTied, tailTied);
                 frontTied = false;
+                tailTied = false;
+                pitchValue = container.melody[i];
+                noteStart = i;
             }
             //New measure case, write buffer with proper ties.
             if (i % 16 == 0) {
                 if(noteStart != i) {
                     tailTied = true;
-                    melodyString += buildNoteString(noteValue, duration, frontTied, tailTied);
-                    noteStart = i;
+                    melodyString += buildNoteString(pitchValue, duration, frontTied, tailTied);
                     frontTied = true;
                     tailTied = false;
                 }
                 melodyString += SYMBOL_MEASURE;
+                noteStart = i;
             }
             i++;
         }
-        melodyString += buildNoteString(noteValue, duration + 1, frontTied, tailTied);
+        melodyString += buildNoteString(pitchValue, duration + 1, frontTied, tailTied);
         return melodyString;
     }
 
     public String buildNoteString(int pitchValue, int duration, boolean tiedFromFront, boolean tiedFromTail) {
-        String s = getPitchAsString(pitchValue);
+        String s = "";
+        int splittingPoint = getNoteTiePartition(duration);
+        if (splittingPoint != 0) {
+            tiedFromTail = true;
+            s += buildNoteString(pitchValue,splittingPoint,tiedFromFront, tiedFromTail);
+            duration -= splittingPoint;
+            tiedFromFront = true;
+            tiedFromTail = false;
+        }
+         s += getPitchAsString(pitchValue);
         if (tiedFromFront) {
             s += SYMBOL_TIE;
         }
@@ -121,6 +114,31 @@ public class MusicParser {
         return s;
     }
 
+    private int getNoteTiePartition(int duration) {
+        //Needs buffering, since duration can't be produced.
+        if (durationMap.get(duration) == null) {
+            int i = duration - 1;
+            while(i > 0) {
+                int secondPart = duration - i;
+                if (durationMap.get(i) != null && durationMap.get(secondPart) != null) {
+                    return i;
+                }
+                i--;
+            }
+        }
+
+        /** Note crosses fourths, and should be paritioned, unless it is a whole, half or punctured halfnote.
+         noteStart = noteStart % 16;
+         if ((noteStart + duration) % 4 != 0) {
+            if (duration < 4) {
+
+            }
+        }
+        **/
+
+        return 0;
+    }
+
     public static void main(String[] args) {
         MusicParser parser = new MusicParser();
         System.out.println(parser.getPitchAsString(0));
@@ -130,6 +148,7 @@ public class MusicParser {
         System.out.println(parser.getPitchAsString(60));
         System.out.println(parser.getPitchAsString(127));
 
+        /**LISA GIKK TIL SKOLEN
         MusicalContainer mc = new MusicalContainer(4);
         mc.init();
         mc.melody[0] = 60;
@@ -154,11 +173,16 @@ public class MusicParser {
         mc.melody[52] = 62;
         mc.melody[54] = 62;
         mc.melody[56] = 60;
+        **/
 
-
+        MusicalContainer mc = new MusicalContainer(2);
+        mc.init();
+        mc.melody[1] = 60;
+        mc.melody[18] = 61;
 
         String melody = parser.parseMelody(mc);
         System.out.println(melody);
+        melody = " Rw | " + melody;
         Player player = new Player();
         player.play(melody);
     }
