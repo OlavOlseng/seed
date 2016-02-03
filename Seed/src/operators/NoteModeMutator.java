@@ -1,6 +1,8 @@
-import olseng.ea.genetics.GeneticMutationOperator;
+package operators;
 
-import java.util.Arrays;
+import genetics.MusicGenotype;
+import genetics.MusicalContainer;
+import olseng.ea.genetics.GeneticMutationOperator;
 import java.util.Random;
 
 /**
@@ -26,14 +28,26 @@ public class NoteModeMutator extends GeneticMutationOperator<MusicGenotype> {
                 container.melody[index] = MusicalContainer.MELODY_REST;
             }
             else {
-                container.melody[index] = (byte)(rand.nextInt(MusicalContainer.MELODY_RANGE + 1) + MusicalContainer.MELODY_RANGE_MIN);
+                int previousNoteIndex = container.getPreviousNoteIndex(startIndex);
+                if (previousNoteIndex > -1 && container.melody[previousNoteIndex] >= MusicalContainer.MELODY_RANGE_MIN) {
+                    container.melody[index] = container.melody[previousNoteIndex];
+                }
+                else {
+                    container.melody[index] = (byte) (rand.nextInt(MusicalContainer.MELODY_RANGE + 1) + MusicalContainer.MELODY_RANGE_MIN);
+                }
             }
         }
         else if (value == MusicalContainer.MELODY_REST) {
             if (rand.nextDouble() < 0.5 && startIndex > 0) {
                 container.melody[index] = MusicalContainer.MELODY_HOLD;
             } else {
-                container.melody[index] = (byte) (rand.nextInt(MusicalContainer.MELODY_RANGE + 1) + MusicalContainer.MELODY_RANGE_MIN);
+                int previousNoteIndex = container.getPreviousNoteIndex(startIndex);
+                if (previousNoteIndex > -1 && container.melody[previousNoteIndex] >= MusicalContainer.MELODY_RANGE_MIN) {
+                    container.melody[index] = container.melody[previousNoteIndex];
+                }
+                else {
+                    container.melody[index] = (byte) (rand.nextInt(MusicalContainer.MELODY_RANGE + 1) + MusicalContainer.MELODY_RANGE_MIN);
+                }
             }
         }
         else {
@@ -46,19 +60,5 @@ public class NoteModeMutator extends GeneticMutationOperator<MusicGenotype> {
         MusicGenotype child = new MusicGenotype();
         child.setData(container);
         return child;
-    }
-
-    public static void main(String[] args) {
-        MusicalContainer mc = new MusicalContainer(1);
-        mc.init();
-        MusicGenotype mg = new MusicGenotype();
-        mg.setData(mc);
-        NoteModeMutator nmm = new NoteModeMutator(1);
-        Random rand = new Random();
-        System.out.println(Arrays.toString(mc.melody));
-        for (int i = 0; i < 50; i++) {
-                mg = nmm.mutate(mg, rand);
-                System.out.println(Arrays.toString(mg.getData().melody));
-        }
     }
 }

@@ -1,3 +1,5 @@
+package genetics;
+
 import olseng.ea.genetics.Genotype;
 
 /**

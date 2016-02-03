@@ -1,3 +1,5 @@
+package genetics;
+
 import java.util.Arrays;
 
 /**

@@ -1,7 +1,8 @@
-import olseng.ea.genetics.GeneticMutationOperator;
-import org.jfugue.player.Player;
+package operators;
 
-import java.util.Arrays;
+import genetics.MusicGenotype;
+import genetics.MusicalContainer;
+import olseng.ea.genetics.GeneticMutationOperator;
 import java.util.Random;
 
 /**
@@ -42,29 +43,5 @@ public class PitchSwapMutator extends GeneticMutationOperator<MusicGenotype> {
         return child;
     }
 
-    public static void main(String[] args) {
-        MusicalContainer mc = new MusicalContainer(8);
-        mc.init();
-        MusicGenotype mg = new MusicGenotype();
-        mg.setData(mc);
-        NoteModeMutator nmm = new NoteModeMutator(1);
-        PitchSwapMutator psm = new PitchSwapMutator(1);
-        Random rand = new Random();
-        System.out.println(Arrays.toString(mc.melody));
-        for (int i = 0; i < 100; i++) {
-            if (i % 2 == 0) {
-                mg = nmm.mutate(mg, rand);
-            }
-            else {
-                mg = psm.mutate(mg, rand);
-            }
-            System.out.println("Iteration: " + i + " " + Arrays.toString(mg.getData().melody));
-        }
-        String music = "Rw | ";
-        MusicParser parser = new MusicParser();
-        music += parser.parseMelody(mg.getData());
-        Player player = new Player();
-        System.out.println(music);
-        player.play(music);
-    }
+
 }

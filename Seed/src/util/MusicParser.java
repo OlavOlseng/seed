@@ -1,3 +1,6 @@
+package util;
+
+import genetics.MusicalContainer;
 import org.jfugue.player.Player;
 
 import java.util.HashMap;
