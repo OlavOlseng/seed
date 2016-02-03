@@ -60,7 +60,6 @@ public class BinaryGenome extends Genotype<BitSet> {
         return geneSize * geneCount;
     }
 
-    @Override
     public int calculateGeneCount(BitSet data) {
         return geneCount;
     }
@@ -68,6 +67,11 @@ public class BinaryGenome extends Genotype<BitSet> {
     @Override
     public BitSet getDeepCopy() {
         return (BitSet) getData().clone();
+    }
+
+    @Override
+    public void parseData(BitSet data) {
+
     }
 
     //============================TEST=================================
