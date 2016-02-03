@@ -80,11 +80,15 @@ public class MusicParser {
                     else if (duration > 6) {
                         bufferedDuration = 6;
                     }
+                    else if (duration > 4) {
+                        bufferedDuration = 4;
+                    }
                     tailTied = true;
                     melodyString += buildNoteString(noteValue, bufferedDuration, frontTied, tailTied);
                     frontTied = true;
                     tailTied = false;
                     duration -= bufferedDuration;
+                    System.out.println("D:" + duration);
                 }
                 melodyString += buildNoteString(noteValue, duration, frontTied, tailTied);
                 noteStart = i;
@@ -103,6 +107,7 @@ public class MusicParser {
                 melodyString += SYMBOL_MEASURE;
             }
             i++;
+            System.out.println(i);
         }
         melodyString += buildNoteString(noteValue, duration + 1, frontTied, tailTied);
         return melodyString;
@@ -159,6 +164,7 @@ public class MusicParser {
 
         String melody = parser.parseMelody(mc);
         System.out.println(melody);
+        melody = " Rw | " + melody;
         Player player = new Player();
         player.play(melody);
     }
