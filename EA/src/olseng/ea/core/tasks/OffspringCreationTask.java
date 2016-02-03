@@ -28,7 +28,7 @@ public class OffspringCreationTask extends BaseTask<List<Genotype>> {
         int produced = 0;
 
         while(produced < toProcuce) {
-            GeneticOperator operator = ea.operatorPool.getOperator();
+            GeneticOperator operator = ea.operatorPool.getOperator(rand);
 
             if(operator instanceof GeneticCrossoverOperator) {
                 Genotype parent1 = ea.adultSelector.getIndividual(rand).getGenotype();

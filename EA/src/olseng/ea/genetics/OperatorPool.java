@@ -64,8 +64,7 @@ public class OperatorPool<G extends Genotype> {
         }
     }
 
-    public GeneticOperator<G> getOperator() {
-        Random rand = new Random();
+    public GeneticOperator<G> getOperator(Random rand) {
         if (Math.random() < crossoverProbability) {
             //System.out.println("Crossover operator chosen.");
             return crossovers.get(rand.nextInt(crossovers.size()));
@@ -75,13 +74,11 @@ public class OperatorPool<G extends Genotype> {
         return mutators.get(rand.nextInt(mutators.size()));
     }
 
-    public GeneticMutationOperator<G> getMutationOperator() {
-        Random rand = new Random();
+    public GeneticMutationOperator<G> getMutationOperator(Random rand) {
         return mutators.get(rand.nextInt(mutators.size()));
     }
 
-    public GeneticCrossoverOperator<G> getCrossoverOperator() {
-        Random rand = new Random();
+    public GeneticCrossoverOperator<G> getCrossoverOperator(Random rand) {
         return crossovers.get(rand.nextInt(crossovers.size()));
     }
 }

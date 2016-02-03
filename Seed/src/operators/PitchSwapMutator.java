@@ -28,7 +28,7 @@ public class PitchSwapMutator extends GeneticMutationOperator<MusicGenotype> {
             swapNote = previousNote;
         }
         if (swapNote < 0) {
-            System.out.println("Failed to swap notes, as there is less than two notes in the genotype.");
+            System.out.println("PitchSwapMutator failed, as there is less than two notes in the genotype.");
             child.setData(mc);
             return child;
         }

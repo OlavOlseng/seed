@@ -9,7 +9,7 @@ public class MusicalContainer {
 
     public static final byte MELODY_REST = 1;
     public static final byte MELODY_HOLD = 0;
-    public static final int MELODY_RANGE_MAX = 76;
+    public static final int MELODY_RANGE_MAX = 78;
     public static final int MELODY_RANGE_MIN = 55;
     public static final int MELODY_RANGE = MELODY_RANGE_MAX - MELODY_RANGE_MIN;
 
@@ -27,7 +27,9 @@ public class MusicalContainer {
     public void init() {
         this.melody = new byte[4 * 4 * bars];
         this.chords = new byte[bars][4];
-        this.melody[0] = MELODY_REST;
+        for (int i = 0; i < melody.length; i += 16) {
+            this.melody[i] = MELODY_REST;
+        }
     }
 
     public MusicalContainer getCopy() {
@@ -114,6 +116,15 @@ public class MusicalContainer {
             }
             index++;
         }
+    }
+
+    public boolean melodyContainsPitch() {
+        for (int i = 0; i < melody.length; i++) {
+            if (melody[i] >= MusicalContainer.MELODY_RANGE_MIN) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static void main(String[] args) {
