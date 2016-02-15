@@ -1,23 +1,25 @@
 package operators;
 
 import genetics.MusicGenotype;
-import genetics.MusicalContainer;
+import genetics.MelodyGenotype;
+import genetics.MusicalStruct;
 import olseng.ea.genetics.GeneticMutationOperator;
 import java.util.Random;
 
 /**
  * Created by Olav on 02.02.2016.
  */
-public class PitchSwapMutator extends GeneticMutationOperator<MusicGenotype> {
+public class NoteSwapMutator extends GeneticMutationOperator<MusicGenotype> {
 
 
-    public PitchSwapMutator(double weight) {
+    public NoteSwapMutator(double weight) {
         super(weight);
     }
 
     @Override
     public MusicGenotype mutate(MusicGenotype parent, Random rand) {
-        MusicalContainer mc = parent.getDeepCopy();
+        MusicalStruct ms = parent.getDeepCopy();
+        MelodyGenotype mc = ms.mg;
         int index = rand.nextInt(mc.melody.length);
         int selectedNoteIndex = mc.getNoteStartIndex(index);
         int swapNote = mc.getNextNoteIndex(selectedNoteIndex);
@@ -29,7 +31,7 @@ public class PitchSwapMutator extends GeneticMutationOperator<MusicGenotype> {
         }
         if (swapNote < 0) {
             System.out.println("PitchSwapMutator failed, as there is less than two notes in the genotype.");
-            child.setData(mc);
+            child.setData(ms);
             return child;
         }
         byte buffer = mc.melody[selectedNoteIndex];
@@ -39,7 +41,7 @@ public class PitchSwapMutator extends GeneticMutationOperator<MusicGenotype> {
         //Ensure no consecutive pauses.
         mc.concatenateRests();
 
-        child.setData(mc);
+        child.setData(ms);
         return child;
     }
 

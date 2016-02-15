@@ -5,15 +5,15 @@ import olseng.ea.genetics.Genotype;
 /**
  * Created by Olav on 01.02.2016.
  */
-public class MusicGenotype extends Genotype<MusicalContainer> {
+public class MusicGenotype extends Genotype<MusicalStruct> {
 
     @Override
-    public MusicalContainer getDeepCopy() {
+    public MusicalStruct getDeepCopy() {
         return getData().getCopy();
     }
 
     @Override
-    public void parseData(MusicalContainer data) {
+    public void parseData(MusicalStruct data) {
 
     }
 }

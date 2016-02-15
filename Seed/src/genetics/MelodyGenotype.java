@@ -5,46 +5,35 @@ import java.util.Arrays;
 /**
  * Created by Olav on 01.02.2016.
  */
-public class MusicalContainer {
+public class MelodyGenotype {
 
     public static final byte MELODY_REST = 1;
     public static final byte MELODY_HOLD = 0;
-    public static final int MELODY_RANGE_MAX = 78;
+    public static final int MELODY_RANGE_MAX = 80;
     public static final int MELODY_RANGE_MIN = 55;
     public static final int MELODY_RANGE = MELODY_RANGE_MAX - MELODY_RANGE_MIN;
 
     public byte[] melody;
-    public byte[][] chords;
     public final int bars;
 
-    public MusicalContainer(int bars) {
+    public MelodyGenotype(int bars) {
         this.bars = bars;
     }
 
     /**
-     * Instantiates a melody and chord struct. Also sets the melody to a single pause. Chords are empty.
+     * Instantiates a melody struct. Also sets the melody to a single pause.
      */
     public void init() {
         this.melody = new byte[4 * 4 * bars];
-        this.chords = new byte[bars][4];
         for (int i = 0; i < melody.length; i += 16) {
             this.melody[i] = MELODY_REST;
         }
     }
 
-    public MusicalContainer getCopy() {
-        MusicalContainer copy = new MusicalContainer(bars);
+    public MelodyGenotype getCopy() {
+        MelodyGenotype copy = new MelodyGenotype(bars);
         copy.melody = Arrays.copyOf(melody, melody.length);
-        copy.chords = Arrays.copyOf(chords, chords.length);
         return copy;
-    }
-
-    public byte[] getChord(int bar) {
-        return chords[bar];
-    }
-
-    public void setChord(int bar, byte[] chord) {
-        this.chords[bar] = chord;
     }
 
     /**
@@ -120,7 +109,7 @@ public class MusicalContainer {
 
     public boolean melodyContainsPitch() {
         for (int i = 0; i < melody.length; i++) {
-            if (melody[i] >= MusicalContainer.MELODY_RANGE_MIN) {
+            if (melody[i] >= MelodyGenotype.MELODY_RANGE_MIN) {
                 return true;
             }
         }
@@ -128,11 +117,9 @@ public class MusicalContainer {
     }
 
     public static void main(String[] args) {
-        MusicalContainer ms = new MusicalContainer(4);
+        MelodyGenotype ms = new MelodyGenotype(4);
         ms.init();
         System.out.println(ms.melody.length);
-        ms.setChord(4, new byte[]{0,4,7,10});
-        System.out.println(Arrays.toString(ms.getChord(4)));
     }
 
 }

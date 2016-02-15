@@ -1,6 +1,6 @@
 package util;
 
-import genetics.MusicalContainer;
+import genetics.MelodyGenotype;
 import org.jfugue.player.Player;
 
 import java.util.HashMap;
@@ -51,7 +51,7 @@ public class MusicParser {
     }
 
     public String getPitchAsString(int value) {
-        if (value == MusicalContainer.MELODY_REST) {
+        if (value == MelodyGenotype.MELODY_REST) {
             return "R";
         }
         String pitch = pitchMap.get(value % 12);
@@ -59,7 +59,7 @@ public class MusicParser {
         return pitch;
     }
 
-    public String parseMelody(MusicalContainer container) {
+    public String parseMelody(MelodyGenotype container) {
         String melodyString = "";
         int noteStart = 0;
         int pitchValue = container.melody[0];
@@ -71,7 +71,7 @@ public class MusicParser {
         while (i < container.melody.length) {
             duration = i - noteStart;
             //Note done case, write the buffers
-            if (container.melody[i] != MusicalContainer.MELODY_HOLD) {
+            if (container.melody[i] != MelodyGenotype.MELODY_HOLD) {
                 melodyString += buildNoteString(pitchValue, duration, frontTied, tailTied);
                 frontTied = false;
                 tailTied = false;
@@ -178,7 +178,7 @@ public class MusicParser {
         mc.melody[56] = 60;
         **/
 
-        MusicalContainer mc = new MusicalContainer(2);
+        MelodyGenotype mc = new MelodyGenotype(2);
         mc.init();
         mc.melody[1] = 60;
         mc.melody[18] = 61;

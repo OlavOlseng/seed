@@ -1,7 +1,8 @@
 package operators;
 
 import genetics.MusicGenotype;
-import genetics.MusicalContainer;
+import genetics.MelodyGenotype;
+import genetics.MusicalStruct;
 import olseng.ea.genetics.GeneticMutationOperator;
 
 import java.util.ArrayList;
@@ -19,13 +20,13 @@ public class PitchModulationMutator extends GeneticMutationOperator<MusicGenotyp
 
     @Override
     public MusicGenotype mutate(MusicGenotype parent, Random rand) {
-        MusicalContainer mc = parent.getDeepCopy();
-
+        MusicalStruct ms = parent.getDeepCopy();
+        MelodyGenotype mc = ms.mg;
         if(mc.melodyContainsPitch()) {
 
             List<Integer> indices = new ArrayList<>();
             for (int i = 0; i < mc.melody.length; i++) {
-                if (mc.melody[i] >= MusicalContainer.MELODY_RANGE_MIN) {
+                if (mc.melody[i] >= MelodyGenotype.MELODY_RANGE_MIN) {
                     indices.add(i);
                 }
             }
@@ -38,10 +39,10 @@ public class PitchModulationMutator extends GeneticMutationOperator<MusicGenotyp
             if (rand.nextDouble() < 0.5) {
                 toModulate *= -1;
             }
-            if (pitchValue + toModulate > MusicalContainer.MELODY_RANGE_MAX) {
+            if (pitchValue + toModulate > MelodyGenotype.MELODY_RANGE_MAX) {
                 pitchValue -= toModulate;
             }
-            else if (pitchValue + toModulate < MusicalContainer.MELODY_RANGE_MIN) {
+            else if (pitchValue + toModulate < MelodyGenotype.MELODY_RANGE_MIN) {
                 pitchValue -= toModulate;
             }
             else {
@@ -53,7 +54,7 @@ public class PitchModulationMutator extends GeneticMutationOperator<MusicGenotyp
             System.out.println("PitchModulationMutator failed, as there are no pitches in the melody.");
         }
         MusicGenotype mg = new MusicGenotype();
-        mg.setData(mc);
+        mg.setData(ms);
         return mg;
     }
 }

@@ -1,11 +1,12 @@
 package tests;
 
 import genetics.MusicGenotype;
-import genetics.MusicalContainer;
+import genetics.MelodyGenotype;
+import genetics.MusicalStruct;
 import olseng.ea.genetics.OperatorPool;
 import operators.NoteModeMutator;
 import operators.PitchModulationMutator;
-import operators.PitchSwapMutator;
+import operators.NoteSwapMutator;
 import org.jfugue.player.Player;
 import util.MusicParser;
 
@@ -18,14 +19,16 @@ import java.util.Random;
 public class MelodyMutatorTest {
 
     public static void main(String[] args) {
-        genetics.MusicalContainer mc = new genetics.MusicalContainer(8);
+        MusicalStruct ms = new MusicalStruct(8);
+        MelodyGenotype mc = ms.mg;
         mc.init();
         genetics.MusicGenotype mg = new genetics.MusicGenotype();
-        mg.setData(mc);
+
+        mg.setData(ms);
 
         OperatorPool<MusicGenotype> op = new OperatorPool<>();
         op.addOperator(new NoteModeMutator(0.5));
-        op.addOperator(new PitchSwapMutator(1));
+        op.addOperator(new NoteSwapMutator(1));
         op.addOperator(new PitchModulationMutator(4));
         op.normalizeWeights();
 
@@ -34,15 +37,15 @@ public class MelodyMutatorTest {
             mg = op.getMutationOperator(rand).mutate(mg, rand);
             //System.out.println("Iteration: " + i + " " + Arrays.toString(mg.getData().melody));
         }
-        System.out.println(Arrays.toString(mg.getData().melody));
+        System.out.println(Arrays.toString(mg.getData().mg.melody));
         String music = "Rw | ";
         MusicParser parser = new MusicParser();
-        music += parser.parseMelody(mg.getData());
+        music += parser.parseMelody(mg.getData().mg);
 
-        int[] freqs = new int[MusicalContainer.MELODY_RANGE + 1];
+        int[] freqs = new int[MelodyGenotype.MELODY_RANGE + 1];
         for (int i = 0; i < mc.melody.length; i++) {
-            if (mg.getData().melody[i] >= MusicalContainer.MELODY_RANGE_MIN) {
-                freqs[mg.getData().melody[i] - MusicalContainer.MELODY_RANGE_MIN] += 1;
+            if (mg.getData().mg.melody[i] >= MelodyGenotype.MELODY_RANGE_MIN) {
+                freqs[mg.getData().mg.melody[i] - MelodyGenotype.MELODY_RANGE_MIN] += 1;
             }
         }
         System.out.println("\nFrequencies: " + Arrays.toString(freqs) + "\n");
