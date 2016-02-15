@@ -1,6 +1,7 @@
 package genetics;
 
 import java.util.Arrays;
+import java.util.Random;
 
 /**
  * Created by Olav on 01.02.2016.
@@ -114,6 +115,10 @@ public class MelodyGenotype {
             }
         }
         return false;
+    }
+
+    public void randomize(Random rand) {
+        
     }
 
     public static void main(String[] args) {

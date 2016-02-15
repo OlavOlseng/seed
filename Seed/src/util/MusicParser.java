@@ -1,5 +1,6 @@
 package util;
 
+import genetics.HarmonyGenotype;
 import genetics.MelodyGenotype;
 import org.jfugue.player.Player;
 
@@ -140,6 +141,39 @@ public class MusicParser {
         **/
 
         return 0;
+    }
+
+    /**
+     * Creates a naive chord progression, no inversions are made.
+     * @param hg
+     * @return A string representing the chords in JFugue.
+     */
+    public String parseChords(HarmonyGenotype hg) {
+        String chords = "";
+        for (byte[] chord : hg.chords) {
+            int baseOctave = 3;
+            int lastPitch = -2;
+            for (int i = 0; i < chord.length - 1; i++) {
+                int currentPitch = (int)chord[i];
+                if(currentPitch <= lastPitch) {
+                    baseOctave++;
+                }
+                chords += pitchMap.get(currentPitch) + "" + baseOctave + "w";
+                lastPitch = currentPitch;
+                if(i != chord.length - 2) {
+                    chords += "+";
+                }
+            }
+            int currentPitch = chord[chord.length - 1];
+            if(currentPitch <= lastPitch) {
+                baseOctave++;
+            }
+            if (currentPitch != -1) {
+                chords += "+" + pitchMap.get(currentPitch) + baseOctave + "w";
+            }
+            chords += " | ";
+        }
+        return chords;
     }
 
     public static void main(String[] args) {

@@ -2,7 +2,7 @@ package operators;
 
 import genetics.MusicGenotype;
 import genetics.MelodyGenotype;
-import genetics.MusicalStruct;
+import genetics.MusicalContainer;
 import olseng.ea.genetics.GeneticMutationOperator;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class PitchModulationMutator extends GeneticMutationOperator<MusicGenotyp
 
     @Override
     public MusicGenotype mutate(MusicGenotype parent, Random rand) {
-        MusicalStruct ms = parent.getDeepCopy();
+        MusicalContainer ms = parent.getDeepCopy();
         MelodyGenotype mc = ms.mg;
         if(mc.melodyContainsPitch()) {
 

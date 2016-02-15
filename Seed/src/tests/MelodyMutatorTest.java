@@ -2,7 +2,7 @@ package tests;
 
 import genetics.MusicGenotype;
 import genetics.MelodyGenotype;
-import genetics.MusicalStruct;
+import genetics.MusicalContainer;
 import olseng.ea.genetics.OperatorPool;
 import operators.NoteModeMutator;
 import operators.PitchModulationMutator;
@@ -19,7 +19,7 @@ import java.util.Random;
 public class MelodyMutatorTest {
 
     public static void main(String[] args) {
-        MusicalStruct ms = new MusicalStruct(8);
+        MusicalContainer ms = new MusicalContainer(8);
         MelodyGenotype mc = ms.mg;
         mc.init();
         genetics.MusicGenotype mg = new genetics.MusicGenotype();

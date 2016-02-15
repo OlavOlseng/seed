@@ -2,7 +2,7 @@ package operators;
 
 import genetics.MusicGenotype;
 import genetics.MelodyGenotype;
-import genetics.MusicalStruct;
+import genetics.MusicalContainer;
 import olseng.ea.genetics.GeneticMutationOperator;
 import java.util.Random;
 
@@ -18,7 +18,7 @@ public class NoteSwapMutator extends GeneticMutationOperator<MusicGenotype> {
 
     @Override
     public MusicGenotype mutate(MusicGenotype parent, Random rand) {
-        MusicalStruct ms = parent.getDeepCopy();
+        MusicalContainer ms = parent.getDeepCopy();
         MelodyGenotype mc = ms.mg;
         int index = rand.nextInt(mc.melody.length);
         int selectedNoteIndex = mc.getNoteStartIndex(index);
