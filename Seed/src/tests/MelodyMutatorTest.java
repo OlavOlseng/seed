@@ -7,6 +7,7 @@ import olseng.ea.genetics.OperatorPool;
 import operators.NoteModeMutator;
 import operators.PitchModulationMutator;
 import operators.NoteSwapMutator;
+import org.jfugue.pattern.Pattern;
 import org.jfugue.player.Player;
 import util.MusicParser;
 
@@ -22,6 +23,7 @@ public class MelodyMutatorTest {
         MusicalContainer ms = new MusicalContainer(8);
         MelodyGenotype mc = ms.mg;
         mc.init();
+        ms.randomize(new Random());
         genetics.MusicGenotype mg = new genetics.MusicGenotype();
 
         mg.setData(ms);
@@ -38,9 +40,9 @@ public class MelodyMutatorTest {
             //System.out.println("Iteration: " + i + " " + Arrays.toString(mg.getData().melody));
         }
         System.out.println(Arrays.toString(mg.getData().mg.melody));
-        String music = "Rw | ";
+        String melody = "Rw | ";
         MusicParser parser = new MusicParser();
-        music += parser.parseMelody(mg.getData().mg);
+        melody += parser.parseMelody(mg.getData().mg);
 
         int[] freqs = new int[MelodyGenotype.MELODY_RANGE + 1];
         for (int i = 0; i < mc.melody.length; i++) {
@@ -48,9 +50,16 @@ public class MelodyMutatorTest {
                 freqs[mg.getData().mg.melody[i] - MelodyGenotype.MELODY_RANGE_MIN] += 1;
             }
         }
+
+        String chords = "Rw | " + parser.parseChords(ms.hg);
+
         System.out.println("\nFrequencies: " + Arrays.toString(freqs) + "\n");
-        System.out.println(music);
+        System.out.println(melody);
+        System.out.println(chords);
+
+        Pattern p1 = new Pattern(melody).setVoice(1);
+        Pattern p2 = new Pattern("Rw | " + parser.parseChords(ms.hg)).setVoice(2);
         Player player = new Player();
-        player.play(music);
+        player.play(p1, p2);
     }
 }

@@ -151,7 +151,7 @@ public class MusicParser {
     public String parseChords(HarmonyGenotype hg) {
         String chords = "";
         for (byte[] chord : hg.chords) {
-            int baseOctave = 3;
+            int baseOctave = hg.BASE_OCTAVE;
             int lastPitch = -2;
             for (int i = 0; i < chord.length - 1; i++) {
                 int currentPitch = (int)chord[i];

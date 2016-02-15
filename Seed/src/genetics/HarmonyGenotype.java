@@ -11,9 +11,10 @@ import java.util.Random;
  */
 public class HarmonyGenotype {
 
-    public final int bars;
+    public final int BASE_OCTAVE = 4;
 
     public byte[][] chords;
+    public final int bars;
 
     public HarmonyGenotype(int bars) {
         this.chords = new byte[bars][4];
