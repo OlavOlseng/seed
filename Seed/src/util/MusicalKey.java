@@ -7,8 +7,13 @@ import java.util.Arrays;
  */
 public class MusicalKey {
 
-    private static final int[] minorMode = new int[]{0,2,3,5,7,8,10};
     private static final int[] majorMode = new int[]{0,2,4,5,7,9,11};
+    private static final int[] dorianMode = new int[]{0,2,3,5,7,9,10};
+    private static final int[] phrygianMode = new int[]{0,1,3,5,6,8,10};
+    private static final int[] lydianMode = new int[]{0,2,4,6,7,9,11};
+    private static final int[] mixolydianMode = new int[]{0,2,4,5,7,9,10};
+    private static final int[] minorMode = new int[]{0,2,3,5,7,8,10};
+    private static final int[] locrianMode = new int[]{0,1,3,5,6,8,10};
 
     public final int rootPitch;
     public final Mode mode;
@@ -26,10 +31,25 @@ public class MusicalKey {
             case MAJOR:
                 baseMode = majorMode;
                 break;
+            case DORIAN:
+                baseMode = dorianMode;
+                break;
+            case PHRYGIAN:
+                baseMode = phrygianMode;
+                break;
+            case LYDIAN:
+                baseMode = lydianMode;
+                break;
+            case MIXOLYDIAN:
+                baseMode = mixolydianMode;
+                break;
             case MINOR:
                 baseMode = minorMode;
                 break;
-            }
+            case LOCRIAN:
+                baseMode = locrianMode;
+                break;
+        }
 
         int[] key = new int[7];
         for (int i = 0; i < baseMode.length; i++) {
@@ -54,7 +74,12 @@ public class MusicalKey {
 
     public enum Mode {
         MAJOR,
-        MINOR;
+        DORIAN,
+        PHRYGIAN,
+        LYDIAN,
+        MIXOLYDIAN,
+        MINOR,
+        LOCRIAN;
     }
 
     public static void main(String[] args) {
