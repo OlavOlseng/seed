@@ -1,6 +1,7 @@
 package util;
 
 import genetics.HarmonyGenotype;
+import javafx.scene.input.MouseDragEvent;
 import org.jfugue.player.Player;
 
 /**
@@ -9,17 +10,21 @@ import org.jfugue.player.Player;
 public class ChordBuilder {
 
     public static byte[] getChord(int rootStep, int pitches, MusicalKey key) {
-        byte[] chord = new byte[pitches];
-        for (int i  = 0; i < pitches; i++) {
-            chord[i] =(byte) key.key[(rootStep + i*2) % 7];
-        }
-        return chord;
+        return getChord(rootStep, pitches, 0, key);
     }
 
     public static byte[] getChord(int rootStep, int pitches, int padding, MusicalKey key) {
+        return getChord(rootStep, pitches, padding, key, false);
+    }
+
+    public static byte[] getChord(int rootStep, int pitches, int padding, MusicalKey key, boolean dominant) {
         byte[] chord = new byte[pitches + padding];
         for (int i  = 0; i < pitches; i++) {
             chord[i] = (byte) key.key[(rootStep + i*2) % key.key.length];
+            if(i == 1 && dominant) {
+                byte change = 1;
+                chord[i] = (byte) ((chord[i] + change) % 12);
+            }
         }
         for (int i  = 0; i < padding; i++) {
             chord[pitches + i] = -1;
@@ -40,15 +45,15 @@ public class ChordBuilder {
         Player player = new Player();
         String chords = "Rw | " + parser.parseChords(hg);
         System.out.println(chords);
-        player.play(chords);
+        //player.play(chords);
 
-        key = new MusicalKey(0, MusicalKey.Mode.MINOR);
+        key = new MusicalKey(9, MusicalKey.Mode.MINOR);
 
         hg = new HarmonyGenotype(4);
-        hg.chords[0] = ChordBuilder.getChord(0, 3, 1, key);
-        hg.chords[1] = ChordBuilder.getChord(5, 3, 1, key);
-        hg.chords[2] = ChordBuilder.getChord(3, 3, 1, key);
-        hg.chords[3] = ChordBuilder.getChord(4, 4, key);
+        hg.chords[0] = ChordBuilder.getChord(0, 4, 0, key);
+        hg.chords[1] = ChordBuilder.getChord(5, 5, 0, key);
+        hg.chords[2] = ChordBuilder.getChord(3, 4, 0, key);
+        hg.chords[3] = ChordBuilder.getChord(4, 4, 0,  key, true);
 
         parser = new MusicParser();
         player = new Player();
