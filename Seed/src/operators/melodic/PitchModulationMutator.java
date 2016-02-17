@@ -1,4 +1,4 @@
-package operators;
+package operators.melodic;
 
 import genetics.MusicGenotype;
 import genetics.MelodyGenotype;
@@ -21,7 +21,7 @@ public class PitchModulationMutator extends GeneticMutationOperator<MusicGenotyp
     @Override
     public MusicGenotype mutate(MusicGenotype parent, Random rand) {
         MusicalContainer ms = parent.getDeepCopy();
-        MelodyGenotype mc = ms.mg;
+        MelodyGenotype mc = ms.melodyGenotype;
         if(mc.melodyContainsPitch()) {
 
             List<Integer> indices = new ArrayList<>();

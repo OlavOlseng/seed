@@ -1,4 +1,4 @@
-package operators;
+package operators.melodic;
 
 import genetics.MusicGenotype;
 import genetics.MelodyGenotype;
@@ -19,7 +19,7 @@ public class NoteSwapMutator extends GeneticMutationOperator<MusicGenotype> {
     @Override
     public MusicGenotype mutate(MusicGenotype parent, Random rand) {
         MusicalContainer ms = parent.getDeepCopy();
-        MelodyGenotype mc = ms.mg;
+        MelodyGenotype mc = ms.melodyGenotype;
         int index = rand.nextInt(mc.melody.length);
         int selectedNoteIndex = mc.getNoteStartIndex(index);
         int swapNote = mc.getNextNoteIndex(selectedNoteIndex);

@@ -4,9 +4,9 @@ import genetics.MusicGenotype;
 import genetics.MelodyGenotype;
 import genetics.MusicalContainer;
 import olseng.ea.genetics.OperatorPool;
-import operators.NoteModeMutator;
-import operators.PitchModulationMutator;
-import operators.NoteSwapMutator;
+import operators.melodic.NoteModeMutator;
+import operators.melodic.PitchModulationMutator;
+import operators.melodic.NoteSwapMutator;
 import org.jfugue.pattern.Pattern;
 import org.jfugue.player.Player;
 import util.MusicParser;
@@ -21,7 +21,7 @@ public class MelodyMutatorTest {
 
     public static void main(String[] args) {
         MusicalContainer ms = new MusicalContainer(8);
-        MelodyGenotype mc = ms.mg;
+        MelodyGenotype mc = ms.melodyGenotype;
         mc.init();
         ms.randomize(new Random());
         genetics.MusicGenotype mg = new genetics.MusicGenotype();
@@ -37,28 +37,28 @@ public class MelodyMutatorTest {
         Random rand = new Random();
         for (int i = 0; i < 1000; i++) {
             mg = op.getMutationOperator(rand).mutate(mg, rand);
-            //System.out.println("Iteration: " + i + " " + Arrays.toString(mg.getData().melody));
+            //System.out.println("Iteration: " + i + " " + Arrays.toString(melodyGenotype.getData().melody));
         }
-        System.out.println(Arrays.toString(mg.getData().mg.melody));
+        System.out.println(Arrays.toString(mg.getData().melodyGenotype.melody));
         String melody = "Rw | ";
         MusicParser parser = new MusicParser();
-        melody += parser.parseMelody(mg.getData().mg);
+        melody += parser.parseMelody(mg.getData().melodyGenotype);
 
         int[] freqs = new int[MelodyGenotype.MELODY_RANGE + 1];
         for (int i = 0; i < mc.melody.length; i++) {
-            if (mg.getData().mg.melody[i] >= MelodyGenotype.MELODY_RANGE_MIN) {
-                freqs[mg.getData().mg.melody[i] - MelodyGenotype.MELODY_RANGE_MIN] += 1;
+            if (mg.getData().melodyGenotype.melody[i] >= MelodyGenotype.MELODY_RANGE_MIN) {
+                freqs[mg.getData().melodyGenotype.melody[i] - MelodyGenotype.MELODY_RANGE_MIN] += 1;
             }
         }
 
-        String chords = "Rw | " + parser.parseChords(ms.hg);
+        String chords = "Rw | " + parser.parseChords(ms.harmonyGenotype);
 
         System.out.println("\nFrequencies: " + Arrays.toString(freqs) + "\n");
         System.out.println(melody);
         System.out.println(chords);
 
         Pattern p1 = new Pattern(melody).setVoice(1);
-        Pattern p2 = new Pattern("Rw | " + parser.parseChords(ms.hg)).setVoice(2);
+        Pattern p2 = new Pattern("Rw | " + parser.parseChords(ms.harmonyGenotype)).setVoice(2);
         Player player = new Player();
         player.play(p1, p2);
     }
