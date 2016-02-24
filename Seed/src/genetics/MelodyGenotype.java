@@ -131,4 +131,8 @@ public class MelodyGenotype {
         System.out.println(ms.melody.length);
     }
 
+    @Override
+    public String toString() {
+        return Arrays.toString(melody);
+    }
 }

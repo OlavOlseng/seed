@@ -37,4 +37,9 @@ public class MusicalContainer {
         this.melodyGenotype.init();
         this.harmonyGenotype.init();
     }
+
+    @Override
+    public String toString() {
+        return melodyGenotype.toString() + "\n" + harmonyGenotype.toString();
+    }
 }

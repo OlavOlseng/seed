@@ -7,6 +7,15 @@ import olseng.ea.genetics.Genotype;
  */
 public class MusicGenotype extends Genotype<MusicalContainer> {
 
+    public MusicGenotype() {
+        super();
+    }
+
+    public MusicGenotype(MusicalContainer container) {
+        this();
+        setData(container);
+    }
+
     @Override
     public MusicalContainer getDeepCopy() {
         return getData().getCopy();
