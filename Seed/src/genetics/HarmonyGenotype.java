@@ -3,6 +3,7 @@ package genetics;
 import org.jfugue.player.Player;
 import util.MusicParser;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -40,8 +41,12 @@ public class HarmonyGenotype {
 
     public void randomize(Random rand) {
         for (byte[] chord : chords) {
+            ArrayList<Byte> pitches = new ArrayList<>();
+            for (byte i = 0; i < 12; i++) {
+                pitches.add(i);
+            }
             for (int i = 0; i < chord.length - 1; i++) {
-                chord[i] = (byte) rand.nextInt(12);
+                chord[i] = pitches.remove(rand.nextInt(pitches.size()));
             }
             if (rand.nextDouble() < 0.5) {
                 chord[chord.length - 1] = (byte) rand.nextInt(12);
