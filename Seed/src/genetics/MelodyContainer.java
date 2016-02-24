@@ -1,37 +1,44 @@
 package genetics;
 
+import util.MusicalKey;
+
 import java.util.Arrays;
+import java.util.Random;
 
 /**
  * Created by Olav on 01.02.2016.
  */
-public class MelodyGenotype {
+public class MelodyContainer {
 
     public static final byte MELODY_REST = 1;
     public static final byte MELODY_HOLD = 0;
     public static final int MELODY_RANGE_MAX = 80;
     public static final int MELODY_RANGE_MIN = 55;
     public static final int MELODY_RANGE = MELODY_RANGE_MAX - MELODY_RANGE_MIN;
+    public final int MELODY_BAR_SUBDIVISION = 4;
+    public final int MELODY_FOURTH_SUBDIVISION = 4;
 
-    public byte[] melody;
     public final int bars;
+    public final MusicalKey key;
+    public byte[] melody;
 
-    public MelodyGenotype(int bars) {
+    public MelodyContainer(int bars, MusicalKey key) {
         this.bars = bars;
+        this.key = key;
     }
 
     /**
      * Instantiates a melody struct. Also sets the melody to a single pause.
      */
     public void init() {
-        this.melody = new byte[4 * 4 * bars];
-        for (int i = 0; i < melody.length; i += 16) {
+        this.melody = new byte[MELODY_BAR_SUBDIVISION * MELODY_FOURTH_SUBDIVISION * bars];
+        for (int i = 0; i < melody.length; i += MELODY_BAR_SUBDIVISION * MELODY_FOURTH_SUBDIVISION) {
             this.melody[i] = MELODY_REST;
         }
     }
 
-    public MelodyGenotype getCopy() {
-        MelodyGenotype copy = new MelodyGenotype(bars);
+    public MelodyContainer getCopy() {
+        MelodyContainer copy = new MelodyContainer(bars, key);
         copy.melody = Arrays.copyOf(melody, melody.length);
         return copy;
     }
@@ -109,17 +116,25 @@ public class MelodyGenotype {
 
     public boolean melodyContainsPitch() {
         for (int i = 0; i < melody.length; i++) {
-            if (melody[i] >= MelodyGenotype.MELODY_RANGE_MIN) {
+            if (melody[i] >= MelodyContainer.MELODY_RANGE_MIN) {
                 return true;
             }
         }
         return false;
     }
 
+    public void randomize(Random rand) {
+        
+    }
+
     public static void main(String[] args) {
-        MelodyGenotype ms = new MelodyGenotype(4);
+        MelodyContainer ms = new MelodyContainer(4, new MusicalKey(0, MusicalKey.Mode.MINOR));
         ms.init();
         System.out.println(ms.melody.length);
     }
 
+    @Override
+    public String toString() {
+        return Arrays.toString(melody);
+    }
 }

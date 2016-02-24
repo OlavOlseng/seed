@@ -1,2 +1,5 @@
-Implementing a sorting algorithm that terminates after N individuals have been selected/sorted. This can improve the performance of the population culling in ranked mode, as the current and next generation are sorted together.
+Implementing a sorting algorithm that terminates after N individuals have been selected. This can improve the performance of the population culling in ranked mode, as the current and next generation are sorted together.
 
+Culling the population before performing ranking improves the runtime significantly. This needs to be taken into consideration.
+
+The crossover operators can performed without the deep copy calls.
