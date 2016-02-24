@@ -1,11 +1,14 @@
 package operators.melodic;
 
+import genetics.HarmonyGenotype;
 import genetics.MelodyGenotype;
 import genetics.MusicGenotype;
 import genetics.MusicalContainer;
 import olseng.ea.genetics.GeneticMutationOperator;
+import util.MusicalKey;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -41,7 +44,7 @@ public class OctaveModulationMutator extends GeneticMutationOperator<MusicGenoty
                 toModulate *= -1;
             }
 
-            pitchValue = (pitchValue + toModulate) % MelodyGenotype.MELODY_RANGE + MelodyGenotype.MELODY_RANGE_MIN;
+            pitchValue = ((pitchValue + toModulate) % MelodyGenotype.MELODY_RANGE_MIN) + MelodyGenotype.MELODY_RANGE_MIN;
 
             mc.melody[noteIndex] = (byte)pitchValue;
         }
@@ -51,5 +54,23 @@ public class OctaveModulationMutator extends GeneticMutationOperator<MusicGenoty
         MusicGenotype mg = new MusicGenotype();
         mg.setData(ms);
         return mg;
+    }
+
+    public static void main(String[] args) {
+        MusicalContainer container = new MusicalContainer(1, new MusicalKey(0, MusicalKey.Mode.MAJOR));
+        container.init();
+        container.randomize(new Random());
+        container.melodyGenotype.melody[2] = MelodyGenotype.MELODY_RANGE_MIN + 12;
+
+        System.out.println(Arrays.toString(container.melodyGenotype.melody));
+
+        MusicGenotype mg = new MusicGenotype();
+        mg.setData(container);
+        OctaveModulationMutator omm = new OctaveModulationMutator(1);
+
+        mg = omm.mutate(mg, new Random());
+        System.out.println(Arrays.toString(mg.getData().melodyGenotype.melody));
+
+
     }
 }
