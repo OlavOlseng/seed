@@ -14,6 +14,7 @@ import java.util.Random;
 public class HarmonyGenotype {
 
     public static int BASE_OCTAVE = 4;
+    public static final byte NO_PITCH = -1;
 
     public byte[][] chords;
     public final int bars;
@@ -55,7 +56,7 @@ public class HarmonyGenotype {
                 chord[chord.length - 1] = (byte) rand.nextInt(12);
             }
             else {
-                chord[chord.length - 1] = -1;
+                chord[chord.length - 1] = NO_PITCH;
             }
         }
     }
@@ -74,6 +75,15 @@ public class HarmonyGenotype {
      */
     public int getPreviousChord(int chordIndex) {
         return chordIndex - 1 < 0 ? chords.length - 1 : chordIndex - 1;
+    }
+
+    public boolean chordHasPitch(int chordIndex, byte pitch) {
+        for (byte pitchValue : chords[chordIndex]) {
+            if (pitchValue == pitch) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

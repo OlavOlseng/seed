@@ -46,7 +46,7 @@ public class OctaveModulationMutator extends GeneticMutationOperator<MusicGenoty
 
             pitchValue = ((pitchValue + toModulate) % MelodyGenotype.MELODY_RANGE_MIN) + MelodyGenotype.MELODY_RANGE_MIN;
 
-            mc.melody[noteIndex] = (byte)pitchValue;
+            mc.melody[noteIndex] = (byte) pitchValue;
         }
         else {
             System.out.println("PitchModulationMutator failed, as there are no pitches in the melody.");
@@ -70,7 +70,5 @@ public class OctaveModulationMutator extends GeneticMutationOperator<MusicGenoty
 
         mg = omm.mutate(mg, new Random());
         System.out.println(Arrays.toString(mg.getData().melodyGenotype.melody));
-
-
     }
 }
