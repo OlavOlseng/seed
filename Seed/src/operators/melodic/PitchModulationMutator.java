@@ -1,7 +1,7 @@
 package operators.melodic;
 
 import genetics.MusicGenotype;
-import genetics.MelodyGenotype;
+import genetics.MelodyContainer;
 import genetics.MusicalContainer;
 import olseng.ea.genetics.GeneticMutationOperator;
 
@@ -21,12 +21,12 @@ public class PitchModulationMutator extends GeneticMutationOperator<MusicGenotyp
     @Override
     public MusicGenotype mutate(MusicGenotype parent, Random rand) {
         MusicalContainer ms = parent.getDeepCopy();
-        MelodyGenotype mc = ms.melodyGenotype;
+        MelodyContainer mc = ms.melodyContainer;
         if(mc.melodyContainsPitch()) {
 
             List<Integer> indices = new ArrayList<>();
             for (int i = 0; i < mc.melody.length; i++) {
-                if (mc.melody[i] >= MelodyGenotype.MELODY_RANGE_MIN) {
+                if (mc.melody[i] >= MelodyContainer.MELODY_RANGE_MIN) {
                     indices.add(i);
                 }
             }
@@ -39,10 +39,10 @@ public class PitchModulationMutator extends GeneticMutationOperator<MusicGenotyp
             if (rand.nextDouble() < 0.5) {
                 toModulate *= -1;
             }
-            if (pitchValue + toModulate > MelodyGenotype.MELODY_RANGE_MAX) {
+            if (pitchValue + toModulate > MelodyContainer.MELODY_RANGE_MAX) {
                 pitchValue -= toModulate;
             }
-            else if (pitchValue + toModulate < MelodyGenotype.MELODY_RANGE_MIN) {
+            else if (pitchValue + toModulate < MelodyContainer.MELODY_RANGE_MIN) {
                 pitchValue -= toModulate;
             }
             else {

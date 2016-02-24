@@ -1,7 +1,6 @@
 package operators.melodic;
 
-import genetics.HarmonyGenotype;
-import genetics.MelodyGenotype;
+import genetics.MelodyContainer;
 import genetics.MusicGenotype;
 import genetics.MusicalContainer;
 import olseng.ea.genetics.GeneticMutationOperator;
@@ -25,12 +24,12 @@ public class OctaveModulationMutator extends GeneticMutationOperator<MusicGenoty
     @Override
     public MusicGenotype mutate(MusicGenotype parent, Random rand) {
         MusicalContainer ms = parent.getDeepCopy();
-        MelodyGenotype mc = ms.melodyGenotype;
+        MelodyContainer mc = ms.melodyContainer;
         if(mc.melodyContainsPitch()) {
 
             List<Integer> indices = new ArrayList<>();
             for (int i = 0; i < mc.melody.length; i++) {
-                if (mc.melody[i] >= MelodyGenotype.MELODY_RANGE_MIN) {
+                if (mc.melody[i] >= MelodyContainer.MELODY_RANGE_MIN) {
                     indices.add(i);
                 }
             }
@@ -44,7 +43,7 @@ public class OctaveModulationMutator extends GeneticMutationOperator<MusicGenoty
                 toModulate *= -1;
             }
 
-            pitchValue = ((pitchValue + toModulate) % MelodyGenotype.MELODY_RANGE_MIN) + MelodyGenotype.MELODY_RANGE_MIN;
+            pitchValue = ((pitchValue + toModulate) % MelodyContainer.MELODY_RANGE_MIN) + MelodyContainer.MELODY_RANGE_MIN;
 
             mc.melody[noteIndex] = (byte) pitchValue;
         }
@@ -60,15 +59,15 @@ public class OctaveModulationMutator extends GeneticMutationOperator<MusicGenoty
         MusicalContainer container = new MusicalContainer(1, new MusicalKey(0, MusicalKey.Mode.MAJOR));
         container.init();
         container.randomize(new Random());
-        container.melodyGenotype.melody[2] = MelodyGenotype.MELODY_RANGE_MIN + 12;
+        container.melodyContainer.melody[2] = MelodyContainer.MELODY_RANGE_MIN + 12;
 
-        System.out.println(Arrays.toString(container.melodyGenotype.melody));
+        System.out.println(Arrays.toString(container.melodyContainer.melody));
 
         MusicGenotype mg = new MusicGenotype();
         mg.setData(container);
         OctaveModulationMutator omm = new OctaveModulationMutator(1);
 
         mg = omm.mutate(mg, new Random());
-        System.out.println(Arrays.toString(mg.getData().melodyGenotype.melody));
+        System.out.println(Arrays.toString(mg.getData().melodyContainer.melody));
     }
 }

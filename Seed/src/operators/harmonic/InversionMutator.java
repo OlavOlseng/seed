@@ -1,6 +1,6 @@
 package operators.harmonic;
 
-import genetics.HarmonyGenotype;
+import genetics.ChordContainer;
 import genetics.MusicGenotype;
 import genetics.MusicalContainer;
 import olseng.ea.genetics.GeneticMutationOperator;
@@ -21,7 +21,7 @@ public class InversionMutator extends GeneticMutationOperator<MusicGenotype> {
     @Override
     public MusicGenotype mutate(MusicGenotype parent, Random rand) {
         MusicalContainer mc = parent.getDeepCopy();
-        HarmonyGenotype hg = mc.harmonyGenotype;
+        ChordContainer hg = mc.chordContainer;
 
         int chordIndex = rand.nextInt(hg.bars);
         byte[] chord = hg.getChord(chordIndex);
@@ -50,16 +50,16 @@ public class InversionMutator extends GeneticMutationOperator<MusicGenotype> {
         mc.randomize(new Random());
         mg.setData(mc);
 
-        for (int i = 0; i < mc.harmonyGenotype.chords.length; i++) {
-            System.out.println(Arrays.toString(mc.harmonyGenotype.chords[i]));
+        for (int i = 0; i < mc.chordContainer.chords.length; i++) {
+            System.out.println(Arrays.toString(mc.chordContainer.chords[i]));
         }
 
         InversionMutator mutator = new InversionMutator(1);
 
         for (int j = 0; j < 50; j++) {
             mg = mutator.mutate(mg, new Random());
-            for (int i = 0; i < mc.harmonyGenotype.chords.length; i++) {
-                System.out.println(Arrays.toString(mc.harmonyGenotype.chords[i]));
+            for (int i = 0; i < mc.chordContainer.chords.length; i++) {
+                System.out.println(Arrays.toString(mc.chordContainer.chords[i]));
             }
 
         }

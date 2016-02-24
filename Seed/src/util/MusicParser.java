@@ -1,7 +1,7 @@
 package util;
 
-import genetics.HarmonyGenotype;
-import genetics.MelodyGenotype;
+import genetics.ChordContainer;
+import genetics.MelodyContainer;
 import org.jfugue.pattern.Pattern;
 import org.jfugue.player.Player;
 
@@ -53,7 +53,7 @@ public class MusicParser {
     }
 
     public String getPitchAsString(int value) {
-        if (value == MelodyGenotype.MELODY_REST) {
+        if (value == MelodyContainer.MELODY_REST) {
             return "R";
         }
         String pitch = pitchMap.get(value % 12);
@@ -61,7 +61,7 @@ public class MusicParser {
         return pitch;
     }
 
-    public String parseMelody(MelodyGenotype container) {
+    public String parseMelody(MelodyContainer container) {
         String melodyString = "";
         int noteStart = 0;
         int pitchValue = container.melody[0];
@@ -73,7 +73,7 @@ public class MusicParser {
         while (i < container.melody.length) {
             duration = i - noteStart;
             //Note done case, write the buffers
-            if (container.melody[i] != MelodyGenotype.MELODY_HOLD) {
+            if (container.melody[i] != MelodyContainer.MELODY_HOLD) {
                 melodyString += buildNoteString(pitchValue, duration, frontTied, tailTied);
                 frontTied = false;
                 tailTied = false;
@@ -149,7 +149,7 @@ public class MusicParser {
      * @param hg
      * @return A string representing the chords in JFugue.
      */
-    public String parseChords(HarmonyGenotype hg) {
+    public String parseChords(ChordContainer hg) {
         String chords = "";
         for (byte[] chord : hg.chords) {
             int baseOctave = hg.BASE_OCTAVE;
@@ -186,7 +186,7 @@ public class MusicParser {
         System.out.println(parser.getPitchAsString(60));
         System.out.println(parser.getPitchAsString(127));
 
-        MelodyGenotype mc = new MelodyGenotype(8, new MusicalKey(0, MusicalKey.Mode.MAJOR));
+        MelodyContainer mc = new MelodyContainer(8, new MusicalKey(0, MusicalKey.Mode.MAJOR));
         mc.init();
         mc.melody[0] = 60;
         mc.melody[4] = 62;
@@ -213,7 +213,7 @@ public class MusicParser {
 
         MusicalKey key = new MusicalKey(0, MusicalKey.Mode.MAJOR);
 
-        HarmonyGenotype hg = new HarmonyGenotype(8, key);
+        ChordContainer hg = new ChordContainer(8, key);
         hg.init();
         hg.chords[0] = ChordBuilder.getChord(0, 3, key);
         hg.chords[1] = ChordBuilder.getChord(0, 3, key);

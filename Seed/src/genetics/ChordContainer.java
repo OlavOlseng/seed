@@ -11,7 +11,7 @@ import java.util.Random;
 /**
  * Created by Olav on 15.02.2016.
  */
-public class HarmonyGenotype {
+public class ChordContainer {
 
     public static int BASE_OCTAVE = 4;
     public static final byte NO_PITCH = -1;
@@ -20,7 +20,7 @@ public class HarmonyGenotype {
     public final int bars;
     public final MusicalKey key;
 
-    public HarmonyGenotype(int bars, MusicalKey key) {
+    public ChordContainer(int bars, MusicalKey key) {
         this.bars = bars;
         this.key = key;
     }
@@ -29,8 +29,8 @@ public class HarmonyGenotype {
         this.chords = new byte[bars][4];
     }
 
-    public HarmonyGenotype getCopy() {
-        HarmonyGenotype hg = new HarmonyGenotype(this.bars, new MusicalKey(0, MusicalKey.Mode.MINOR));
+    public ChordContainer getCopy() {
+        ChordContainer hg = new ChordContainer(this.bars, new MusicalKey(0, MusicalKey.Mode.MINOR));
         hg.chords = Arrays.copyOf(chords, chords.length);
         return hg;
     }
@@ -96,7 +96,7 @@ public class HarmonyGenotype {
     }
 
     public static void main(String[] args) {
-        HarmonyGenotype hg = new HarmonyGenotype(4, new MusicalKey(0, MusicalKey.Mode.MAJOR));
+        ChordContainer hg = new ChordContainer(4, new MusicalKey(0, MusicalKey.Mode.MAJOR));
         hg.randomize(new Random());
         MusicParser parser = new MusicParser();
 

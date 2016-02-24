@@ -1,6 +1,6 @@
 package operators.harmonic;
 
-import genetics.HarmonyGenotype;
+import genetics.ChordContainer;
 import genetics.MusicGenotype;
 import genetics.MusicalContainer;
 import olseng.ea.genetics.GeneticMutationOperator;
@@ -21,7 +21,7 @@ public class ChordSwapMutator extends GeneticMutationOperator<MusicGenotype> {
     public MusicGenotype mutate(MusicGenotype parent, Random rand) {
 
         MusicalContainer mc = parent.getDeepCopy();
-        HarmonyGenotype hg = mc.harmonyGenotype;
+        ChordContainer hg = mc.chordContainer;
 
         int chord1Index = rand.nextInt(hg.chords.length);
         int chord2Index = rand.nextDouble() > 0.5 ? hg.getNextChord(chord1Index) : hg.getPreviousChord(chord1Index);
@@ -38,7 +38,7 @@ public class ChordSwapMutator extends GeneticMutationOperator<MusicGenotype> {
         mc.init();
         mc.randomize(new Random());
 
-        System.out.println(mc.harmonyGenotype);
+        System.out.println(mc.chordContainer);
 
         MusicGenotype mg = new MusicGenotype(mc);
         ChordSwapMutator csm = new ChordSwapMutator(1);

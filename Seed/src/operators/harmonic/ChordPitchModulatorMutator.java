@@ -1,13 +1,12 @@
 package operators.harmonic;
 
-import genetics.HarmonyGenotype;
-import genetics.MelodyGenotype;
+import genetics.ChordContainer;
+import genetics.MelodyContainer;
 import genetics.MusicGenotype;
 import genetics.MusicalContainer;
 import olseng.ea.genetics.GeneticMutationOperator;
 import util.MusicalKey;
 
-import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -23,14 +22,14 @@ public class ChordPitchModulatorMutator extends GeneticMutationOperator<MusicGen
     @Override
     public MusicGenotype mutate(MusicGenotype parent, Random rand) {
         MusicalContainer mc = parent.getDeepCopy();
-        HarmonyGenotype hc = mc.harmonyGenotype;
+        ChordContainer hc = mc.chordContainer;
 
         int chordIndex = rand.nextInt(hc.bars);
         byte[] chord = hc.chords[chordIndex];
         int pitchIndex = rand.nextInt(chord.length);
 
         if (pitchIndex == chord.length - 1) {
-            if (chord[pitchIndex] == HarmonyGenotype.NO_PITCH) {
+            if (chord[pitchIndex] == ChordContainer.NO_PITCH) {
                 chord[pitchIndex] = (byte) rand.nextInt(12);
             }
             else if (rand.nextDouble() < 0.5){
@@ -44,7 +43,7 @@ public class ChordPitchModulatorMutator extends GeneticMutationOperator<MusicGen
                 chord[pitchIndex] = newValue;
             }
             else{
-                chord[pitchIndex] = HarmonyGenotype.NO_PITCH;
+                chord[pitchIndex] = ChordContainer.NO_PITCH;
             }
         }
         else {
@@ -64,15 +63,15 @@ public class ChordPitchModulatorMutator extends GeneticMutationOperator<MusicGen
         MusicalContainer container = new MusicalContainer(1, new MusicalKey(0, MusicalKey.Mode.MAJOR));
         container.init();
         container.randomize(new Random());
-        container.melodyGenotype.melody[2] = MelodyGenotype.MELODY_RANGE_MIN + 12;
+        container.melodyContainer.melody[2] = MelodyContainer.MELODY_RANGE_MIN + 12;
 
-        System.out.println(container.harmonyGenotype);
+        System.out.println(container.chordContainer);
 
         MusicGenotype mg = new MusicGenotype();
         mg.setData(container);
         ChordPitchModulatorMutator omm = new ChordPitchModulatorMutator(1);
 
         mg = omm.mutate(mg, new Random());
-        System.out.println(mg.getData().harmonyGenotype);
+        System.out.println(mg.getData().chordContainer);
     }
 }

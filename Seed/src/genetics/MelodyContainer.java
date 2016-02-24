@@ -8,7 +8,7 @@ import java.util.Random;
 /**
  * Created by Olav on 01.02.2016.
  */
-public class MelodyGenotype {
+public class MelodyContainer {
 
     public static final byte MELODY_REST = 1;
     public static final byte MELODY_HOLD = 0;
@@ -20,7 +20,7 @@ public class MelodyGenotype {
     public final MusicalKey key;
     public byte[] melody;
 
-    public MelodyGenotype(int bars, MusicalKey key) {
+    public MelodyContainer(int bars, MusicalKey key) {
         this.bars = bars;
         this.key = key;
     }
@@ -35,8 +35,8 @@ public class MelodyGenotype {
         }
     }
 
-    public MelodyGenotype getCopy() {
-        MelodyGenotype copy = new MelodyGenotype(bars, key);
+    public MelodyContainer getCopy() {
+        MelodyContainer copy = new MelodyContainer(bars, key);
         copy.melody = Arrays.copyOf(melody, melody.length);
         return copy;
     }
@@ -114,7 +114,7 @@ public class MelodyGenotype {
 
     public boolean melodyContainsPitch() {
         for (int i = 0; i < melody.length; i++) {
-            if (melody[i] >= MelodyGenotype.MELODY_RANGE_MIN) {
+            if (melody[i] >= MelodyContainer.MELODY_RANGE_MIN) {
                 return true;
             }
         }
@@ -126,7 +126,7 @@ public class MelodyGenotype {
     }
 
     public static void main(String[] args) {
-        MelodyGenotype ms = new MelodyGenotype(4, new MusicalKey(0, MusicalKey.Mode.MINOR));
+        MelodyContainer ms = new MelodyContainer(4, new MusicalKey(0, MusicalKey.Mode.MINOR));
         ms.init();
         System.out.println(ms.melody.length);
     }
