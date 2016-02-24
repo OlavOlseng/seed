@@ -17,12 +17,12 @@ public class MusicalKey {
 
     public final int rootPitch;
     public final Mode mode;
-    public int[] key;
+    public int[] scale;
 
     public MusicalKey(int rootPitch, Mode mode) {
         this.rootPitch = rootPitch;
         this.mode = mode;
-        this.key = buildKey(rootPitch, mode);
+        this.scale = buildKey(rootPitch, mode);
     }
 
     public int[] buildKey(int rootPitch, Mode mode) {
@@ -59,13 +59,13 @@ public class MusicalKey {
     }
 
     /**
-     * Returns the step of the pitch, if it is in the key. Returns -1 if the pitch is not in the key.
+     * Returns the step of the pitch, if it is in the scale. Returns -1 if the pitch is not in the scale.
      * @param pitch
-     * @return Step number of the pitch if it is in the key, -1 if the pitch is not in the key.
+     * @return Step number of the pitch if it is in the scale, -1 if the pitch is not in the scale.
      */
     public int pitchInKey(int pitch) {
-        for (int i = 0; i < key.length; i++) {
-            if (key[i] == pitch) {
+        for (int i = 0; i < scale.length; i++) {
+            if (scale[i] == pitch) {
                 return i;
             }
         }
@@ -85,9 +85,9 @@ public class MusicalKey {
     public static void main(String[] args) {
 
         MusicalKey key = new MusicalKey(0, Mode.MAJOR);
-        System.out.println(Arrays.toString(key.key));
+        System.out.println(Arrays.toString(key.scale));
         key = new MusicalKey(9, Mode.MINOR);
-        System.out.println(Arrays.toString(key.key));
+        System.out.println(Arrays.toString(key.scale));
     }
 
 }

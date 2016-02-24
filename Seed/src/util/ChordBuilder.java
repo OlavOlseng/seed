@@ -19,14 +19,14 @@ public class ChordBuilder {
     public static byte[] getChord(int rootStep, int pitches, int padding, MusicalKey key, boolean dominant) {
         byte[] chord = new byte[pitches + padding];
         for (int i  = 0; i < pitches; i++) {
-            chord[i] = (byte) key.key[(rootStep + i*2) % key.key.length];
+            chord[i] = (byte) key.scale[(rootStep + i*2) % key.scale.length];
             if(i == 1 && dominant) {
                 byte change = 1;
                 chord[i] = (byte) ((chord[i] + change) % 12);
             }
         }
         for (int i  = 0; i < padding; i++) {
-            chord[pitches + i] = -1;
+            chord[pitches + i] = ChordContainer.NO_PITCH;
         }
         return chord;
     }
