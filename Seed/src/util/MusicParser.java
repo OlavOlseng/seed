@@ -186,7 +186,7 @@ public class MusicParser {
         System.out.println(parser.getPitchAsString(60));
         System.out.println(parser.getPitchAsString(127));
 
-        MelodyGenotype mc = new MelodyGenotype(8);
+        MelodyGenotype mc = new MelodyGenotype(8, new MusicalKey(0, MusicalKey.Mode.MAJOR));
         mc.init();
         mc.melody[0] = 60;
         mc.melody[4] = 62;
@@ -213,7 +213,7 @@ public class MusicParser {
 
         MusicalKey key = new MusicalKey(0, MusicalKey.Mode.MAJOR);
 
-        HarmonyGenotype hg = new HarmonyGenotype(8);
+        HarmonyGenotype hg = new HarmonyGenotype(8, key);
         hg.chords[0] = ChordBuilder.getChord(0, 3, key);
         hg.chords[1] = ChordBuilder.getChord(0, 3, key);
         hg.chords[2] = ChordBuilder.getChord(3, 3, key);

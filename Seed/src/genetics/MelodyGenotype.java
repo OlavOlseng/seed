@@ -1,5 +1,7 @@
 package genetics;
 
+import util.MusicalKey;
+
 import java.util.Arrays;
 import java.util.Random;
 
@@ -14,11 +16,13 @@ public class MelodyGenotype {
     public static final int MELODY_RANGE_MIN = 55;
     public static final int MELODY_RANGE = MELODY_RANGE_MAX - MELODY_RANGE_MIN;
 
-    public byte[] melody;
     public final int bars;
+    public final MusicalKey key;
+    public byte[] melody;
 
-    public MelodyGenotype(int bars) {
+    public MelodyGenotype(int bars, MusicalKey key) {
         this.bars = bars;
+        this.key = key;
     }
 
     /**
@@ -32,7 +36,7 @@ public class MelodyGenotype {
     }
 
     public MelodyGenotype getCopy() {
-        MelodyGenotype copy = new MelodyGenotype(bars);
+        MelodyGenotype copy = new MelodyGenotype(bars, key);
         copy.melody = Arrays.copyOf(melody, melody.length);
         return copy;
     }
@@ -122,7 +126,7 @@ public class MelodyGenotype {
     }
 
     public static void main(String[] args) {
-        MelodyGenotype ms = new MelodyGenotype(4);
+        MelodyGenotype ms = new MelodyGenotype(4, new MusicalKey(0, MusicalKey.Mode.MINOR));
         ms.init();
         System.out.println(ms.melody.length);
     }

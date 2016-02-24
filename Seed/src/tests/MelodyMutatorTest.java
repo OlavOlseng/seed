@@ -10,6 +10,7 @@ import operators.melodic.NoteSwapMutator;
 import org.jfugue.pattern.Pattern;
 import org.jfugue.player.Player;
 import util.MusicParser;
+import util.MusicalKey;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -20,7 +21,7 @@ import java.util.Random;
 public class MelodyMutatorTest {
 
     public static void main(String[] args) {
-        MusicalContainer ms = new MusicalContainer(8);
+        MusicalContainer ms = new MusicalContainer(8, new MusicalKey(0, MusicalKey.Mode.DORIAN));
         MelodyGenotype mc = ms.melodyGenotype;
         mc.init();
         ms.randomize(new Random());

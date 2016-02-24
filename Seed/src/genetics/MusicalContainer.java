@@ -1,5 +1,7 @@
 package genetics;
 
+import util.MusicalKey;
+
 import java.util.Random;
 
 /**
@@ -10,15 +12,17 @@ public class MusicalContainer {
     public MelodyGenotype melodyGenotype;
     public HarmonyGenotype harmonyGenotype;
     public final int bars;
+    public final MusicalKey key;
 
-    public MusicalContainer(int bars) {
+    public MusicalContainer(int bars, MusicalKey key) {
         this.bars = bars;
-        this.melodyGenotype = new MelodyGenotype(bars);
-        this.harmonyGenotype = new HarmonyGenotype(bars);
+        this.key = key;
+        this.melodyGenotype = new MelodyGenotype(bars, key);
+        this.harmonyGenotype = new HarmonyGenotype(bars, key);
     }
 
     public MusicalContainer getCopy() {
-        MusicalContainer ms = new MusicalContainer(bars);
+        MusicalContainer ms = new MusicalContainer(bars, key);
         ms.melodyGenotype = this.melodyGenotype.getCopy();
         ms.harmonyGenotype = this.harmonyGenotype.getCopy();
         return ms;

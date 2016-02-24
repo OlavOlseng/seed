@@ -2,6 +2,7 @@ package genetics;
 
 import org.jfugue.player.Player;
 import util.MusicParser;
+import util.MusicalKey;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,9 +17,11 @@ public class HarmonyGenotype {
 
     public byte[][] chords;
     public final int bars;
+    public final MusicalKey key;
 
-    public HarmonyGenotype(int bars) {
+    public HarmonyGenotype(int bars, MusicalKey key) {
         this.bars = bars;
+        this.key = key;
     }
 
     public void init() {
@@ -26,7 +29,7 @@ public class HarmonyGenotype {
     }
 
     public HarmonyGenotype getCopy() {
-        HarmonyGenotype hg = new HarmonyGenotype(this.bars);
+        HarmonyGenotype hg = new HarmonyGenotype(this.bars, new MusicalKey(0, MusicalKey.Mode.MINOR));
         hg.chords = Arrays.copyOf(chords, chords.length);
         return hg;
     }
@@ -58,7 +61,7 @@ public class HarmonyGenotype {
     }
 
     public static void main(String[] args) {
-        HarmonyGenotype hg = new HarmonyGenotype(4);
+        HarmonyGenotype hg = new HarmonyGenotype(4, new MusicalKey(0, MusicalKey.Mode.MAJOR));
         hg.randomize(new Random());
         MusicParser parser = new MusicParser();
 

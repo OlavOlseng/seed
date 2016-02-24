@@ -4,6 +4,7 @@ import genetics.HarmonyGenotype;
 import genetics.MusicGenotype;
 import genetics.MusicalContainer;
 import olseng.ea.genetics.GeneticMutationOperator;
+import util.MusicalKey;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -44,7 +45,7 @@ public class InversionMutator extends GeneticMutationOperator<MusicGenotype> {
 
     public static void main(String[] args) {
         MusicGenotype mg = new MusicGenotype();
-        MusicalContainer mc = new MusicalContainer(2);
+        MusicalContainer mc = new MusicalContainer(2, new MusicalKey(0, MusicalKey.Mode.LOCRIAN));
         mc.init();
         mc.randomize(new Random());
         mg.setData(mc);

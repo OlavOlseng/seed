@@ -35,7 +35,7 @@ public class ChordBuilder {
     public static void main(String[] args) {
         MusicalKey key = new MusicalKey(0, MusicalKey.Mode.MAJOR);
 
-        HarmonyGenotype hg = new HarmonyGenotype(4);
+        HarmonyGenotype hg = new HarmonyGenotype(4, key);
         hg.chords[0] = ChordBuilder.getChord(0, 3, 1, key);
         hg.chords[1] = ChordBuilder.getChord(5, 3, 1, key);
         hg.chords[2] = ChordBuilder.getChord(3, 3, 1, key);
@@ -49,7 +49,7 @@ public class ChordBuilder {
 
         key = new MusicalKey(9, MusicalKey.Mode.MINOR);
 
-        hg = new HarmonyGenotype(4);
+        hg = new HarmonyGenotype(4, key);
         hg.chords[0] = ChordBuilder.getChord(0, 4, 0, key);
         hg.chords[1] = ChordBuilder.getChord(5, 5, 0, key);
         hg.chords[2] = ChordBuilder.getChord(3, 4, 0, key);
