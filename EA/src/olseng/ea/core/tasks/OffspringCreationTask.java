@@ -34,6 +34,10 @@ public class OffspringCreationTask extends BaseTask<List<Genotype>> {
                 Genotype parent1 = ea.adultSelector.getIndividual(rand).getGenotype();
                 Genotype parent2 = ea.adultSelector.getIndividual(rand).getGenotype();
                 Genotype child = ((GeneticCrossoverOperator) operator).crossover(parent1, parent2, rand);
+
+                if(ea.allowMutationAndCrossover) {
+                    child = ea.operatorPool.getMutationOperator(rand).mutate(child, rand);
+                }
                 genotypes.add(child);
             }
             else if(operator instanceof GeneticMutationOperator){
