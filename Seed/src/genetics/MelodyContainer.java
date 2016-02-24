@@ -15,6 +15,8 @@ public class MelodyContainer {
     public static final int MELODY_RANGE_MAX = 80;
     public static final int MELODY_RANGE_MIN = 55;
     public static final int MELODY_RANGE = MELODY_RANGE_MAX - MELODY_RANGE_MIN;
+    public final int MELODY_BAR_SUBDIVISION = 4;
+    public final int MELODY_FOURTH_SUBDIVISION = 4;
 
     public final int bars;
     public final MusicalKey key;
@@ -29,8 +31,8 @@ public class MelodyContainer {
      * Instantiates a melody struct. Also sets the melody to a single pause.
      */
     public void init() {
-        this.melody = new byte[4 * 4 * bars];
-        for (int i = 0; i < melody.length; i += 16) {
+        this.melody = new byte[MELODY_BAR_SUBDIVISION * MELODY_FOURTH_SUBDIVISION * bars];
+        for (int i = 0; i < melody.length; i += MELODY_BAR_SUBDIVISION * MELODY_FOURTH_SUBDIVISION) {
             this.melody[i] = MELODY_REST;
         }
     }
