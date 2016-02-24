@@ -13,7 +13,7 @@ import java.util.Random;
  */
 public class HarmonyGenotype {
 
-    public final int BASE_OCTAVE = 3;
+    public static int BASE_OCTAVE = 4;
 
     public byte[][] chords;
     public final int bars;

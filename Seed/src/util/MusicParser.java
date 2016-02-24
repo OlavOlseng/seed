@@ -214,6 +214,7 @@ public class MusicParser {
         MusicalKey key = new MusicalKey(0, MusicalKey.Mode.MAJOR);
 
         HarmonyGenotype hg = new HarmonyGenotype(8, key);
+        hg.init();
         hg.chords[0] = ChordBuilder.getChord(0, 3, key);
         hg.chords[1] = ChordBuilder.getChord(0, 3, key);
         hg.chords[2] = ChordBuilder.getChord(3, 3, key);
