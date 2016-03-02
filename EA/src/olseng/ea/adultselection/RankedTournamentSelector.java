@@ -40,7 +40,7 @@ public class RankedTournamentSelector extends AdultSelector {
 
         int picked = 0;
         Random random = new Random();
-        while(picked < tournamentSize) {
+        while(picked < tournamentSize && picked < populationSize) {
             int index = (random.nextInt(populationSize));
             if (selected.contains(index)) {
                 System.out.println("Duplicate chosen!");
@@ -55,6 +55,9 @@ public class RankedTournamentSelector extends AdultSelector {
     @Override
     public Phenotype getIndividual(Random random) {
         List<Phenotype> tournament = buildTournament(this.population);
+        if(tournament.size() == 1) {
+            return tournament.get(0);
+        }
         if (random.nextDouble() > randomProbability) {
             Phenotype winner = tournament.get(0);
             for (int i = 1; i < tournament.size(); i++) {

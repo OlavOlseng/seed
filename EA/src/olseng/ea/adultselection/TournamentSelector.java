@@ -40,7 +40,7 @@ public class TournamentSelector extends AdultSelector {
 
 
         int picked = 0;
-        while(picked < tournamentSize) {
+        while(picked < tournamentSize && picked < populationSize) {
             int index = (random.nextInt(populationSize));
             if (selected.contains(index)) {
                 continue;
@@ -54,7 +54,9 @@ public class TournamentSelector extends AdultSelector {
     @Override
     public Phenotype getIndividual(Random random) {
         List<Integer> tournament = buildTournament(this.population);
-
+        if(tournament.size() == 1) {
+            return population.getIndividual(tournament.get(0));
+        }
         if (random.nextDouble() > randomProbability) {
             int winner = tournament.get(0);
 

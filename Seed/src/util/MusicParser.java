@@ -211,9 +211,9 @@ public class MusicParser {
         mc.melody[108] = 62;
         mc.melody[112] = 60;
 
-        MusicalKey key = new MusicalKey(0, MusicalKey.Mode.MAJOR);
+        MusicalKey key = new MusicalKey(0, MusicalKey.Mode.MINOR);
 
-        ChordContainer hg = new ChordContainer(8, key);
+        ChordContainer hg = new ChordContainer(0, key);
         hg.init();
         hg.chords[0] = ChordBuilder.getChord(0, 3, key);
         hg.chords[1] = ChordBuilder.getChord(0, 3, key);

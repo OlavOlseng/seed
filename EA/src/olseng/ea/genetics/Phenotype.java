@@ -17,6 +17,7 @@ public abstract class Phenotype<T, G extends Genotype> {
     public int dominatedByCount = 0;
     public List<Phenotype<?,?>> dominatedSet;
     public float crowdingDistance = 0;
+    public boolean isEvaluated = false;
 
     public Phenotype(G genotype) {
         this.genotype = genotype;

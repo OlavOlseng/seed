@@ -4,6 +4,8 @@ import genetics.MusicGenotype;
 import genetics.MelodyContainer;
 import genetics.MusicalContainer;
 import olseng.ea.genetics.GeneticMutationOperator;
+import sun.plugin.dom.exception.InvalidStateException;
+
 import java.util.Random;
 
 /**
@@ -42,6 +44,10 @@ public class NoteSwapMutator extends GeneticMutationOperator<MusicGenotype> {
         mc.concatenateRests();
 
         child.setData(ms);
+
+        if (mc.containsInvalidPitches()) {
+            throw new NullPointerException("LOL");
+        }
         return child;
     }
 

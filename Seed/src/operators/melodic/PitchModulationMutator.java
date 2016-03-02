@@ -4,6 +4,7 @@ import genetics.MusicGenotype;
 import genetics.MelodyContainer;
 import genetics.MusicalContainer;
 import olseng.ea.genetics.GeneticMutationOperator;
+import sun.plugin.dom.exception.InvalidStateException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +56,9 @@ public class PitchModulationMutator extends GeneticMutationOperator<MusicGenotyp
         }
         MusicGenotype mg = new MusicGenotype();
         mg.setData(ms);
+        if (mc.containsInvalidPitches()) {
+            throw new NullPointerException("LOL");
+        }
         return mg;
     }
 }

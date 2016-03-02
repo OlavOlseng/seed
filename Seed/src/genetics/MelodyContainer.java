@@ -127,6 +127,18 @@ public class MelodyContainer {
         
     }
 
+    public boolean containsInvalidPitches() {
+        for (int i = 0; i  < melody.length; i++) {
+            if(melody[i] == MELODY_HOLD || melody[i] == MELODY_REST) {
+                continue;
+            }
+            if (melody[i] < MELODY_RANGE_MIN || melody[i] > MELODY_RANGE_MAX) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static void main(String[] args) {
         MelodyContainer ms = new MelodyContainer(4, new MusicalKey(0, MusicalKey.Mode.MINOR));
         ms.init();

@@ -4,6 +4,7 @@ import genetics.MelodyContainer;
 import genetics.MusicGenotype;
 import genetics.MusicalContainer;
 import olseng.ea.genetics.GeneticMutationOperator;
+import sun.plugin.dom.exception.InvalidStateException;
 import util.MusicalKey;
 
 import java.util.ArrayList;
@@ -43,8 +44,11 @@ public class OctaveModulationMutator extends GeneticMutationOperator<MusicGenoty
                 toModulate *= -1;
             }
 
-            pitchValue = ((pitchValue + toModulate) % MelodyContainer.MELODY_RANGE_MIN) + MelodyContainer.MELODY_RANGE_MIN;
+            pitchValue = ((pitchValue + toModulate) % MelodyContainer.MELODY_RANGE) + MelodyContainer.MELODY_RANGE_MIN;
 
+            if (pitchValue > MelodyContainer.MELODY_RANGE_MAX ||pitchValue < MelodyContainer.MELODY_RANGE_MIN) {
+                System.out.println("Created invalid pitch.");
+            }
             mc.melody[noteIndex] = (byte) pitchValue;
         }
         else {
@@ -52,6 +56,7 @@ public class OctaveModulationMutator extends GeneticMutationOperator<MusicGenoty
         }
         MusicGenotype mg = new MusicGenotype();
         mg.setData(ms);
+
         return mg;
     }
 
