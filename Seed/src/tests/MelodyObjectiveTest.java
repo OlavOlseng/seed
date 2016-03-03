@@ -1,19 +1,19 @@
 package tests;
 
-import fitness.MelodyObjective;
+import fitness.TowseyObjectiveMelody;
+import fitness.WuMelodyObjective;
 import genetics.*;
 import olseng.ea.EAFactory;
-import olseng.ea.adultselection.TournamentSelector;
+import olseng.ea.adultselection.RankedTournamentSelector;
 import olseng.ea.core.EA;
 import olseng.ea.core.Population;
-import olseng.ea.fitness.SingleFitnessComparator;
+import olseng.ea.fitness.ranking.FastNonDominatedSort;
 import olseng.ea.genetics.OperatorPool;
 import olseng.ea.genetics.Phenotype;
 import operators.crossover.SingleBarCrossover;
 import operators.crossover.SinglePointCrossover;
 import operators.melodic.NoteModeMutator;
 import operators.melodic.NoteSwapMutator;
-import operators.melodic.OctaveModulationMutator;
 import operators.melodic.PitchModulationMutator;
 import org.jfugue.pattern.Pattern;
 import org.jfugue.player.Player;
@@ -40,11 +40,12 @@ public class MelodyObjectiveTest {
         op.setCrossoverProbability(0.2);
 
         EAFactory<MusicGenotype, MusicPhenotype> factory = new EAFactory<>();
-        factory.addFitnessObjective(new MelodyObjective());
+        factory.addFitnessObjective(new WuMelodyObjective());
+        factory.addFitnessObjective(new TowseyObjectiveMelody());
         factory.developmentalMethod = new MusicDevelopmentalMethod();
         factory.operatorPool = op;
-        factory.adultSelector = new TournamentSelector(2, 0.3);
-        factory.sortingModule = new SingleFitnessComparator(0);
+        factory.adultSelector = new RankedTournamentSelector(2, 0.3);
+        factory.rankingModule = new FastNonDominatedSort();
 
         EA<MusicGenotype, MusicPhenotype> ea = factory.build();
         ea.setThreadCount(32);
@@ -54,8 +55,8 @@ public class MelodyObjectiveTest {
         MusicalKey key = new MusicalKey(0, MusicalKey.Mode.MAJOR);
         MusicalContainer music = new MusicalContainer(8, key);
         music.init();
-
         MelodyContainer mc = music.melodyContainer;
+        /**
         mc.init();
         mc.melody[0] = 60;
         mc.melody[4] = 62;
@@ -79,7 +80,7 @@ public class MelodyObjectiveTest {
         mc.melody[104] = 62;
         mc.melody[108] = 62;
         mc.melody[112] = 60;
-
+        **/
         ChordContainer hg = music.chordContainer;
         hg.init();
         hg.chords[0] = ChordBuilder.getChord(0, 3, 1, key);
@@ -108,7 +109,7 @@ public class MelodyObjectiveTest {
             ea.step();
         }
         System.out.println(ea.population.getIndividual(0).getRepresentation());
-        System.out.println(ea.population.getIndividual(0).getFitnessValue(0));
+        System.out.println(ea.population.getIndividual(0));
         ea.terminateThreads();
 
         MusicParser parser = new MusicParser();
@@ -123,7 +124,5 @@ public class MelodyObjectiveTest {
 
         Player player = new Player();
         player.play(pMelody, pHarmony);
-
     }
-
 }

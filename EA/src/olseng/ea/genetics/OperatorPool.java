@@ -75,6 +75,7 @@ public class OperatorPool<G extends Genotype> {
     }
 
     public GeneticMutationOperator<G> getMutationOperator(Random rand) {
+        ArrayList<Integer> indices = new ArrayList<>();
         return mutators.get(rand.nextInt(mutators.size()));
     }
 

@@ -7,11 +7,11 @@ import olseng.ea.fitness.FitnessObjective;
 /**
  * Created by Olav on 02.03.2016.
  */
-public class MelodyObjective implements FitnessObjective<MusicPhenotype> {
+public class WuMelodyObjective implements FitnessObjective<MusicPhenotype> {
 
     @Override
     public float evaluate(MusicPhenotype phenotype) {
-        float score = 0;
+        float fitness = 0;
 
         MusicalContainer mc = phenotype.getRepresentation();
 
@@ -65,25 +65,25 @@ public class MelodyObjective implements FitnessObjective<MusicPhenotype> {
 
             //Processing for measure is done, assign scores:
             if (scalePitches < chordPitches) {
-                score++;
+                fitness++;
             }
             if(nonScalePitches < scalePitches) {
-                score++;
+                fitness++;
             }
             if(passingTones < chordPitches) {
-                score++;
+                fitness++;
             }
             if (passingTones < scalePitches) {
-                score++;
+                fitness++;
             }
             if (rootOrFifth) {
-                score++;
+                fitness++;
             }
             if (nonScalePitches + scalePitches + chordPitches > 1) {
-                score += lessThanFifth == 0 ? 1 : -lessThanFifth;
-                score += augNinth == 0 ? 1 : -augNinth;
+                fitness += lessThanFifth == 0 ? 1 : -lessThanFifth;
+                fitness += augNinth == 0 ? 1 : -augNinth;
             }
         }
-        return score;
+        return fitness;
     }
 }
