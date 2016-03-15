@@ -30,6 +30,7 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
     public double restDensity = 0.2; //
     public double rhythmicVariety = 0.30;
     public double rhythmicRange = 0.2;
+    public double syncopation = 0.1;
 
     @Override
     public float evaluate(MusicPhenotype p) {
@@ -51,6 +52,7 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
         fitness += proximity(restDensity, getRestDensity(p));
         fitness += proximity(rhythmicVariety, getRhythmicVariety(p));
         fitness += proximity(rhythmicRange, getRhythmicRange(p));
+        fitness += proximity(syncopation, getSyncopation(p));
 
         return (float) fitness;
     }
