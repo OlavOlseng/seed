@@ -43,6 +43,11 @@ public class InversionMutator extends GeneticMutationOperator<MusicGenotype> {
         return mg;
     }
 
+    @Override
+    public boolean isApplicable(MusicGenotype genotype) {
+        return true;
+    }
+
     public static void main(String[] args) {
         MusicGenotype mg = new MusicGenotype();
         MusicalContainer mc = new MusicalContainer(2, new MusicalKey(0, MusicalKey.Mode.LOCRIAN));

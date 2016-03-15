@@ -59,6 +59,11 @@ public class ChordPitchModulatorMutator extends GeneticMutationOperator<MusicGen
         return new MusicGenotype(mc);
     }
 
+    @Override
+    public boolean isApplicable(MusicGenotype genotype) {
+        return true;
+    }
+
     public static void main(String[] args) {
         MusicalContainer container = new MusicalContainer(1, new MusicalKey(0, MusicalKey.Mode.MAJOR));
         container.init();

@@ -65,8 +65,13 @@ public class NoteModeMutator extends GeneticMutationOperator<MusicGenotype> {
         MusicGenotype child = new MusicGenotype();
         child.setData(ms);
         if (container.containsInvalidPitches()) {
-            throw new NullPointerException("LOL");
+            System.out.println("Invalid pitch detected!");
         }
         return child;
+    }
+
+    @Override
+    public boolean isApplicable(MusicGenotype genotype) {
+        return true;
     }
 }

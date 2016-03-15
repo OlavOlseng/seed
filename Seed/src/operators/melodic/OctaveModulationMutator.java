@@ -60,6 +60,11 @@ public class OctaveModulationMutator extends GeneticMutationOperator<MusicGenoty
         return mg;
     }
 
+    @Override
+    public boolean isApplicable(MusicGenotype g) {
+        return g.getData().melodyContainer.melodyContainsPitch();
+    }
+
     public static void main(String[] args) {
         MusicalContainer container = new MusicalContainer(1, new MusicalKey(0, MusicalKey.Mode.MAJOR));
         container.init();

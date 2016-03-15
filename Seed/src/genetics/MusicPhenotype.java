@@ -2,6 +2,7 @@ package genetics;
 
 import olseng.ea.genetics.Phenotype;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -12,6 +13,13 @@ public class MusicPhenotype extends Phenotype<MusicalContainer, MusicGenotype> {
 
     public ArrayList<ArrayList<Integer>> melodyIntervals = new ArrayList<>();
     public ArrayList<ArrayList<Byte>> melodyPitches = new ArrayList<>();
+
+    //Sorted from shorthest to longest duration.
+    public final int[] pitchDurations = new int[16];
+    public final int[] restDurations = new int[16];
+
+    public ArrayList<Integer> restPositions = new ArrayList<>();
+    public ArrayList<Integer> pitchPositions = new ArrayList<>();
 
     public MusicPhenotype(MusicGenotype genotype) {
         super(genotype);

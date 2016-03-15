@@ -18,4 +18,6 @@ public abstract class GeneticMutationOperator<G extends Genotype> extends Geneti
      */
     public abstract G mutate(G parent, Random rand);
 
+    public abstract boolean isApplicable(G genotype);
+
 }

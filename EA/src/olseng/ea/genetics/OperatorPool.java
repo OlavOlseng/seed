@@ -12,8 +12,8 @@ public class OperatorPool<G extends Genotype> {
 
     private double crossoverProbability = 0.5;
 
-    private List<GeneticMutationOperator<G>> mutators;
-    private List<GeneticCrossoverOperator<G>> crossovers;
+    protected List<GeneticMutationOperator<G>> mutators;
+    protected List<GeneticCrossoverOperator<G>> crossovers;
 
     public OperatorPool() {
         this.mutators = new ArrayList<>();
@@ -67,16 +67,36 @@ public class OperatorPool<G extends Genotype> {
     public GeneticOperator<G> getOperator(Random rand) {
         if (Math.random() < crossoverProbability) {
             //System.out.println("Crossover operator chosen.");
-            return crossovers.get(rand.nextInt(crossovers.size()));
+            return getCrossoverOperator(rand);
 
         }
         //System.out.println("Mutation operator chosen.");
-        return mutators.get(rand.nextInt(mutators.size()));
+        return getMutationOperator(rand);
     }
 
     public GeneticMutationOperator<G> getMutationOperator(Random rand) {
-        ArrayList<Integer> indices = new ArrayList<>();
         return mutators.get(rand.nextInt(mutators.size()));
+    }
+
+    /**
+     * Returns an operator that is guaranteed to be applicable to the genotype, as ensured by the operators .isApplicable() method. In the case that there is no applicable operators in the pool, @null is returned.
+     * @param rand
+     * @param genotype
+     * @return
+     */
+    public GeneticMutationOperator<G> getSafeMutationOperator(Random rand, G genotype) {
+        ArrayList<GeneticMutationOperator> mutatorsCopy = new ArrayList<>();
+        for (int i = 0; i < mutators.size(); i++) {
+            mutatorsCopy.add(mutators.get(i));
+        }
+        while (mutatorsCopy.size() > 0) {
+            GeneticMutationOperator<G> operator = mutatorsCopy.get(rand.nextInt(mutatorsCopy.size()));
+            if (operator.isApplicable(genotype)) {
+                return operator;
+            }
+            mutatorsCopy.remove(operator);
+        }
+        return null;
     }
 
     public GeneticCrossoverOperator<G> getCrossoverOperator(Random rand) {

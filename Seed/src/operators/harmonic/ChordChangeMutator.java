@@ -33,6 +33,11 @@ public class ChordChangeMutator extends GeneticMutationOperator<MusicGenotype> {
         return new MusicGenotype(mc);
     }
 
+    @Override
+    public boolean isApplicable(MusicGenotype genotype) {
+        return true;
+    }
+
     public static void main(String[] args) {
         MusicalContainer mc = new MusicalContainer(4, new MusicalKey(0, MusicalKey.Mode.MAJOR));
         mc.init();

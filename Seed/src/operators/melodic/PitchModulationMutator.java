@@ -57,8 +57,13 @@ public class PitchModulationMutator extends GeneticMutationOperator<MusicGenotyp
         MusicGenotype mg = new MusicGenotype();
         mg.setData(ms);
         if (mc.containsInvalidPitches()) {
-            throw new NullPointerException("LOL");
+            System.out.println("Invalid pitch detected!");
         }
         return mg;
+    }
+
+    @Override
+    public boolean isApplicable(MusicGenotype g) {
+        return g.getData().melodyContainer.melodyContainsPitch();
     }
 }

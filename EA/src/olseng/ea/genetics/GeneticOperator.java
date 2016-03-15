@@ -29,10 +29,6 @@ public abstract class GeneticOperator<G extends Genotype> {
         this.normalizedWeight = weight/divisor;
     }
 
-    public boolean isApplicable(G genotype) {
-        return true;
-    }
-
     public double getNormalizedWeight() {
         return normalizedWeight;
     }

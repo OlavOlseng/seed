@@ -46,10 +46,19 @@ public class NoteSwapMutator extends GeneticMutationOperator<MusicGenotype> {
         child.setData(ms);
 
         if (mc.containsInvalidPitches()) {
-            throw new NullPointerException("LOL");
+            System.out.println("Invalid pitch detected!");
         }
         return child;
     }
 
-
+    @Override
+    public boolean isApplicable(MusicGenotype g) {
+        int pitches = 0;
+        for (byte pitch : g.getData().melodyContainer.melody) {
+            if (pitch >= MelodyContainer.MELODY_RANGE_MIN && pitch <= MelodyContainer.MELODY_RANGE_MAX) {
+                pitches++;
+            }
+        }
+        return pitches >= 2;
+    }
 }

@@ -22,6 +22,11 @@ public class BinaryGenomeMutator extends GeneticMutationOperator<BinaryGenome> {
         return child;
     }
 
+    @Override
+    public boolean isApplicable(BinaryGenome genotype) {
+        return true;
+    }
+
     public static void main(String[] args) {
         //Mutation test
         BinaryGenomeMutator go = new BinaryGenomeMutator(1);
