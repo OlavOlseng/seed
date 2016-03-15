@@ -312,10 +312,11 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
             if (p.pitchPositions.get(i) % 4 == 0) {
                 continue;
             }
-            int duration = p.getRepresentation().melodyContainer.getNextNoteIndex(p.pitchPositions.get(i));
+            int duration = p.getRepresentation().melodyContainer.getNextNoteIndex(p.pitchPositions.get(i)) - p.pitchPositions.get(i);
             if (duration < 4) {
-                syncopations++;
+                continue;
             }
+            syncopations++;
         }
         return syncopations / (double) p.pitchPositions.size();
     }
