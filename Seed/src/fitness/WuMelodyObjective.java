@@ -24,14 +24,19 @@ public class WuMelodyObjective implements FitnessObjective<MusicPhenotype> {
             float lessThanFifth = 0;
             float augNinth = 0;
             boolean rootOrFifth = false;
+            boolean firstPitchInChord = false;
             byte[] chord = mc.chordContainer.getChord(measure);
 
             //Calculate pitches
-            for (byte pitch : phenotype.melodyPitches.get(measure)) {
+            for (int i = 0; i < phenotype.melodyPitches.get(measure).size(); i++) {
+                byte pitch = phenotype.melodyPitches.get(measure).get(i);
                 pitch %= 12;
 
                 if (pitch == chord[0] || pitch == chord[1] || chord[2] == pitch || chord[3] == pitch) {
                     chordPitches++;
+                    if (i == 0) {
+                        firstPitchInChord = true;
+                    }
                 }
                 if (mc.key.pitchInKey(pitch) != -1) {
                     scalePitches++;
@@ -77,6 +82,9 @@ public class WuMelodyObjective implements FitnessObjective<MusicPhenotype> {
                 fitness++;
             }
             if (rootOrFifth) {
+                fitness++;
+            }
+            if (firstPitchInChord) {
                 fitness++;
             }
             if (nonScalePitches + scalePitches + chordPitches > 1) {

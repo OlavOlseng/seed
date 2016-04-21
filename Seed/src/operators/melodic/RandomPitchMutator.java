@@ -25,17 +25,13 @@ public class RandomPitchMutator extends GeneticMutationOperator<MusicGenotype> {
     public MusicGenotype mutate(MusicGenotype parent, Random rand) {
         MusicalContainer ms = parent.getDeepCopy();
         MelodyContainer mc = ms.melodyContainer;
-        if(mc.melodyContainsPitch()) {
 
-            int noteIndex = rand.nextInt(mc.melody.length);
-            int pitchValue = rand.nextInt(MelodyContainer.MELODY_RANGE) + MelodyContainer.MELODY_RANGE_MIN;
+        int noteIndex = rand.nextInt(mc.melody.length);
+        int pitchValue = rand.nextInt(MelodyContainer.MELODY_RANGE) + MelodyContainer.MELODY_RANGE_MIN;
+        mc.melody[noteIndex] = (byte) pitchValue;
 
-            mc.melody[noteIndex] = (byte) pitchValue;
+        mc.concatenateRests();
 
-        }
-        else {
-            System.out.println("RandomPitchModulationMutator failed, as there are no pitches in the melody.");
-        }
         MusicGenotype mg = new MusicGenotype();
         mg.setData(ms);
 
@@ -44,7 +40,7 @@ public class RandomPitchMutator extends GeneticMutationOperator<MusicGenotype> {
 
     @Override
     public boolean isApplicable(MusicGenotype g) {
-        return g.getData().melodyContainer.melodyContainsPitch();
+        return true;
     }
 
     public static void main(String[] args) {

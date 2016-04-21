@@ -13,10 +13,7 @@ import olseng.ea.genetics.OperatorPool;
 import olseng.ea.genetics.Phenotype;
 import operators.crossover.SingleBarCrossover;
 import operators.crossover.SinglePointCrossover;
-import operators.melodic.NoteModeMutator;
-import operators.melodic.NoteSwapMutator;
-import operators.melodic.PitchModulationMutator;
-import operators.melodic.RandomPitchMutator;
+import operators.melodic.*;
 import org.jfugue.pattern.Pattern;
 import org.jfugue.player.Player;
 import util.ChordBuilder;
@@ -40,6 +37,8 @@ public class MelodyObjectiveTest {
         op.addOperator(new NoteSwapMutator(1));
         op.addOperator(new RandomPitchMutator(2));
         op.addOperator(new PitchModulationMutator(1));
+        op.addOperator(new HalfMeasureDuplicatorMutator(1));
+
         op.addOperator(new SingleBarCrossover(1));
         op.addOperator(new SinglePointCrossover(1));
         op.setCrossoverProbability(0.3);
@@ -49,17 +48,17 @@ public class MelodyObjectiveTest {
         factory.addFitnessObjective(new TowseyObjectiveMelody());
         factory.developmentalMethod = new MusicDevelopmentalMethod();
         factory.operatorPool = op;
-        factory.adultSelector = new RankedTournamentSelector(4, 0.5);
+        factory.adultSelector = new RankedTournamentSelector(2, 0.5);
         factory.rankingModule = new FastNonDominatedSort();
         factory.sortingModule = new RankComparator();
 
         EA<MusicGenotype, MusicPhenotype> ea = factory.build();
-        ea.setThreadCount(16);
-        ea.populationMaxSize = 500;
+        ea.setThreadCount(32);
+        ea.populationMaxSize = 1000;
         ea.populationElitism = 1;
         ea.allowMutationAndCrossover = true;
 
-        MusicalKey key = new MusicalKey(0, MusicalKey.Mode.MAJOR);
+        MusicalKey key = new MusicalKey(0, MusicalKey.Mode.MINOR);
         MusicalContainer music = new MusicalContainer(8, key);
         music.init();
         MelodyContainer mc = music.melodyContainer;
@@ -114,20 +113,20 @@ public class MelodyObjectiveTest {
 
         ea.initialize(pop);
 
-        long startTime = System.currentTimeMillis();
+        double startTime = System.currentTimeMillis();
 
-        for (int i = 0; i < 5000; i++) {
+        for (int i = 0; i < 2000; i++) {
             System.out.println("Running generation: " + i);
             System.out.println("Pop size: " + pop.getPopulationSize());
             ea.step();
         }
 
-        long runTime = System.currentTimeMillis() - startTime;
-        System.out.println("Elapsed runtime: " + runTime / 1000 + " seconds.");
+        double runTime = (double) System.currentTimeMillis() - startTime;
+        System.out.println("Elapsed runtime: " + runTime / 60000. + ":" + (runTime / 1000.0) % 60);
 
         ea.terminateThreads();
 
-        Player player = new Player();
+        Player player;
 
         while(true) {
             int index = 0;
@@ -146,6 +145,7 @@ public class MelodyObjectiveTest {
                     e.printStackTrace();
                 }
 
+                System.out.println(new TowseyObjectiveMelody().getEvaluationString((MusicPhenotype) ea.population.getIndividual(index)));
                 System.out.println(ea.population.getIndividual(index).getRepresentation());
                 System.out.println(ea.population.getIndividual(index));
 
@@ -160,7 +160,7 @@ public class MelodyObjectiveTest {
                 System.out.println("Whole measure counts: " + ((MusicPhenotype)(ea.population.getIndividual(index))).wholeMeasureRhythmicPatterns.values());
                 Pattern pMelody = new Pattern(melody).setVoice(0).setInstrument(73);
                 Pattern pHarmony = new Pattern(chords).setVoice(1).setInstrument(0);
-
+                player = new Player();
                 player.play(pMelody, pHarmony);
             }
         }

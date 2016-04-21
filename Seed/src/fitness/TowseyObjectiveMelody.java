@@ -20,23 +20,23 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
 
     //Contour features
     public double contourDirection = 0.5;
-    public double contourStability = 0.5;
-    public double stepMovement = 0.9;
-    public double leapReturns = 1.0; //
+    public double contourStability = 0.8;
+    public double stepMovement = 0.7;
+    public double leapReturns = 0.8; //
     public double climaxStrength = 0.1; //
 
     //Rhythmic features
-    public double noteDensity = 0.9;
-    public double restDensity = 0.2; //
-    public double rhythmicVariety = 0.30;
-    public double rhythmicRange = 0.1;
-    public double syncopation = 0.01;
+    public double noteDensity = 0.3;
+    public double restDensity = 0.3; //
+    public double rhythmicVariety = 0.5;
+    public double rhythmicRange = 0.3;
+    public double syncopation = 0.1;
 
     //Pattern features
     public double repeatedPitches = .1;
     public double repeatedTimings = 0.3;
-    public double rhythmicWholeBarRepetitions = 0.4;
-    public double rhythmicHalfBarRepetitions = 0.8;
+    public double rhythmicWholeBarRepetitions = 0.75;
+    public double rhythmicHalfBarRepetitions = 0.5;
 
 
     @Override
@@ -55,15 +55,15 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
         fitness += proximity(leapReturns, getLeapReturns(p));
         //fitness += proximity(climaxStrength, getClimaxStrength(p));
 
-        fitness += proximity(noteDensity, getNoteDensity(p));
-        fitness += proximity(restDensity, getRestDensity(p));
-        //fitness += proximity(rhythmicVariety, getRhythmicVariety(p));
+        fitness += proximity(noteDensity, getNoteDensity(p)) * 2.0;
+        //fitness += proximity(restDensity, getRestDensity(p));
+        fitness += proximity(rhythmicVariety, getRhythmicVariety(p));
         fitness += proximity(rhythmicRange, getRhythmicRange(p));
         fitness += proximity(syncopation, getSyncopation(p));
 
         fitness += proximity(repeatedPitches, getRepeatedPitches(p));
         //fitness += proximity(repeatedTimings, getRepeatedTimings(p));
-        fitness += proximity(rhythmicWholeBarRepetitions, getRhythmicWholeMeasureRepetitions(p)) * 2.0;
+        fitness += proximity(rhythmicWholeBarRepetitions, getRhythmicWholeMeasureRepetitions(p));
         fitness += proximity(rhythmicHalfBarRepetitions, getRhythmicHalfMeasureRepetitions(p));
 
         return (float) fitness;
@@ -181,11 +181,11 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
         for (ArrayList<Integer> measure : p.melodyIntervals) {
             int previousInterval = 0;
             for (int interval : measure) {
+                intervalCount++;
                 if(intervalCount == 0) {
                     previousInterval = interval;
                     continue;
                 }
-                intervalCount++;
                 if (Math.signum(interval) == Math.signum(previousInterval) || interval == 0) {
                     contourStability += 1.0;
                 }
@@ -238,7 +238,7 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
         if (leaps == 0) {
             return 0;
         }
-        return 1 - leapReturns / leaps;
+        return 1.0 - leapReturns / leaps;
     }
 
     private double getClimaxStrength(MusicPhenotype p) {
@@ -314,7 +314,7 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
         if (shortestDuration == -1) {
             return 0;
         }
-        return longestDuration / shortestDuration;
+        return (longestDuration - shortestDuration) / 16.0;
     }
 
     public double getSyncopation(MusicPhenotype p) {
@@ -376,11 +376,13 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
         for (int barRepeatCount : p.wholeMeasureRhythmicPatterns.values()) {
             barRepetitions += barRepeatCount - 1;
         }
+        return 1.0 - uniqueBars /p.getRepresentation().bars;
+        /*
         if (barRepetitions == 0) {
             return 0;
         }
         return barRepetitions / p.getRepresentation().bars;
-
+        */
         //return barRepetitions / (p.getRepresentation().bars - 1);
     }
 
@@ -390,11 +392,15 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
         for (int barRepeatCount : p.halfMeasureRhythmicPatterns.values()) {
             barRepetitions += barRepeatCount - 1;
         }
+        /*
         if (barRepetitions == 0) {
             return 0;
         }
         return barRepetitions / p.getRepresentation().bars;
-        //return barRepetitions / (p.getRepresentation().bars - 1);
+        */
+        return 1.0 - uniqueBars / ((double) p.getRepresentation().bars * 2.0);
+        //return (double)barRepetitions / (p.getRepresentation().bars * 2.);
+        //return (double)barRepetitions / (p.getRepresentation().bars * 2. - 1);
     }
 
     private double proximityy(double d1, double d2) {
@@ -409,5 +415,35 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
      */
     private double proximity(double d1, double d2) {
         return 1 - Math.abs(d1 - d2);
+    }
+
+    public String getEvaluationString(MusicPhenotype p) {
+        String s ="";
+        s += "pitchVarietyValue: " + pitchVarietyValue + "->" + getPitchVarietyValue(p);
+        s += "\npitchRangeValue: " + pitchRangeValue + "->" + getPitchRangeValue(p);
+        s += "\nkeyCenteredValue: " + keyCenteredValue + "->" + getKeyCenteredValue(p);
+        s += "\nnonScalePitchQuantaValue: " + nonScalePitchQuantaValue + "->" + getNonScalePitchQuantaValue(p);
+        s += "\ndissonantIntervalsValue: " + dissonantIntervalsValue + "->" + getDissonantIntervalsValue(p);
+
+        //Contour features
+        s += "\ncontourDirection: " + contourDirection + "->" + getContourDirection(p);
+        s += "\ncontourStability: " + contourStability + "->" + getContourStability(p);
+        s += "\nstepMovement: " + stepMovement + "->" + getStepMovement(p);
+        s += "\nleapReturns: " + leapReturns + "->" + getLeapReturns(p); //
+        s += "\nclimaxStrength: " + climaxStrength + "->" + getClimaxStrength(p); //
+
+        //Rhythmic features
+        s += "\nnoteDensity: " + noteDensity + "->" + getNoteDensity(p);
+        s += "\nrestDensity: " + restDensity + "->" + getRestDensity(p); //
+        s += "\nrhythmicVariety: " + rhythmicVariety + "->" + getRhythmicVariety(p);
+        s += "\nrhythmicRange: " + rhythmicRange + "->" + getRhythmicRange(p);
+        s += "\nsyncopation: " + syncopation + "->" + getSyncopation(p);
+
+        //Pattern features
+        s += "\nrepeatedPitches: " + repeatedPitches + "->" + getRepeatedPitches(p);
+        s += "\nrepeatedTimings: " + repeatedTimings + "->" + getRepeatedTimings(p);
+        s += "\nrhythmicWholeBarRepetitions: " + rhythmicWholeBarRepetitions + "->" + getRhythmicWholeMeasureRepetitions(p);
+        s += "\nrhythmicHalfBarRepetitions: " + rhythmicHalfBarRepetitions + "->" + getRhythmicHalfMeasureRepetitions(p);
+        return s;
     }
 }
