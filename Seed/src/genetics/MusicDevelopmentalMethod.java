@@ -2,6 +2,8 @@ package genetics;
 
 import olseng.ea.genetics.DevelopmentalMethod;
 
+import java.util.HashMap;
+
 /**
  * Created by Olav on 02.03.2016.
  */
@@ -14,6 +16,8 @@ public class MusicDevelopmentalMethod implements DevelopmentalMethod<MusicGenoty
 
         processMelodicIntervalsAndPitches(p);
         processMelodicRhythmsAndPatterns(p);
+        processWholeBarRhythmicPatterns(p);
+        processHalfBarRhythmicPatterns(p);
 
         return p;
     }
@@ -27,6 +31,7 @@ public class MusicDevelopmentalMethod implements DevelopmentalMethod<MusicGenoty
         int lastPosition = 0;
         int currentPosition = 0;
         boolean isRest = false;
+        boolean lastIsRest = true; //Set to true to not trigger on the first note
 
         while (pitchIndex < p.pitchPositions.size() || restIndex < p.restPositions.size()) {
 
@@ -55,7 +60,11 @@ public class MusicDevelopmentalMethod implements DevelopmentalMethod<MusicGenoty
                 restIndex++;
             }
 
-            int duration = currentPosition - lastPosition - 1;
+            int duration = currentPosition - lastPosition - 1; // -1 to get proper index in array.
+            if (!isRest && !lastIsRest) {
+                p.sequentialPitchesDurations.add(duration + 1);
+            }
+            lastIsRest = isRest;
             if (duration <= 0) {
                 continue;
             }
@@ -68,6 +77,9 @@ public class MusicDevelopmentalMethod implements DevelopmentalMethod<MusicGenoty
         }
         //Finish off final note.
         int duration = p.getRepresentation().melodyContainer.melody.length - lastPosition - 1;
+        if (!isRest && !lastIsRest) {
+            p.sequentialPitchesDurations.add(duration + 1);
+        }
         if (isRest) {
             durations = p.restDurations;
         }
@@ -109,6 +121,52 @@ public class MusicDevelopmentalMethod implements DevelopmentalMethod<MusicGenoty
                 p.melodyIntervals.get(bar).add(mc.melody[currentPitchIndex] - mc.melody[lastPitchIndex]);
                 lastPitchIndex = currentPitchIndex;
             }
+        }
+    }
+
+    private void processWholeBarRhythmicPatterns(MusicPhenotype p) {
+        p.wholeMeasureRhythmicPatterns = new HashMap<>();
+        byte[] melody = p.getRepresentation().melodyContainer.melody;
+        int barValue = 0;
+        for (int i = 0; i < melody.length; i++) {
+            if (melody[i] >= MelodyContainer.MELODY_RANGE_MIN) {
+                barValue = barValue | 1;
+            }
+            if ((i + 1) % 16 == 0 && i != 0) {
+                if (barValue > 0) {
+                    p.sequentialMeasurePatterns[i / 16] = barValue;
+                    if (p.wholeMeasureRhythmicPatterns.containsKey(barValue)) {
+                        p.wholeMeasureRhythmicPatterns.put(barValue, p.wholeMeasureRhythmicPatterns.get(barValue) + 1);
+                    } else {
+                        p.wholeMeasureRhythmicPatterns.put(barValue, 1);
+                    }
+                }
+                barValue = 0;
+            }
+            barValue = barValue << 1;
+        }
+    }
+
+    private void processHalfBarRhythmicPatterns(MusicPhenotype p) {
+        p.halfMeasureRhythmicPatterns = new HashMap<>();
+        byte[] melody = p.getRepresentation().melodyContainer.melody;
+        int barValue = 0;
+        for (int i = 0; i < melody.length; i++) {
+            if (melody[i] >= MelodyContainer.MELODY_RANGE_MIN) {
+                barValue = barValue | 1;
+            }
+            if ((i + 1) % 8 == 0 && i != 0) {
+                if (barValue > 0) {
+                    p.sequentialHalfMeasurePatterns[i / 8] = barValue;
+                    if (p.halfMeasureRhythmicPatterns.containsKey(barValue)) {
+                        p.halfMeasureRhythmicPatterns.put(barValue, p.halfMeasureRhythmicPatterns.get(barValue) + 1);
+                    } else {
+                        p.halfMeasureRhythmicPatterns.put(barValue, 1);
+                    }
+                }
+                barValue = 0;
+            }
+            barValue = barValue << 1;
         }
     }
 }

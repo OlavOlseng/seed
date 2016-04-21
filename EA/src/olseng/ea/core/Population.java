@@ -47,6 +47,10 @@ public class Population {
         return pool.get(index);
     }
 
+    public void removeIndividual(Phenotype p) {
+        pool.remove(p);
+    }
+
     public void merge(List<Phenotype> newIndividuals) {
         pool.addAll(newIndividuals);
     }

@@ -4,7 +4,6 @@ import genetics.MelodyContainer;
 import genetics.MusicGenotype;
 import genetics.MusicalContainer;
 import olseng.ea.genetics.GeneticMutationOperator;
-import sun.plugin.dom.exception.InvalidStateException;
 import util.MusicalKey;
 
 import java.util.ArrayList;
@@ -15,10 +14,10 @@ import java.util.Random;
 /**
  * Created by Olav on 24.02.2016.
  */
-public class OctaveModulationMutator extends GeneticMutationOperator<MusicGenotype> {
+public class RandomPitchMutator extends GeneticMutationOperator<MusicGenotype> {
 
 
-    public OctaveModulationMutator(double weight) {
+    public RandomPitchMutator(double weight) {
         super(weight);
     }
 
@@ -28,31 +27,14 @@ public class OctaveModulationMutator extends GeneticMutationOperator<MusicGenoty
         MelodyContainer mc = ms.melodyContainer;
         if(mc.melodyContainsPitch()) {
 
-            List<Integer> indices = new ArrayList<>();
-            for (int i = 0; i < mc.melody.length; i++) {
-                if (mc.melody[i] >= MelodyContainer.MELODY_RANGE_MIN) {
-                    indices.add(i);
-                }
-            }
+            int noteIndex = rand.nextInt(mc.melody.length);
+            int pitchValue = rand.nextInt(MelodyContainer.MELODY_RANGE) + MelodyContainer.MELODY_RANGE_MIN;
 
-            int noteIndex = indices.get(rand.nextInt(indices.size()));
-            int pitchValue = mc.melody[noteIndex];
-
-            byte toModulate = (byte) 12;
-
-            if (rand.nextDouble() < 0.5) {
-                toModulate *= -1;
-            }
-
-            pitchValue = ((pitchValue + toModulate) % MelodyContainer.MELODY_RANGE) + MelodyContainer.MELODY_RANGE_MIN;
-
-            if (pitchValue > MelodyContainer.MELODY_RANGE_MAX ||pitchValue < MelodyContainer.MELODY_RANGE_MIN) {
-                System.out.println("Created invalid pitch.");
-            }
             mc.melody[noteIndex] = (byte) pitchValue;
+
         }
         else {
-            System.out.println("PitchModulationMutator failed, as there are no pitches in the melody.");
+            System.out.println("RandomPitchModulationMutator failed, as there are no pitches in the melody.");
         }
         MusicGenotype mg = new MusicGenotype();
         mg.setData(ms);
@@ -75,7 +57,7 @@ public class OctaveModulationMutator extends GeneticMutationOperator<MusicGenoty
 
         MusicGenotype mg = new MusicGenotype();
         mg.setData(container);
-        OctaveModulationMutator omm = new OctaveModulationMutator(1);
+        RandomPitchMutator omm = new RandomPitchMutator(1);
 
         mg = omm.mutate(mg, new Random());
         System.out.println(Arrays.toString(mg.getData().melodyContainer.melody));

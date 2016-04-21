@@ -16,6 +16,7 @@ import operators.crossover.SinglePointCrossover;
 import operators.melodic.NoteModeMutator;
 import operators.melodic.NoteSwapMutator;
 import operators.melodic.PitchModulationMutator;
+import operators.melodic.RandomPitchMutator;
 import org.jfugue.pattern.Pattern;
 import org.jfugue.player.Player;
 import util.ChordBuilder;
@@ -37,11 +38,11 @@ public class MelodyObjectiveTest {
         OperatorPool<MusicGenotype> op = new OperatorPool<>();
         op.addOperator(new NoteModeMutator(2));
         op.addOperator(new NoteSwapMutator(1));
-        //op.addOperator(new OctaveModulationMutator(0.5));
+        op.addOperator(new RandomPitchMutator(2));
         op.addOperator(new PitchModulationMutator(1));
         op.addOperator(new SingleBarCrossover(1));
         op.addOperator(new SinglePointCrossover(1));
-        op.setCrossoverProbability(0.2);
+        op.setCrossoverProbability(0.3);
 
         EAFactory<MusicGenotype, MusicPhenotype> factory = new EAFactory<>();
         factory.addFitnessObjective(new WuMelodyObjective());
@@ -64,6 +65,7 @@ public class MelodyObjectiveTest {
         MelodyContainer mc = music.melodyContainer;
 
         mc.init();
+/**
         mc.melody[0] = 60 + 12;
         mc.melody[4] = 62 + 12;
         mc.melody[8] = 64 + 12;
@@ -87,6 +89,7 @@ public class MelodyObjectiveTest {
         mc.melody[108] = 62 + 12;
         mc.melody[112] = 60 + 12;
 
+*/
         ChordContainer hg = music.chordContainer;
         hg.init();
         hg.chords[0] = ChordBuilder.getChord(0, 3, 1, key);
@@ -113,12 +116,13 @@ public class MelodyObjectiveTest {
 
         for (int i = 0; i < 1000; i++) {
             System.out.println("Running generation: " + i);
+            System.out.println("Pop size: " + pop.getPopulationSize());
             ea.step();
         }
 
         ea.terminateThreads();
 
-
+        Player player = new Player();
 
         while(true) {
             int index = 0;
@@ -147,10 +151,11 @@ public class MelodyObjectiveTest {
                 melody = " Rw | " + melody;
                 String chords = "Rw | " + parser.parseChords(music.chordContainer);
                 System.out.println(chords);
+                System.out.println("Half measure counts: " + ((MusicPhenotype)(ea.population.getIndividual(index))).halfMeasureRhythmicPatterns.values());
+                System.out.println("Whole measure counts: " + ((MusicPhenotype)(ea.population.getIndividual(index))).wholeMeasureRhythmicPatterns.values());
                 Pattern pMelody = new Pattern(melody).setVoice(0).setInstrument(73);
                 Pattern pHarmony = new Pattern(chords).setVoice(1).setInstrument(0);
 
-                Player player = new Player();
                 player.play(pMelody, pHarmony);
             }
         }

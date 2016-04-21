@@ -13,8 +13,14 @@ import java.util.List;
  */
 public class FastNonDominatedSort implements RankingModule {
 
+    public boolean allowFitnessDuplicates = false;
+
     @Override
     public void rankPopulation(Population population) {
+
+        if (!allowFitnessDuplicates) {
+            eliminateFitnessDuplicates(population);
+        }
         List<Phenotype> currentFront = new ArrayList<>();
         for (int i = 0; i < population.getPopulationSize(); i++) {
             Phenotype p = population.getIndividual(i);
@@ -100,6 +106,40 @@ public class FastNonDominatedSort implements RankingModule {
     public boolean dominates(Phenotype p1, Phenotype p2) {
         for (int i = 0; i < p1.getFitnessCount(); i++) {
             if (p1.getFitnessValue(i) < p2.getFitnessValue(i)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void eliminateFitnessDuplicates(Population population) {
+        if (population.getPopulationSize() < 2) {
+            return;
+        }
+
+        ArrayList<Phenotype> removalFlagged = new ArrayList<>();
+        for (int i = 0; i < population.getPopulationSize() - 1; i++) {
+            Phenotype p = population.getIndividual(i);
+
+            for (int j = i + 1; j < population.getPopulationSize(); j++) {
+                if (i == j) {
+                    continue;
+                }
+                Phenotype q = population.getIndividual(j);
+                if (isFitnessEqual(p, q)) {
+                    removalFlagged.add(q);
+                    break;
+                }
+            }
+        }
+        for (int i = 0; i < removalFlagged.size(); i++) {
+            population.removeIndividual(removalFlagged.get(i));
+        }
+    }
+
+    public boolean isFitnessEqual(Phenotype p1, Phenotype p2) {
+        for (int i = 0; i < p1.getFitnessCount(); i++) {
+            if (p1.getFitnessValue(i) != p2.getFitnessValue(i)) {
                 return false;
             }
         }

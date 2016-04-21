@@ -33,7 +33,7 @@ public class WuMelodyObjective implements FitnessObjective<MusicPhenotype> {
                 if (pitch == chord[0] || pitch == chord[1] || chord[2] == pitch || chord[3] == pitch) {
                     chordPitches++;
                 }
-                else if (mc.key.pitchInKey(pitch) != -1) {
+                if (mc.key.pitchInKey(pitch) != -1) {
                     scalePitches++;
                 }
                 else {
