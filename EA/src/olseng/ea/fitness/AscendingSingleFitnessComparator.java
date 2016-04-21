@@ -15,6 +15,10 @@ public class AscendingSingleFitnessComparator implements Comparator<Phenotype>{
         this.fitnessIndex = fitnessIndex;
     }
 
+    public void setFitnessIndex(int fitnessIndex) {
+        this.fitnessIndex = fitnessIndex;
+    }
+
     @Override
     public int compare(Phenotype o1, Phenotype o2) {
         float val = o1.getFitnessValue(fitnessIndex) - o2.getFitnessValue(fitnessIndex);

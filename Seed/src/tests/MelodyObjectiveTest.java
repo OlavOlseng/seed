@@ -54,8 +54,8 @@ public class MelodyObjectiveTest {
         factory.sortingModule = new RankComparator();
 
         EA<MusicGenotype, MusicPhenotype> ea = factory.build();
-        ea.setThreadCount(32);
-        ea.populationMaxSize = 100;
+        ea.setThreadCount(16);
+        ea.populationMaxSize = 500;
         ea.populationElitism = 1;
         ea.allowMutationAndCrossover = true;
 
@@ -114,11 +114,16 @@ public class MelodyObjectiveTest {
 
         ea.initialize(pop);
 
-        for (int i = 0; i < 1000; i++) {
+        long startTime = System.currentTimeMillis();
+
+        for (int i = 0; i < 5000; i++) {
             System.out.println("Running generation: " + i);
             System.out.println("Pop size: " + pop.getPopulationSize());
             ea.step();
         }
+
+        long runTime = System.currentTimeMillis() - startTime;
+        System.out.println("Elapsed runtime: " + runTime / 1000 + " seconds.");
 
         ea.terminateThreads();
 

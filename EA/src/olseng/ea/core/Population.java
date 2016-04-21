@@ -31,7 +31,7 @@ public class Population {
      */
     public void cullPopulation(int maxSize) {
         if (getPopulationSize() > maxSize) {
-            pool = pool.subList(0 ,maxSize);
+            pool.subList(maxSize, pool.size()).clear();
         }
     }
 

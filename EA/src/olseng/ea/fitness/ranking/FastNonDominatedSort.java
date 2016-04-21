@@ -73,6 +73,7 @@ public class FastNonDominatedSort implements RankingModule {
             return;
         }
         int objectiveCount = front.get(0).getFitnessCount();
+        AscendingSingleFitnessComparator comparator = new AscendingSingleFitnessComparator(0);
         for (Phenotype p : front) {
             p.crowdingDistance = 0;
         }
@@ -93,7 +94,8 @@ public class FastNonDominatedSort implements RankingModule {
             if (range == 0) {
                 continue;
             }
-            Collections.sort(front, new AscendingSingleFitnessComparator(objective));
+            comparator.setFitnessIndex(objective);
+            Collections.sort(front, comparator);
             front.get(0).crowdingDistance = 1000000;
             front.get(front.size() - 1).crowdingDistance = 1000000;
 
