@@ -133,13 +133,11 @@ public class MusicDevelopmentalMethod implements DevelopmentalMethod<MusicGenoty
                 barValue = barValue | 1;
             }
             if ((i + 1) % 16 == 0 && i != 0) {
-                if (barValue > 0) {
-                    p.sequentialMeasurePatterns[i / 16] = barValue;
-                    if (p.wholeMeasureRhythmicPatterns.containsKey(barValue)) {
-                        p.wholeMeasureRhythmicPatterns.put(barValue, p.wholeMeasureRhythmicPatterns.get(barValue) + 1);
-                    } else {
-                        p.wholeMeasureRhythmicPatterns.put(barValue, 1);
-                    }
+                p.sequentialMeasurePatterns[i / 16] = barValue;
+                if (p.wholeMeasureRhythmicPatterns.containsKey(barValue)) {
+                    p.wholeMeasureRhythmicPatterns.put(barValue, p.wholeMeasureRhythmicPatterns.get(barValue) + 1);
+                } else {
+                    p.wholeMeasureRhythmicPatterns.put(barValue, 1);
                 }
                 barValue = 0;
             }
@@ -156,13 +154,11 @@ public class MusicDevelopmentalMethod implements DevelopmentalMethod<MusicGenoty
                 barValue = barValue | 1;
             }
             if ((i + 1) % 8 == 0 && i != 0) {
-                if (barValue > 0) {
-                    p.sequentialHalfMeasurePatterns[i / 8] = barValue;
-                    if (p.halfMeasureRhythmicPatterns.containsKey(barValue)) {
-                        p.halfMeasureRhythmicPatterns.put(barValue, p.halfMeasureRhythmicPatterns.get(barValue) + 1);
-                    } else {
-                        p.halfMeasureRhythmicPatterns.put(barValue, 1);
-                    }
+                p.sequentialHalfMeasurePatterns[i / 8] = barValue;
+                if (p.halfMeasureRhythmicPatterns.containsKey(barValue)) {
+                    p.halfMeasureRhythmicPatterns.put(barValue, p.halfMeasureRhythmicPatterns.get(barValue) + 1);
+                } else {
+                    p.halfMeasureRhythmicPatterns.put(barValue, 1);
                 }
                 barValue = 0;
             }

@@ -24,6 +24,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -35,8 +36,8 @@ public class MelodyObjectiveTest {
         OperatorPool<MusicGenotype> op = new OperatorPool<>();
         op.addOperator(new NoteModeMutator(2));
         op.addOperator(new NoteSwapMutator(1));
-        op.addOperator(new RandomPitchMutator(2));
-        op.addOperator(new PitchModulationMutator(1));
+        op.addOperator(new RandomPitchMutator(1));
+        op.addOperator(new PitchModulationMutator(2));
         op.addOperator(new HalfMeasureDuplicatorMutator(1));
 
         op.addOperator(new SingleBarCrossover(1));
@@ -48,13 +49,13 @@ public class MelodyObjectiveTest {
         factory.addFitnessObjective(new TowseyObjectiveMelody());
         factory.developmentalMethod = new MusicDevelopmentalMethod();
         factory.operatorPool = op;
-        factory.adultSelector = new RankedTournamentSelector(2, 0.5);
+        factory.adultSelector = new RankedTournamentSelector(3, 0.1);
         factory.rankingModule = new FastNonDominatedSort();
         factory.sortingModule = new RankComparator();
 
         EA<MusicGenotype, MusicPhenotype> ea = factory.build();
-        ea.setThreadCount(32);
-        ea.populationMaxSize = 1000;
+        ea.setThreadCount(16);
+        ea.populationMaxSize = 500;
         ea.populationElitism = 1;
         ea.allowMutationAndCrossover = true;
 
@@ -64,7 +65,7 @@ public class MelodyObjectiveTest {
         MelodyContainer mc = music.melodyContainer;
 
         mc.init();
-/**
+
         mc.melody[0] = 60 + 12;
         mc.melody[4] = 62 + 12;
         mc.melody[8] = 64 + 12;
@@ -88,18 +89,29 @@ public class MelodyObjectiveTest {
         mc.melody[108] = 62 + 12;
         mc.melody[112] = 60 + 12;
 
-*/
+
         ChordContainer hg = music.chordContainer;
         hg.init();
         hg.chords[0] = ChordBuilder.getChord(0, 3, 1, key);
-        hg.chords[1] = ChordBuilder.getChord(0, 3, 1, key);
-        hg.chords[2] = ChordBuilder.getChord(3, 3, 1, key);
-        hg.chords[3] = ChordBuilder.getChord(0, 3, 1, key);
-        hg.chords[4] = ChordBuilder.getChord(1, 3, 1, key);
-        hg.chords[5] = ChordBuilder.getChord(5, 3, 1, key);
-        hg.chords[6] = ChordBuilder.getChord(4, 4, 1, key);
+        hg.chords[1] = ChordBuilder.getChord(2, 3, 1, key);
+        hg.chords[2] = ChordBuilder.getChord(4, 3, 1, key, true);
+        hg.chords[3] = ChordBuilder.getChord(5, 3, 1, key);
+        hg.chords[4] = ChordBuilder.getChord(0, 3, 1, key);
+        hg.chords[5] = ChordBuilder.getChord(2, 3, 1, key);
+        hg.chords[6] = ChordBuilder.getChord(4, 4, 1, key, true);
         hg.chords[7] = ChordBuilder.getChord(0, 3, 1, key);
 
+
+        MusicParser parser = new MusicParser();
+        String melody = parser.parseMelody(music.melodyContainer);
+        System.out.println(melody);
+        melody = " Rw | " + melody;
+        String chords = "Rw | " + parser.parseChords(music.chordContainer);
+        System.out.println(chords);
+        Pattern pMelody = new Pattern(melody).setVoice(0).setInstrument(0);
+        Pattern pHarmony = new Pattern(chords).setVoice(1).setInstrument(0);
+        Player player = new Player();
+        player.play(pMelody, pHarmony);
 
         MusicGenotype initialSeed = new MusicGenotype(music);
         List<Phenotype> initialPop = new ArrayList<>();
@@ -115,7 +127,7 @@ public class MelodyObjectiveTest {
 
         double startTime = System.currentTimeMillis();
 
-        for (int i = 0; i < 2000; i++) {
+        for (int i = 0; i < 1000; i++) {
             System.out.println("Running generation: " + i);
             System.out.println("Pop size: " + pop.getPopulationSize());
             ea.step();
@@ -125,8 +137,6 @@ public class MelodyObjectiveTest {
         System.out.println("Elapsed runtime: " + runTime / 60000. + ":" + (runTime / 1000.0) % 60);
 
         ea.terminateThreads();
-
-        Player player;
 
         while(true) {
             int index = 0;
@@ -149,17 +159,18 @@ public class MelodyObjectiveTest {
                 System.out.println(ea.population.getIndividual(index).getRepresentation());
                 System.out.println(ea.population.getIndividual(index));
 
-                MusicParser parser = new MusicParser();
+                parser = new MusicParser();
                 music = (MusicalContainer) ea.population.getIndividual(index).getRepresentation();
-                String melody = parser.parseMelody(music.melodyContainer);
+                melody = parser.parseMelody(music.melodyContainer);
                 System.out.println(melody);
                 melody = " Rw | " + melody;
-                String chords = "Rw | " + parser.parseChords(music.chordContainer);
+                chords = "Rw | " + parser.parseChords(music.chordContainer);
                 System.out.println(chords);
                 System.out.println("Half measure counts: " + ((MusicPhenotype)(ea.population.getIndividual(index))).halfMeasureRhythmicPatterns.values());
                 System.out.println("Whole measure counts: " + ((MusicPhenotype)(ea.population.getIndividual(index))).wholeMeasureRhythmicPatterns.values());
-                Pattern pMelody = new Pattern(melody).setVoice(0).setInstrument(73);
-                Pattern pHarmony = new Pattern(chords).setVoice(1).setInstrument(0);
+                System.out.println("Measure patterns: " + Arrays.toString(((MusicPhenotype) ea.population.getIndividual(index)).sequentialMeasurePatterns));
+                pMelody = new Pattern(melody).setVoice(0).setInstrument(0);
+                pHarmony = new Pattern(chords).setVoice(1).setInstrument(0);
                 player = new Player();
                 player.play(pMelody, pHarmony);
             }

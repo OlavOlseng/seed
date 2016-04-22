@@ -4,6 +4,8 @@ import genetics.MusicPhenotype;
 import genetics.MusicalContainer;
 import olseng.ea.fitness.FitnessObjective;
 
+import java.util.ArrayList;
+
 /**
  * Created by Olav on 02.03.2016.
  */
@@ -38,7 +40,7 @@ public class WuMelodyObjective implements FitnessObjective<MusicPhenotype> {
                         firstPitchInChord = true;
                     }
                 }
-                if (mc.key.pitchInKey(pitch) != -1) {
+                else if (mc.key.pitchInKey(pitch) != -1) {
                     scalePitches++;
                 }
                 else {
@@ -68,6 +70,7 @@ public class WuMelodyObjective implements FitnessObjective<MusicPhenotype> {
                 }
             }
 
+
             //Processing for measure is done, assign scores:
             if (scalePitches < chordPitches) {
                 fitness++;
@@ -90,6 +93,13 @@ public class WuMelodyObjective implements FitnessObjective<MusicPhenotype> {
             if (nonScalePitches + scalePitches + chordPitches > 1) {
                 fitness += lessThanFifth == 0 ? 1 : -lessThanFifth;
                 fitness += augNinth == 0 ? 1 : -augNinth;
+            }
+        }
+        ArrayList<Byte> lastBar = phenotype.melodyPitches.get(phenotype.getRepresentation().bars - 1);
+        if (lastBar.size() > 0) {
+            int lastPitch = lastBar.get(lastBar.size() - 1) % 12;
+            if (lastPitch == phenotype.getRepresentation().key.scale[0]) {
+                fitness++;
             }
         }
         return fitness;
