@@ -26,7 +26,7 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
     public double climaxStrength = 0.1; //
 
     //Rhythmic features
-    public double noteDensity = 0.3;
+    public double noteDensity = 0.2;
     public double restDensity = 0.05; //
     public double rhythmicVariety = 0.5;
     public double rhythmicRange = 0.3;
@@ -38,7 +38,7 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
     public double rhythmicWholeBarRepetitions = 0.5;
     public double rhythmicHalfBarUniqueness = 0.75;
     public double rhythmicWholeBarSequenceValue = 0.70;
-    public double onBeatPitchCoverage = 1.;
+    public double onBeatPitchShare = 1.;
 
     @Override
     public float evaluate(MusicPhenotype p) {
@@ -70,7 +70,7 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
         //fitness += proximity(rhythmicWholeBarRepetitions, getRhythmicWholeMeasureRepetitions(p));
         fitness += proximity(rhythmicHalfBarUniqueness, getRhythmicHalfMeasureUniqueness(p));
         fitness += proximity(rhythmicWholeBarSequenceValue, getRhythmicWholeBarSequenceRepetitions(p));
-        //fitness += proximity(onBeatPitchCoverage, getOnBeatPitchCoverage(p));
+        fitness += proximity(onBeatPitchShare, getOnBeatPitchShare(p));
 
         return (float) fitness;
     }
@@ -437,15 +437,18 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
         return positionalBarRepetitions / (double) (p.getRepresentation().bars - 1);
     }
 
-    private double getOnBeatPitchCoverage(MusicPhenotype p) {
+    private double getOnBeatPitchShare(MusicPhenotype p) {
         double count = 0;
         byte[] melody = p.getRepresentation().melodyContainer.melody;
         for (int i = 0; i < melody.length; i += MelodyContainer.MELODY_FOURTH_SUBDIVISION) {
-            if (melody[i] != 0) {
+            if (melody[i] >= MelodyContainer.MELODY_RANGE_MIN) {
                 count++;
             }
         }
-        return count / (melody.length / MelodyContainer.MELODY_FOURTH_SUBDIVISION);
+        if (p.pitchPositions.size() == 0) {
+            return 0;
+        }
+        return count / (double)p.pitchPositions.size();
     }
 
     private double proximityy(double d1, double d2) {
@@ -490,7 +493,7 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
         s += "\nrhythmicWholeBarRepetitions: " + rhythmicWholeBarRepetitions + "->" + getRhythmicWholeMeasureRepetitions(p);
         s += "\nrhythmicHalfBarUniqueness: " + rhythmicHalfBarUniqueness + "->" + getRhythmicHalfMeasureUniqueness(p);
         s += "\nrhythmicWholeBarSequenceValue: " + rhythmicWholeBarSequenceValue + "->" + getRhythmicWholeBarSequenceRepetitions(p);
-        s += "\nonBeatPitchCoverage: " + onBeatPitchCoverage + "->" + getOnBeatPitchCoverage(p);
+        s += "\nonBeatPitchShare: " + onBeatPitchShare + "->" + getOnBeatPitchShare(p);
         return s;
     }
 }

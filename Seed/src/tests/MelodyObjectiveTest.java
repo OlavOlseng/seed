@@ -63,9 +63,8 @@ public class MelodyObjectiveTest {
         MusicalContainer music = new MusicalContainer(8, key);
         music.init();
         MelodyContainer mc = music.melodyContainer;
-
-        mc.init();
         /*
+        mc.init();
         mc.melody[0] = 60 + 12;
         mc.melody[4] = 62 + 12;
         mc.melody[8] = 64 + 12;
@@ -88,8 +87,7 @@ public class MelodyObjectiveTest {
         mc.melody[104] = 62 + 12;
         mc.melody[108] = 62 + 12;
         mc.melody[112] = 60 + 12;
-        */
-
+*/
         ChordContainer hg = music.chordContainer;
         hg.init();
         hg.chords[0] = ChordBuilder.getChord(0, 3, 1, key);
@@ -101,6 +99,10 @@ public class MelodyObjectiveTest {
         hg.chords[6] = ChordBuilder.getChord(4, 4, 1, key, true);
         hg.chords[7] = ChordBuilder.getChord(0, 3, 1, key);
 
+        MusicGenotype initialSeed = new MusicGenotype(music);
+        List<Phenotype> initialPop = new ArrayList<>();
+        MusicPhenotype p = ea.developmentalMethod.develop(initialSeed);
+        ea.fitnessEvaluator.evaluate(p);
 
         MusicParser parser = new MusicParser();
         String melody = parser.parseMelody(music.melodyContainer);
@@ -108,15 +110,13 @@ public class MelodyObjectiveTest {
         melody = " Rw | " + melody;
         String chords = "Rw | " + parser.parseChords(music.chordContainer);
         System.out.println(chords);
+        System.out.println(new TowseyObjectiveMelody().getEvaluationString(p));
         Pattern pMelody = new Pattern(melody).setVoice(0).setInstrument(0);
         Pattern pHarmony = new Pattern(chords).setVoice(1).setInstrument(0);
         Player player = new Player();
         //player.play(pMelody, pHarmony);
 
-        MusicGenotype initialSeed = new MusicGenotype(music);
-        List<Phenotype> initialPop = new ArrayList<>();
-        MusicPhenotype p = ea.developmentalMethod.develop(initialSeed);
-        ea.fitnessEvaluator.evaluate(p);
+
         System.out.println(p.getFitnessValue(0));
         initialPop.add(p);
 
@@ -170,7 +170,7 @@ public class MelodyObjectiveTest {
                 System.out.println("Half measure counts: " + ((MusicPhenotype)(ea.population.getIndividual(index))).halfMeasureRhythmicPatterns.values());
                 System.out.println("Whole measure counts: " + ((MusicPhenotype)(ea.population.getIndividual(index))).wholeMeasureRhythmicPatterns.values());
                 System.out.println("Measure patterns: " + Arrays.toString(((MusicPhenotype) ea.population.getIndividual(index)).sequentialMeasurePatterns));
-                pMelody = new Pattern(melody).setVoice(0).setInstrument(0);
+                pMelody = new Pattern(melody).setVoice(0).setInstrument(4);
                 pHarmony = new Pattern(chords).setVoice(1).setInstrument(0);
                 player = new Player();
                 player.play(pMelody, pHarmony);
