@@ -15,8 +15,8 @@ public class MelodyContainer {
     public static final int MELODY_RANGE_MAX = 85;
     public static final int MELODY_RANGE_MIN = 67;
     public static final int MELODY_RANGE = MELODY_RANGE_MAX - MELODY_RANGE_MIN;
-    public final int MELODY_BAR_SUBDIVISION = 4;
-    public final int MELODY_FOURTH_SUBDIVISION = 4;
+    public static final int MELODY_BAR_SUBDIVISION = 4;
+    public static final int MELODY_FOURTH_SUBDIVISION = 4;
 
     public final int bars;
     public final MusicalKey key;

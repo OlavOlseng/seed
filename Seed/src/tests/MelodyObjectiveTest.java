@@ -37,7 +37,7 @@ public class MelodyObjectiveTest {
         op.addOperator(new NoteModeMutator(2));
         op.addOperator(new NoteSwapMutator(1));
         op.addOperator(new RandomPitchMutator(1));
-        op.addOperator(new PitchModulationMutator(2));
+        op.addOperator(new PitchModulationMutator(3));
         op.addOperator(new HalfMeasureDuplicatorMutator(1));
 
         op.addOperator(new SingleBarCrossover(1));
@@ -49,12 +49,12 @@ public class MelodyObjectiveTest {
         factory.addFitnessObjective(new TowseyObjectiveMelody());
         factory.developmentalMethod = new MusicDevelopmentalMethod();
         factory.operatorPool = op;
-        factory.adultSelector = new RankedTournamentSelector(3, 0.1);
+        factory.adultSelector = new RankedTournamentSelector(3, 0.5);
         factory.rankingModule = new FastNonDominatedSort();
         factory.sortingModule = new RankComparator();
 
         EA<MusicGenotype, MusicPhenotype> ea = factory.build();
-        ea.setThreadCount(16);
+        ea.setThreadCount(32);
         ea.populationMaxSize = 500;
         ea.populationElitism = 1;
         ea.allowMutationAndCrossover = true;
@@ -65,7 +65,7 @@ public class MelodyObjectiveTest {
         MelodyContainer mc = music.melodyContainer;
 
         mc.init();
-
+        /*
         mc.melody[0] = 60 + 12;
         mc.melody[4] = 62 + 12;
         mc.melody[8] = 64 + 12;
@@ -88,7 +88,7 @@ public class MelodyObjectiveTest {
         mc.melody[104] = 62 + 12;
         mc.melody[108] = 62 + 12;
         mc.melody[112] = 60 + 12;
-
+        */
 
         ChordContainer hg = music.chordContainer;
         hg.init();
@@ -111,7 +111,7 @@ public class MelodyObjectiveTest {
         Pattern pMelody = new Pattern(melody).setVoice(0).setInstrument(0);
         Pattern pHarmony = new Pattern(chords).setVoice(1).setInstrument(0);
         Player player = new Player();
-        player.play(pMelody, pHarmony);
+        //player.play(pMelody, pHarmony);
 
         MusicGenotype initialSeed = new MusicGenotype(music);
         List<Phenotype> initialPop = new ArrayList<>();
@@ -153,6 +153,7 @@ public class MelodyObjectiveTest {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
+                    continue;
                 }
 
                 System.out.println(new TowseyObjectiveMelody().getEvaluationString((MusicPhenotype) ea.population.getIndividual(index)));
