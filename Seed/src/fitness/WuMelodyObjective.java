@@ -40,20 +40,41 @@ public class WuMelodyObjective implements FitnessObjective<MusicPhenotype> {
                         firstPitchInChord = true;
                     }
                 }
-                else if (mc.key.pitchInKey(pitch) != -1) {
-                    scalePitches++;
-                }
                 else {
-                    nonScalePitches++;
+                    if (mc.key.pitchInKey(pitch) != -1) {
+                        scalePitches++;
+                    } else {
+                        nonScalePitches++;
+                    }
+                    if (i - 1 >= 0 && i + 1 < phenotype.melodyPitches.get(measure).size()) {
+                        //Possible passing tone.
+                        int prevPitch = phenotype.melodyPitches.get(measure).get(i - 1) % 12;
+                        int nextPitch = phenotype.melodyPitches.get(measure).get(i + 1) % 12;
+                        if (prevPitch == chord[0] || prevPitch == chord[1] || chord[2] == prevPitch || chord[3] == prevPitch) {
+                            if (nextPitch == chord[0] || nextPitch == chord[1] || chord[2] == nextPitch || chord[3] == nextPitch) {
+                                //Toneone occurs between two stable tones (chord members)
+                                int interval1 = Math.abs(phenotype.melodyPitches.get(measure).get(i - 1) - phenotype.melodyPitches.get(measure).get(i));
+                                int interval2 = Math.abs(phenotype.melodyPitches.get(measure).get(i) - phenotype.melodyPitches.get(measure).get(i + 1));
+
+                                if (interval1 > 0 && interval1 <= 2) {
+                                    if (interval2 > 0 && interval2 <= 2) {
+                                        //Tone occurs stepwise, and is either a passing tone or a complete neighbour tone.
+                                        passingTones++;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
                 if (pitch == mc.key.rootPitch || pitch == mc.key.scale[4]) {
                     //rootOrFifth = true;
                 }
             }
 
-            //Calculate passing tones. This might need to be redone to consider scale steps as well, as currently chromatic movement is encouraged.
+            //Check intervals
             float lastStep = 0;
-            for (int interval : phenotype.melodyIntervals.get(measure)) {
+            for (int i = 0; i < phenotype.melodyIntervals.get(measure).size(); i++) {
+                int interval = phenotype.melodyIntervals.get(measure).get(i);
                 int absInterval = Math.abs(interval);
                 if (absInterval > 7) {
                     lessThanFifth += absInterval - 7;
@@ -61,27 +82,19 @@ public class WuMelodyObjective implements FitnessObjective<MusicPhenotype> {
                 if (absInterval == 13) {
                     augNinth += 13;
                 }
-                if (absInterval > 0 && absInterval <= 2) {
-                    float newStep = Math.signum(interval);
-                    if (lastStep == newStep) {
-                        passingTones++;
-                    }
-                    lastStep = newStep;
-                }
             }
-
 
             //Processing for measure is done, assign scores:
             if (scalePitches < chordPitches) {
                 fitness++;
             }
             if(nonScalePitches < scalePitches) {
-                //fitness++;
+                fitness++;
             }
             if(passingTones < chordPitches) {
                 fitness++;
             }
-            if (passingTones < scalePitches) {
+            if (passingTones <= scalePitches) {
                 fitness++;
             }
             if (rootOrFifth) {

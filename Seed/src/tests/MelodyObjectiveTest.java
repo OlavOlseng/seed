@@ -37,7 +37,7 @@ public class MelodyObjectiveTest {
         op.addOperator(new NoteModeMutator(2));
         op.addOperator(new NoteSwapMutator(1));
         op.addOperator(new RandomPitchMutator(2));
-        op.addOperator(new PitchModulationMutator(1));
+        op.addOperator(new PitchModulationMutator(2));
         op.addOperator(new HalfMeasureDuplicatorMutator(0.5));
 
         op.addOperator(new SingleBarCrossover(1));
@@ -59,13 +59,12 @@ public class MelodyObjectiveTest {
         ea.populationElitism = 1;
         ea.allowMutationAndCrossover = true;
 
-        MusicalKey key = new MusicalKey(4, MusicalKey.Mode.MINOR);
-        MusicalContainer music = new MusicalContainer(9, key);
+        MusicalKey key = new MusicalKey(0, MusicalKey.Mode.MINOR);
+        MusicalContainer music = new MusicalContainer(8, key);
         music.init();
         ChordContainer hg = music.chordContainer;
         hg.init();
 
-        /*
         hg.chords[0] = ChordBuilder.getChord(0, 3, 1, key);
         hg.chords[1] = ChordBuilder.getChord(2, 3, 1, key);
         hg.chords[2] = ChordBuilder.getChord(4, 3, 1, key, true);
@@ -74,7 +73,7 @@ public class MelodyObjectiveTest {
         hg.chords[5] = ChordBuilder.getChord(2, 3, 1, key);
         hg.chords[6] = ChordBuilder.getChord(4, 4, 1, key, true);
         hg.chords[7] = ChordBuilder.getChord(0, 3, 1, key);
-        */
+        /*
 
         hg.chords[0] = ChordBuilder.getChord(5, 4, 1, key);
         hg.chords[1] = ChordBuilder.getChord(5, 4, 1, key);
@@ -85,11 +84,13 @@ public class MelodyObjectiveTest {
         hg.chords[6] = ChordBuilder.getChord(2, 4, 1, key);
         hg.chords[7] = ChordBuilder.getChord(2, 4, 1, key);
         hg.chords[8] = ChordBuilder.getChord(0, 4, 1, key);
+        */
 
 
         MelodyContainer mc = music.melodyContainer;
         mc.init();
 
+        /*
         mc.melody[0] = 60 + 12;
         mc.melody[4] = 62 + 12;
         mc.melody[8] = 64 + 12;
@@ -112,7 +113,7 @@ public class MelodyObjectiveTest {
         mc.melody[104] = 62 + 12;
         mc.melody[108] = 62 + 12;
         mc.melody[112] = 60 + 12;
-
+        */
 
 
         MusicGenotype initialSeed = new MusicGenotype(music);
@@ -143,7 +144,7 @@ public class MelodyObjectiveTest {
 
         double startTime = System.currentTimeMillis();
 
-        for (int i = 0; i < 5000; i++) {
+        for (int i = 0; i < 2000; i++) {
             System.out.println("Running generation: " + i);
             System.out.println("Pop size: " + pop.getPopulationSize());
             ea.step();

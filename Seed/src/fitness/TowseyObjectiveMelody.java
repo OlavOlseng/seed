@@ -53,10 +53,10 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
         //fitness += proximity(climaxStrength, getClimaxStrength(p));
 
         */
-        fitness += proximity(pitchVarietyValue, getPitchVarietyValue(p)) * 2.0;
+        fitness += proximity(pitchVarietyValue, getPitchVarietyValue(p));
 
         fitness += proximity(stepMovement, getStepMovement(p));
-        fitness += proximity(nonScalePitchQuantaValue, getNonScalePitchQuantaValue(p));
+        //fitness += proximity(nonScalePitchQuantaValue, getNonScalePitchQuantaValue(p));
         fitness += proximity(contourStability, getContourStability(p));
 
         fitness += proximity(noteDensity, getNoteDensity(p)) * 3.0;
