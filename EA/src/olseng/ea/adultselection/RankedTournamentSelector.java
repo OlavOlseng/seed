@@ -43,7 +43,7 @@ public class RankedTournamentSelector extends AdultSelector {
         while(picked < tournamentSize && picked < populationSize) {
             int index = (random.nextInt(populationSize));
             if (selected.contains(index)) {
-                System.out.println("Duplicate chosen!");
+                //System.out.println("Duplicate chosen!");
                 continue;
             }
             tournament.add(population.getIndividual(index));
@@ -69,6 +69,6 @@ public class RankedTournamentSelector extends AdultSelector {
 
             return winner;
         }
-        return tournament.get( random.nextInt(tournamentSize));
+        return tournament.get(random.nextInt(tournamentSize - 1) + 1);
     }
 }

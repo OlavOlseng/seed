@@ -76,7 +76,7 @@ public class WuMelodyObjective implements FitnessObjective<MusicPhenotype> {
                 fitness++;
             }
             if(nonScalePitches < scalePitches) {
-                fitness++;
+                //fitness++;
             }
             if(passingTones < chordPitches) {
                 fitness++;
@@ -85,7 +85,7 @@ public class WuMelodyObjective implements FitnessObjective<MusicPhenotype> {
                 fitness++;
             }
             if (rootOrFifth) {
-                fitness++;
+                //fitness++;
             }
             if (firstPitchInChord) {
                 fitness++;
