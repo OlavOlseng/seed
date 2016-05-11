@@ -27,24 +27,23 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
 
     //Rhythmic features
     public double noteDensity = 0.25;
-    public double restDensity = 0.05; //
+    public double restDensity = 0.1; //
     public double rhythmicVariety = 0.5;
-    public double rhythmicRange = 0.3;
-    public double syncopation = 0.1;
+    public double rhythmicRange = 0.4;
+    public double syncopation = 0.05;
 
     //Pattern features
-    public double repeatedPitches = .1;
-    public double repeatedTimings = 0.3;
+    public double repeatedPitches = .2;
+    public double repeatedTimings = 0.5;
     public double rhythmicWholeBarRepetitions = 0.5;
     public double rhythmicHalfBarUniqueness = 0.75;
     public double rhythmicWholeBarSequenceValue = 1.;
-    public double onBeatPitchCoverage = .7;
+    public double onBeatPitchCoverage = .75;
 
     @Override
     public float evaluate(MusicPhenotype p) {
         double fitness = 0;
         /*
-        fitness += proximity(pitchRangeValue, getPitchRangeValue(p));
 
         fitness += proximity(keyCenteredValue, getKeyCenteredValue(p));
         fitness += proximity(dissonantIntervalsValue, getDissonantIntervalsValue(p));
@@ -54,23 +53,27 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
 
         */
         fitness += proximity(pitchVarietyValue, getPitchVarietyValue(p));
+        fitness += proximity(pitchRangeValue, getPitchRangeValue(p));
 
-        fitness += proximity(stepMovement, getStepMovement(p));
-        //fitness += proximity(nonScalePitchQuantaValue, getNonScalePitchQuantaValue(p));
+        //fitness += proximity(stepMovement, getStepMovement(p));
+        fitness += proximity(nonScalePitchQuantaValue, getNonScalePitchQuantaValue(p));
         fitness += proximity(contourStability, getContourStability(p));
 
-        fitness += proximity(noteDensity, getNoteDensity(p)) * 3.0;
-        fitness += proximity(restDensity, getRestDensity(p));
+        fitness += proximity(noteDensity, getNoteDensity(p)) * 2.0;
+        fitness += proximity(restDensity, getRestDensity(p)) * 2.0;
         fitness += proximity(rhythmicVariety, getRhythmicVariety(p));
         fitness += proximity(rhythmicRange, getRhythmicRange(p));
         fitness += proximity(syncopation, getSyncopation(p));
 
         fitness += proximity(repeatedPitches, getRepeatedPitches(p));
-        //fitness += proximity(repeatedTimings, getRepeatedTimings(p));
-        //fitness += proximity(rhythmicWholeBarRepetitions, getRhythmicWholeMeasureRepetitions(p));
-        //fitness += proximity(rhythmicHalfBarUniqueness, getRhythmicHalfMeasureUniqueness(p));
-        fitness += proximity(rhythmicWholeBarSequenceValue, getRhythmicWholeBarSequenceRepetitions(p)) * 2.0;
+        fitness += proximity(repeatedTimings, getRepeatedTimings(p));
         fitness += proximity(onBeatPitchCoverage, getOnBeatPitchCoverage(p));
+
+
+        //fitness += proximity(rhythmicWholeBarRepetitions, getRhythmicWholeMeasureRepetitions(p));
+        fitness += proximity(rhythmicHalfBarUniqueness, getRhythmicHalfMeasureUniqueness(p));
+        fitness += proximity(rhythmicWholeBarSequenceValue, getRhythmicWholeBarSequenceRepetitions(p));
+        fitness += proximity(rhythmicWholeBarSequenceValue, getRestWholeBarSequenceRepetitions(p));
 
         return (float) fitness;
     }
@@ -93,10 +96,12 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
     }
 
     private double getPitchRangeValue(MusicPhenotype p) {
-        double pitchMin = MelodyContainer.MELODY_RANGE_MAX - 1;
+        double pitchMin = MelodyContainer.MELODY_RANGE_MAX + 1;
         double pitchMax = MelodyContainer.MELODY_RANGE_MIN - 1;
+        double pitchCount = 0;
         for (ArrayList<Byte> measure : p.melodyPitches) {
             for (byte pitch : measure) {
+                pitchCount++;
                 if (pitch < pitchMin) {
                     pitchMin = pitch;
                 }
@@ -105,7 +110,7 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
                 }
             }
         }
-        return (pitchMax - pitchMin) / (double) MelodyContainer.MELODY_RANGE;
+        return pitchCount > 0 ? (pitchMax - pitchMin) / (double) MelodyContainer.MELODY_RANGE : 0;
     }
 
     private double getKeyCenteredValue(MusicPhenotype p) {
@@ -437,6 +442,35 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
         return positionalBarRepetitions / (double) (p.getRepresentation().bars - 1);
     }
 
+    private double getRestWholeBarSequenceRepetitions(MusicPhenotype p) {
+        double positionalBarRepetitions = 0;
+
+        for (int i = 0; i < p.sequentialMeasureRestPatterns.length; i++) {
+            double barRepetitions = 0;
+            if (i + 4 < p.sequentialMeasureRestPatterns.length) {
+                if (p.sequentialMeasureRestPatterns[i] == p.sequentialMeasureRestPatterns[i + 4]) {
+                    positionalBarRepetitions++;
+                    continue;
+                }
+            } else {
+                if (i + 2 < p.sequentialMeasureRestPatterns.length) {
+                    if (p.sequentialMeasureRestPatterns[i] == p.sequentialMeasureRestPatterns[i + 2]) {
+                        barRepetitions++;
+                    }
+                }
+                if (i + 1 < p.sequentialMeasureRestPatterns.length) {
+                    if (p.sequentialMeasureRestPatterns[i] == p.sequentialMeasureRestPatterns[i + 1]) {
+                        barRepetitions++;
+                    }
+                }
+                if (barRepetitions > 0 && barRepetitions < 2){
+                    positionalBarRepetitions++;
+                }
+            }
+        }
+        return positionalBarRepetitions / (double) (p.getRepresentation().bars - 1);
+    }
+
     private double getOnBeatPitchCoverage(MusicPhenotype p) {
         double count = 0;
         byte[] melody = p.getRepresentation().melodyContainer.melody;
@@ -493,6 +527,7 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
         s += "\nrhythmicWholeBarRepetitions: " + rhythmicWholeBarRepetitions + "->" + getRhythmicWholeMeasureRepetitions(p);
         s += "\nrhythmicHalfBarUniqueness: " + rhythmicHalfBarUniqueness + "->" + getRhythmicHalfMeasureUniqueness(p);
         s += "\nrhythmicWholeBarSequenceValue: " + rhythmicWholeBarSequenceValue + "->" + getRhythmicWholeBarSequenceRepetitions(p);
+        s += "\nrestWholeBarSequenceValue: " + rhythmicWholeBarSequenceValue + "->" + getRestWholeBarSequenceRepetitions(p);
         s += "\nonBeatPitchCoverage: " + onBeatPitchCoverage + "->" + getOnBeatPitchCoverage(p);
         return s;
     }

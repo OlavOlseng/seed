@@ -1,5 +1,6 @@
 package operators.crossover;
 
+import genetics.MelodyContainer;
 import genetics.MusicGenotype;
 import genetics.MusicalContainer;
 import olseng.ea.genetics.GeneticCrossoverOperator;
@@ -25,7 +26,7 @@ public class SingleBarCrossover extends GeneticCrossoverOperator<MusicGenotype> 
 
         int splicingBar = rand.nextInt(mc1.bars);
 
-        //Splice in chords
+        //Splice in chords, doesn't matter that only the reference is copied, since they are both deep copies of their parents.
         mc1.chordContainer.chords[splicingBar] = mc2.chordContainer.chords[splicingBar];
 
 

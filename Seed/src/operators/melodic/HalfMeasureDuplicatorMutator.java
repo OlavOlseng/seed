@@ -45,8 +45,12 @@ public class HalfMeasureDuplicatorMutator extends GeneticMutationOperator<MusicG
         for (int i = 0; i < halfBarSize; i++) {
             mc.melodyContainer.melody[injectionIndex * halfBarSize + i] = mc.melodyContainer.melody[extractionIndex * halfBarSize + i];
         }
-        if (mc.melodyContainer.melody[MelodyContainer.MELODY_HOLD] == 0) {
-            mc.melodyContainer.melody[0] = MelodyContainer.MELODY_REST;
+        if (injectionIndex == 0 && mc.melodyContainer.melody[mc.melodyContainer.getNoteStartIndex(extractionIndex)] >= MelodyContainer.MELODY_RANGE_MIN) {
+            //This chunk of code makes melodies starting with silence less likely to happen.
+            mc.melodyContainer.melody[0] = mc.melodyContainer.melody[mc.melodyContainer.getNoteStartIndex(extractionIndex * halfBarSize)];
+    }
+        if (mc.melodyContainer.melody[0] == MelodyContainer.MELODY_HOLD) {
+                mc.melodyContainer.melody[0] = MelodyContainer.MELODY_REST;
         }
 
         MusicGenotype child = new MusicGenotype(mc);

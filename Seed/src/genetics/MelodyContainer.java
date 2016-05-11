@@ -32,7 +32,7 @@ public class MelodyContainer {
      */
     public void init() {
         this.melody = new byte[MELODY_BAR_SUBDIVISION * MELODY_FOURTH_SUBDIVISION * bars];
-        for (int i = 0; i < melody.length; i += MELODY_BAR_SUBDIVISION * MELODY_FOURTH_SUBDIVISION) {
+        for (int i = 0; i < melody.length; i += MELODY_FOURTH_SUBDIVISION) {
             this.melody[i] = MELODY_REST;
         }
     }
@@ -46,7 +46,7 @@ public class MelodyContainer {
     /**
      * This method returns the index of the pause or note that is being held from the current index.
      * @param index - starting index to check.
-     * @return int - index of the note that is being played or held @param index.
+     * @return int - index of the note that is being played or held @param index. -1 if no note is obtained.
      */
     public int getNoteStartIndex(int index) {
         while (index > 0) {
@@ -98,7 +98,7 @@ public class MelodyContainer {
             byte value = melody[index];
             if (value > 0) {
                 if (value == 1) {
-                    if (previousNote == previousRest) {
+                    if (previousNote == previousRest && (index - previousRest < 4 || index % 4 != 0)) {
                         melody[index] = 0;
                     }
                     else {

@@ -1,5 +1,7 @@
 package fitness;
 
+import genetics.MelodyContainer;
+import genetics.MusicGenotype;
 import genetics.MusicPhenotype;
 import genetics.MusicalContainer;
 import olseng.ea.fitness.FitnessObjective;
@@ -23,8 +25,10 @@ public class WuMelodyObjective implements FitnessObjective<MusicPhenotype> {
             float nonScalePitches = 0;
             float chordPitches = 0;
             float passingTones = 0;
+            float neighbourTones = 0;
             float lessThanFifth = 0;
             float augNinth = 0;
+            float unresolvedNonScalePitches = 0;
             boolean rootOrFifth = false;
             boolean firstPitchInChord = false;
             byte[] chord = mc.chordContainer.getChord(measure);
@@ -45,6 +49,25 @@ public class WuMelodyObjective implements FitnessObjective<MusicPhenotype> {
                         scalePitches++;
                     } else {
                         nonScalePitches++;
+                        //Check if nonScale pitch is resolved
+                        int nextPitchIndex = phenotype.getRepresentation().melodyContainer.getNextNoteIndex(measure * MelodyContainer.MELODY_FOURTH_SUBDIVISION * MelodyContainer.MELODY_BAR_SUBDIVISION + i);
+                        if (nextPitchIndex == -1) {
+                            //No more pitches
+                            unresolvedNonScalePitches++;
+                        }
+                        else {
+                            byte nextPitch = phenotype.getRepresentation().melodyContainer.melody[nextPitchIndex];
+                            if (nextPitch < MelodyContainer.MELODY_RANGE_MIN) {
+                                //Is a pause
+                                unresolvedNonScalePitches++;
+                            }
+                            else {
+                                int interval = phenotype.melodyPitches.get(measure).get(i) - nextPitch;
+                                if (Math.abs(interval) > 2) {
+                                    unresolvedNonScalePitches++;
+                                }
+                            }
+                        }
                     }
                     if (i - 1 >= 0 && i + 1 < phenotype.melodyPitches.get(measure).size()) {
                         //Possible passing tone.
@@ -53,13 +76,23 @@ public class WuMelodyObjective implements FitnessObjective<MusicPhenotype> {
                         if (prevPitch == chord[0] || prevPitch == chord[1] || chord[2] == prevPitch || chord[3] == prevPitch) {
                             if (nextPitch == chord[0] || nextPitch == chord[1] || chord[2] == nextPitch || chord[3] == nextPitch) {
                                 //Toneone occurs between two stable tones (chord members)
-                                int interval1 = Math.abs(phenotype.melodyPitches.get(measure).get(i - 1) - phenotype.melodyPitches.get(measure).get(i));
-                                int interval2 = Math.abs(phenotype.melodyPitches.get(measure).get(i) - phenotype.melodyPitches.get(measure).get(i + 1));
+                                int interval1 = phenotype.melodyPitches.get(measure).get(i - 1) - phenotype.melodyPitches.get(measure).get(i);
+                                int interval2 = phenotype.melodyPitches.get(measure).get(i) - phenotype.melodyPitches.get(measure).get(i + 1);
 
-                                if (interval1 > 0 && interval1 <= 2) {
-                                    if (interval2 > 0 && interval2 <= 2) {
-                                        //Tone occurs stepwise, and is either a passing tone or a complete neighbour tone.
-                                        passingTones++;
+                                if (nextPitch == prevPitch) {
+                                    if (Math.abs(interval1) > 0 && Math.abs(interval1) <= 2) {
+                                        if (Math.abs(interval2) > 0 && Math.abs(interval2) <= 2) {
+                                            //NeighbourPitch.
+                                            neighbourTones++;
+                                        }
+                                    }
+                                }
+                                if (Math.signum(interval1) == Math.signum(interval2)) {
+                                    if (Math.abs(interval1) > 0 && Math.abs(interval1) <= 2) {
+                                        if (Math.abs(interval2) > 0 && Math.abs(interval2) <= 2) {
+                                            //Tone occurs stepwise, and is either a passing tone or a complete neighbour tone.
+                                            passingTones++;
+                                        }
                                     }
                                 }
                             }
@@ -67,7 +100,7 @@ public class WuMelodyObjective implements FitnessObjective<MusicPhenotype> {
                     }
                 }
                 if (pitch == mc.key.rootPitch || pitch == mc.key.scale[4]) {
-                    //rootOrFifth = true;
+                    rootOrFifth = true;
                 }
             }
 
@@ -88,13 +121,16 @@ public class WuMelodyObjective implements FitnessObjective<MusicPhenotype> {
             if (scalePitches < chordPitches) {
                 fitness++;
             }
-            if(nonScalePitches < scalePitches) {
+            if(nonScalePitches < passingTones + neighbourTones) {
                 fitness++;
             }
-            if(passingTones < chordPitches) {
+            if(passingTones <= scalePitches) {
                 fitness++;
             }
-            if (passingTones <= scalePitches) {
+            if(neighbourTones <= scalePitches) {
+                fitness++;
+            }
+            if (passingTones + neighbourTones <= scalePitches) {
                 fitness++;
             }
             if (rootOrFifth) {
@@ -107,6 +143,7 @@ public class WuMelodyObjective implements FitnessObjective<MusicPhenotype> {
                 fitness += lessThanFifth == 0 ? 1 : -lessThanFifth;
                 fitness += augNinth == 0 ? 1 : -augNinth;
             }
+            fitness -= unresolvedNonScalePitches;
         }
         ArrayList<Byte> lastBar = phenotype.melodyPitches.get(phenotype.getRepresentation().bars - 1);
         if (lastBar.size() > 0) {

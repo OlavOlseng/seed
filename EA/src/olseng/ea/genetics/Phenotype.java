@@ -67,4 +67,5 @@ public abstract class Phenotype<T, G extends Genotype> {
         return this.dominatedSet.get(index);
     }
 
+    public abstract boolean isEqualTo(Phenotype<T, G> p2);
 }

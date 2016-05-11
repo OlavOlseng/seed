@@ -18,6 +18,7 @@ public class MusicDevelopmentalMethod implements DevelopmentalMethod<MusicGenoty
         processMelodicRhythmsAndPatterns(p);
         processWholeBarRhythmicPatterns(p);
         processHalfBarRhythmicPatterns(p);
+        processWholeBarRestPatterns(p);
 
         return p;
     }
@@ -110,9 +111,6 @@ public class MusicDevelopmentalMethod implements DevelopmentalMethod<MusicGenoty
                 //New index is a pitch.
                 p.melodyPitches.get(bar).add(mc.melody[currentPitchIndex]);
                 p.pitchPositions.add(currentPitchIndex);
-                if (currentPitchIndex == 0) {
-                    currentPitchIndex++;
-                }
                 if (mc.melody[lastPitchIndex] < MelodyContainer.MELODY_RANGE_MIN) {
                     lastPitchIndex = currentPitchIndex;
                     continue;
@@ -138,6 +136,27 @@ public class MusicDevelopmentalMethod implements DevelopmentalMethod<MusicGenoty
                     p.wholeMeasureRhythmicPatterns.put(barValue, p.wholeMeasureRhythmicPatterns.get(barValue) + 1);
                 } else {
                     p.wholeMeasureRhythmicPatterns.put(barValue, 1);
+                }
+                barValue = 0;
+            }
+            barValue = barValue << 1;
+        }
+    }
+
+    private void processWholeBarRestPatterns(MusicPhenotype p) {
+        p.wholeMeasureRestPatterns = new HashMap<>();
+        byte[] melody = p.getRepresentation().melodyContainer.melody;
+        int barValue = 0;
+        for (int i = 0; i < melody.length; i++) {
+            if (melody[i] == MelodyContainer.MELODY_REST) {
+                barValue = barValue | 1;
+            }
+            if ((i + 1) % 16 == 0 && i != 0) {
+                p.sequentialMeasureRestPatterns[i / 16] = barValue;
+                if (p.wholeMeasureRestPatterns.containsKey(barValue)) {
+                    p.wholeMeasureRestPatterns.put(barValue, p.wholeMeasureRestPatterns.get(barValue) + 1);
+                } else {
+                    p.wholeMeasureRestPatterns.put(barValue, 1);
                 }
                 barValue = 0;
             }

@@ -13,13 +13,20 @@ import java.util.List;
  */
 public class FastNonDominatedSort implements RankingModule {
 
-    public boolean allowFitnessDuplicates = false;
+    public static final int PUPULATION_DUPLICATE_CULLING_OFF = 0;
+    public static final int POPULATION_DUPLICATE_CULLING_FITNESS = 1;
+    public static final int POPULATION_DUPLICATE_CULLING_PHENOTYPIC = 2;
+
+    public int duplicateCullingMode = POPULATION_DUPLICATE_CULLING_FITNESS;
 
     @Override
     public void rankPopulation(Population population) {
 
-        if (!allowFitnessDuplicates) {
+        if (duplicateCullingMode == POPULATION_DUPLICATE_CULLING_FITNESS) {
             eliminateFitnessDuplicates(population);
+        }
+        else if (duplicateCullingMode == POPULATION_DUPLICATE_CULLING_PHENOTYPIC) {
+            eliminatePhenotypicDuplicates(population);
         }
         List<Phenotype> currentFront = new ArrayList<>();
         for (int i = 0; i < population.getPopulationSize(); i++) {
@@ -139,6 +146,31 @@ public class FastNonDominatedSort implements RankingModule {
         }
     }
 
+    private void eliminatePhenotypicDuplicates(Population population) {
+        if (population.getPopulationSize() < 2) {
+            return;
+        }
+
+        ArrayList<Phenotype> removalFlagged = new ArrayList<>();
+        for (int i = 0; i < population.getPopulationSize() - 1; i++) {
+            Phenotype p = population.getIndividual(i);
+
+            for (int j = i + 1; j < population.getPopulationSize(); j++) {
+                if (i == j) {
+                    continue;
+                }
+                Phenotype q = population.getIndividual(j);
+                if (isPhenotypicallyEqual(p, q)) {
+                    removalFlagged.add(q);
+                    break;
+                }
+            }
+        }
+        for (int i = 0; i < removalFlagged.size(); i++) {
+            population.removeIndividual(removalFlagged.get(i));
+        }
+    }
+
     public boolean isFitnessEqual(Phenotype p1, Phenotype p2) {
         for (int i = 0; i < p1.getFitnessCount(); i++) {
             if (p1.getFitnessValue(i) != p2.getFitnessValue(i)) {
@@ -146,5 +178,9 @@ public class FastNonDominatedSort implements RankingModule {
             }
         }
         return true;
+    }
+
+    public boolean isPhenotypicallyEqual(Phenotype p1, Phenotype p2) {
+        return p1.isEqualTo(p2);
     }
 }

@@ -28,7 +28,7 @@ public class EA<G extends Genotype, P extends Phenotype> {
     public List<TerminationCondition> terminationConditions;
 
     public Population population;
-    public boolean allowMutationAndCrossover = false;
+    public boolean allowMutationAndCrossover = true;
 
     private int threadCount = 1;
     private int taskCounter = 1;
