@@ -434,7 +434,7 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
                         barRepetitions++;
                     }
                 }
-                if (barRepetitions > 0 /*&& barRepetitions < 2*/){
+                if (barRepetitions > 0 && barRepetitions < 2){
                     positionalBarRepetitions++;
                 }
             }
@@ -463,7 +463,7 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
                         barRepetitions++;
                     }
                 }
-                if (barRepetitions > 0 /*&& barRepetitions < 2*/){
+                if (barRepetitions > 0 && barRepetitions < 2){
                     positionalBarRepetitions++;
                 }
             }
