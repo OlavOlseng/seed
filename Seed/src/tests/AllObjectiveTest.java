@@ -13,6 +13,10 @@ import olseng.ea.genetics.OperatorPool;
 import olseng.ea.genetics.Phenotype;
 import operators.crossover.SingleBarCrossover;
 import operators.crossover.SinglePointCrossover;
+import operators.harmonic.ChordChangeMutator;
+import operators.harmonic.ChordPitchModulatorMutator;
+import operators.harmonic.ChordSwapMutator;
+import operators.harmonic.InversionMutator;
 import operators.melodic.*;
 import org.jfugue.pattern.Pattern;
 import org.jfugue.player.Player;
@@ -30,48 +34,46 @@ import java.util.List;
 /**
  * Created by Olav on 02.03.2016.
  */
-public class MelodyObjectiveTest {
-
-    public static int POPULATION_SIZE = 100;
-    public static int GENERATIONS = 30000;
+public class AllObjectiveTest {
 
     public static void main(String[] args) {
         OperatorPool<MusicGenotype> op = new OperatorPool<>();
         op.addOperator(new NoteModeMutator(2));
         op.addOperator(new NoteSwapMutator(1));
         op.addOperator(new RandomPitchMutator(2));
-        op.addOperator(new PitchModulationMutator(1));
-        op.addOperator(new HalfMeasureDuplicatorMutator(1));
+        op.addOperator(new PitchModulationMutator(2));
+        op.addOperator(new HalfMeasureDuplicatorMutator(0.5));
 
-        //op.addOperator(new SingleBarCrossover(1));
-        op.addOperator(new SinglePointCrossover(2));
-        op.setCrossoverProbability(0.8);
+        op.addOperator(new ChordChangeMutator(1));
+        op.addOperator(new ChordPitchModulatorMutator(1));
+        op.addOperator(new ChordSwapMutator(1));
+        op.addOperator(new InversionMutator(1));
+
+        op.addOperator(new SingleBarCrossover(1));
+        op.addOperator(new SinglePointCrossover(1));
+        op.setCrossoverProbability(0.1);
 
         EAFactory<MusicGenotype, MusicPhenotype> factory = new EAFactory<>();
         factory.addFitnessObjective(new WuMelodyObjective());
         factory.addFitnessObjective(new TowseyObjectiveMelody());
-        //factory.addFitnessObjective(new PatternObjective());
-
         factory.developmentalMethod = new MusicDevelopmentalMethod();
         factory.operatorPool = op;
-        factory.adultSelector = new RankedTournamentSelector(2, 0.05);
+        factory.adultSelector = new RankedTournamentSelector(3, 0.5);
         factory.rankingModule = new FastNonDominatedSort();
         factory.sortingModule = new RankComparator();
-        ((FastNonDominatedSort)factory.rankingModule).duplicateCullingMode = FastNonDominatedSort.POPULATION_DUPLICATE_CULLING_FITNESS;
 
         EA<MusicGenotype, MusicPhenotype> ea = factory.build();
         ea.setThreadCount(32);
-        ea.populationMaxSize = POPULATION_SIZE;
+        ea.populationMaxSize = 500;
         ea.populationElitism = 1;
         ea.allowMutationAndCrossover = true;
 
         MusicalKey key = new MusicalKey(4, MusicalKey.Mode.MINOR);
-        MusicalContainer music = new MusicalContainer(16, key);
+        MusicalContainer music = new MusicalContainer(8, key);
         music.init();
         ChordContainer hg = music.chordContainer;
         hg.init();
-
-                /*
+        /*
 
         hg.chords[0] = ChordBuilder.getChord(0, 3, 1, key);
         hg.chords[1] = ChordBuilder.getChord(2, 3, 1, key);
@@ -81,16 +83,8 @@ public class MelodyObjectiveTest {
         hg.chords[5] = ChordBuilder.getChord(2, 3, 1, key);
         hg.chords[6] = ChordBuilder.getChord(4, 4, 1, key, true);
         hg.chords[7] = ChordBuilder.getChord(0, 3, 1, key);
-        hg.chords[8] = ChordBuilder.getChord(0, 3, 1, key);
-        hg.chords[9] = ChordBuilder.getChord(2, 3, 1, key);
-        hg.chords[10] = ChordBuilder.getChord(4, 3, 1, key, true);
-        hg.chords[11] = ChordBuilder.getChord(5, 3, 1, key);
-        hg.chords[12] = ChordBuilder.getChord(0, 3, 1, key);
-        hg.chords[13] = ChordBuilder.getChord(2, 3, 1, key);
-        hg.chords[14] = ChordBuilder.getChord(4, 4, 1, key, true);
-        hg.chords[15] = ChordBuilder.getChord(0, 3, 1, key);
+        */
 
-        //Behind the sun
         hg.chords[0] = ChordBuilder.getChord(5, 4, 1, key);
         hg.chords[1] = ChordBuilder.getChord(5, 4, 1, key);
         hg.chords[2] = ChordBuilder.getChord(6, 4, 1, key);
@@ -99,38 +93,11 @@ public class MelodyObjectiveTest {
         hg.chords[5] = ChordBuilder.getChord(0, 4, 1, key);
         hg.chords[6] = ChordBuilder.getChord(2, 4, 1, key);
         hg.chords[7] = ChordBuilder.getChord(2, 4, 1, key);
-        hg.chords[8] = ChordBuilder.getChord(5, 4, 1, key);
-        hg.chords[9] = ChordBuilder.getChord(5, 4, 1, key);
-        hg.chords[10] = ChordBuilder.getChord(6, 4, 1, key);
-        hg.chords[11] = ChordBuilder.getChord(6, 4, 1, key);
-        hg.chords[12] = ChordBuilder.getChord(0, 4, 1, key);
-        hg.chords[13] = ChordBuilder.getChord(0, 4, 1, key);
-        hg.chords[14] = ChordBuilder.getChord(2, 4, 1, key);
-        hg.chords[15] = ChordBuilder.getChord(2, 4, 1, key);
-        */
-
-
-        //Bråka mari
-        hg.chords[0] = ChordBuilder.getChord(0, 3, 1, key);
-        hg.chords[1] = ChordBuilder.getChord(3, 3, 1, key);
-        hg.chords[2] = ChordBuilder.getChord(4, 4, 1, key, true);
-        hg.chords[3] = ChordBuilder.getChord(0, 3, 1, key);
-        hg.chords[4] = ChordBuilder.getChord(5, 4, 1, key);
-        hg.chords[5] = ChordBuilder.getChord(3, 3, 1, key);
-        hg.chords[6] = ChordBuilder.getChord(4, 4, 1, key, true);
-        hg.chords[7] = ChordBuilder.getChord(0, 4, 1, key);
-        hg.chords[8] = ChordBuilder.getChord(3, 4, 1, key);
-        hg.chords[9] = ChordBuilder.getChord(2, 3, 1, key);
-        hg.chords[10] = ChordBuilder.getChord(4, 4, 1, key, true);
-        hg.chords[11] = ChordBuilder.getChord(5, 4, 1, key);
-        hg.chords[12] = ChordBuilder.getChord(1, 3, 1, key);
-        hg.chords[13] = ChordBuilder.getChord(2, 4, 1, key);
-        hg.chords[14] = ChordBuilder.getChord(4, 4, 1, key, true);
-        hg.chords[15] = ChordBuilder.getChord(0, 4, 1, key);
 
 
         MelodyContainer mc = music.melodyContainer;
         mc.init();
+
         /*
         mc.melody[0] = 60 + 12;
         mc.melody[4] = 62 + 12;
@@ -155,6 +122,7 @@ public class MelodyObjectiveTest {
         mc.melody[108] = 62 + 12;
         mc.melody[112] = 60 + 12;
         */
+
 
         MusicGenotype initialSeed = new MusicGenotype(music);
         List<Phenotype> initialPop = new ArrayList<>();
@@ -184,16 +152,14 @@ public class MelodyObjectiveTest {
 
         double startTime = System.currentTimeMillis();
 
-        for (int i = 0; i < GENERATIONS; i++) {
-            if (i % 100 == 0) {
-                System.out.println("Running generation: " + i);
-                System.out.println("Pop size: " + pop.getPopulationSize());
-            }
+        for (int i = 0; i < 2000; i++) {
+            System.out.println("Running generation: " + i);
+            System.out.println("Pop size: " + pop.getPopulationSize());
             ea.step();
         }
 
         double runTime = (double) System.currentTimeMillis() - startTime;
-        System.out.println("Elapsed runtime: " + (int)(runTime / 60000) + ":" + (int)(runTime / 1000) % 60);
+        System.out.println("Elapsed runtime: " + runTime / 60000. + ":" + (runTime / 1000.0) % 60);
 
         ea.terminateThreads();
 
@@ -240,9 +206,8 @@ public class MelodyObjectiveTest {
                 System.out.println("Half measure counts: " + ((MusicPhenotype)(ea.population.getIndividual(index))).halfMeasureRhythmicPatterns.values());
                 System.out.println("Whole measure counts: " + ((MusicPhenotype)(ea.population.getIndividual(index))).wholeMeasureRhythmicPatterns.values());
                 System.out.println("Measure patterns: " + Arrays.toString(((MusicPhenotype) ea.population.getIndividual(index)).sequentialMeasurePatterns));
-                System.out.println("Rest patterns: " + Arrays.toString(((MusicPhenotype) ea.population.getIndividual(index)).sequentialMeasureRestPatterns));
                 pMelody = new Pattern(melody).setVoice(0).setInstrument(4);
-                pHarmony = new Pattern(chords).setVoice(1).setInstrument(1);
+                pHarmony = new Pattern(chords).setVoice(1).setInstrument(0);
                 player = new Player();
                 player.play(pMelody, pHarmony);
             }
