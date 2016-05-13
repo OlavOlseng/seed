@@ -26,7 +26,7 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
     public double climaxStrength = 0.1; //
 
     //Rhythmic features
-    public double noteDensity = 0.25;
+    public double noteDensity = 0.18;
     public double restDensity = 0.1; //
     public double rhythmicVariety = 0.5;
     public double rhythmicRange = 0.4;
@@ -36,9 +36,9 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
     public double repeatedPitches = .2;
     public double repeatedTimings = 0.5;
     public double rhythmicWholeBarRepetitions = 0.5;
-    public double rhythmicHalfBarUniqueness = 0.75;
+    public double rhythmicHalfBarUniqueness = 0.8;
     public double rhythmicWholeBarSequenceValue = 1.;
-    public double onBeatPitchCoverage = .75;
+    public double onBeatPitchCoverage = 1;
 
     @Override
     public float evaluate(MusicPhenotype p) {
@@ -416,7 +416,7 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
     private double getRhythmicWholeBarSequenceRepetitions(MusicPhenotype p) {
         double positionalBarRepetitions = 0;
 
-        for (int i = 0; i < p.sequentialMeasurePatterns.length; i++) {
+        for (int i = 0; i < p.sequentialMeasurePatterns.length - 4; i++) {
             double barRepetitions = 0;
             if (i + 4 < p.sequentialMeasurePatterns.length) {
                 if (p.sequentialMeasurePatterns[i] == p.sequentialMeasurePatterns[i + 4]) {
@@ -439,13 +439,13 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
                 }
             }
         }
-        return positionalBarRepetitions / (double) (p.getRepresentation().bars - 1);
+        return positionalBarRepetitions / (double) (p.getRepresentation().bars - 4);
     }
 
     private double getRestWholeBarSequenceRepetitions(MusicPhenotype p) {
         double positionalBarRepetitions = 0;
 
-        for (int i = 0; i < p.sequentialMeasureRestPatterns.length; i++) {
+        for (int i = 0; i < p.sequentialMeasureRestPatterns.length - 4; i++) {
             double barRepetitions = 0;
             if (i + 4 < p.sequentialMeasureRestPatterns.length) {
                 if (p.sequentialMeasureRestPatterns[i] == p.sequentialMeasureRestPatterns[i + 4]) {
@@ -468,7 +468,7 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
                 }
             }
         }
-        return positionalBarRepetitions / (double) (p.getRepresentation().bars - 1);
+        return positionalBarRepetitions / (double) (p.getRepresentation().bars - 4);
     }
 
     private double getOnBeatPitchCoverage(MusicPhenotype p) {

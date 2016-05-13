@@ -11,7 +11,7 @@ public class StandardFitnessEvaluator extends FitnessEvaluator {
     @Override
     public void evaluate(Phenotype phenotype) {
         if (phenotype.isEvaluated) {
-            return;
+            //return;
         }
         phenotype.initFitnessValues(objectiveEvaluators.size());
 

@@ -14,6 +14,10 @@ import java.util.Random;
  */
 public class ChordChangeMutator extends GeneticMutationOperator<MusicGenotype> {
 
+    /**
+     * This operator overwrites a random chord in the genome with a triad native to the key.
+     * @param weight
+     */
     public ChordChangeMutator(double weight) {
         super(weight);
     }

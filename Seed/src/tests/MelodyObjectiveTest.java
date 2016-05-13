@@ -32,7 +32,7 @@ import java.util.List;
  */
 public class MelodyObjectiveTest {
 
-    public static int POPULATION_SIZE = 100;
+    public static int POPULATION_SIZE = 200;
     public static int GENERATIONS = 30000;
 
     public static void main(String[] args) {

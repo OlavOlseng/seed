@@ -31,7 +31,12 @@ public class ChordContainer {
 
     public ChordContainer getCopy() {
         ChordContainer hg = new ChordContainer(this.bars, new MusicalKey(0, MusicalKey.Mode.MINOR));
-        hg.chords = Arrays.copyOf(chords, chords.length);
+        hg.init();
+        for (int i = 0; i < bars; i++) {
+            for (int j  = 0; j < chords[0].length; j++) {
+                hg.chords[i][j] = chords[i][j];
+            }
+        }
         return hg;
     }
 

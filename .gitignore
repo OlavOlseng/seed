@@ -13,3 +13,6 @@ hs_err_pid*
 
 #IDEA specific files
 .idea
+
+#MIDI files
+*midi

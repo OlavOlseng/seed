@@ -16,6 +16,11 @@ public class IntVec extends Phenotype<List<Integer>, BinaryGenome>{
     }
 
     @Override
+    public boolean isEqualTo(Phenotype<List<Integer>, BinaryGenome> p2) {
+        return false;
+    }
+
+    @Override
     public String toString() {
         return /**getRepresentation().toString() +**/ " -> " + Arrays.toString(this.fitnessValues) + ", Rank: " + getRank() + ", CD: " + crowdingDistance;
     }
