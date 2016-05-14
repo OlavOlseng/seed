@@ -1,6 +1,7 @@
 package tests;
 
 import fitness.HarmonicObjective;
+import fitness.HarmonicProgressionObjective;
 import fitness.TowseyObjectiveMelody;
 import fitness.WuMelodyObjective;
 import genetics.*;
@@ -37,6 +38,9 @@ import java.util.List;
  */
 public class AllObjectiveTest {
 
+    private static final int POPULATION_SIZE = 200;
+    private static final int GENERATIONS = 10000;
+
     public static void main(String[] args) {
         OperatorPool<MusicGenotype> op = new OperatorPool<>();
         op.addOperator(new NoteModeMutator(2));
@@ -45,20 +49,20 @@ public class AllObjectiveTest {
         op.addOperator(new PitchModulationMutator(2));
         op.addOperator(new HalfMeasureDuplicatorMutator(0.5));
 
-        op.addOperator(new ChordChangeMutator(1));
-        op.addOperator(new ChordPitchModulatorMutator(1));
+        op.addOperator(new ChordChangeMutator(2));
+        op.addOperator(new ChordPitchModulatorMutator(2));
         op.addOperator(new ChordSwapMutator(1));
-        op.addOperator(new InversionMutator(1));
 
-        op.addOperator(new SingleBarCrossover(1));
+        //op.addOperator(new SingleBarCrossover(1));
         op.addOperator(new SinglePointCrossover(1));
-        op.setCrossoverProbability(0.1);
+        op.setCrossoverProbability(0.8);
 
         EAFactory<MusicGenotype, MusicPhenotype> factory = new EAFactory<>();
 
         factory.addFitnessObjective(new WuMelodyObjective());
         factory.addFitnessObjective(new TowseyObjectiveMelody());
         factory.addFitnessObjective(new HarmonicObjective());
+        factory.addFitnessObjective(new HarmonicProgressionObjective());
 
         factory.developmentalMethod = new MusicDevelopmentalMethod();
         factory.operatorPool = op;
@@ -68,16 +72,15 @@ public class AllObjectiveTest {
 
         EA<MusicGenotype, MusicPhenotype> ea = factory.build();
         ea.setThreadCount(32);
-        ea.populationMaxSize = 500;
+        ea.populationMaxSize = POPULATION_SIZE;
         ea.populationElitism = 1;
         ea.allowMutationAndCrossover = true;
 
-        MusicalKey key = new MusicalKey(0, MusicalKey.Mode.MAJOR);
+        MusicalKey key = new MusicalKey(0, MusicalKey.Mode.MINOR);
         MusicalContainer music = new MusicalContainer(16, key);
         music.init();
         ChordContainer hg = music.chordContainer;
         hg.init();
-        /*
 
         hg.chords[0] = ChordBuilder.getChord(0, 3, 1, key);
         hg.chords[1] = ChordBuilder.getChord(2, 3, 1, key);
@@ -87,6 +90,7 @@ public class AllObjectiveTest {
         hg.chords[5] = ChordBuilder.getChord(2, 3, 1, key);
         hg.chords[6] = ChordBuilder.getChord(4, 4, 1, key, true);
         hg.chords[7] = ChordBuilder.getChord(0, 3, 1, key);
+        /*
 
         hg.chords[0] = ChordBuilder.getChord(0, 3, 1, key);
         hg.chords[1] = ChordBuilder.getChord(1, 3, 1, key);
@@ -156,7 +160,7 @@ public class AllObjectiveTest {
 
         double startTime = System.currentTimeMillis();
 
-        for (int i = 0; i < 2000; i++) {
+        for (int i = 0; i < GENERATIONS; i++) {
             System.out.println("Running generation: " + i);
             System.out.println("Pop size: " + pop.getPopulationSize());
             ea.step();

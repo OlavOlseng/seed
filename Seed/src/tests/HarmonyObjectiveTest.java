@@ -1,6 +1,7 @@
 package tests;
 
 import fitness.HarmonicObjective;
+import fitness.HarmonicProgressionObjective;
 import fitness.TowseyObjectiveMelody;
 import fitness.WuMelodyObjective;
 import genetics.*;
@@ -40,8 +41,8 @@ public class HarmonyObjectiveTest {
 
     public static void main(String[] args) {
         OperatorPool<MusicGenotype> op = new OperatorPool<>();
-        op.addOperator(new ChordChangeMutator(10));
-        op.addOperator(new ChordSwapMutator(10));
+        op.addOperator(new ChordChangeMutator(1));
+        op.addOperator(new ChordSwapMutator(1));
         op.addOperator(new ChordPitchModulatorMutator(1));
 
         //op.addOperator(new SingleBarCrossover(1));
@@ -52,7 +53,7 @@ public class HarmonyObjectiveTest {
         factory.addFitnessObjective(new WuMelodyObjective());
         //factory.addFitnessObjective(new TowseyObjectiveMelody());
         factory.addFitnessObjective(new HarmonicObjective());
-        //factory.addFitnessObjective(new PatternObjective());
+        factory.addFitnessObjective(new HarmonicProgressionObjective());
 
         factory.developmentalMethod = new MusicDevelopmentalMethod();
         factory.operatorPool = op;

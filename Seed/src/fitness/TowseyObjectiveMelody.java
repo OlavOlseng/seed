@@ -26,7 +26,7 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
     public double climaxStrength = 0.1; //
 
     //Rhythmic features
-    public double noteDensity = 0.18;
+    public double noteDensity = 0.25;
     public double restDensity = 0.1; //
     public double rhythmicVariety = 0.5;
     public double rhythmicRange = 0.4;
@@ -38,7 +38,7 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
     public double rhythmicWholeBarRepetitions = 0.5;
     public double rhythmicHalfBarUniqueness = 0.8;
     public double rhythmicWholeBarSequenceValue = 1.;
-    public double onBeatPitchCoverage = 1;
+    public double onBeatPitchCoverage = 0.8;
 
     @Override
     public float evaluate(MusicPhenotype p) {
