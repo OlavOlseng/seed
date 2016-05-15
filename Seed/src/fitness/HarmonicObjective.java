@@ -135,18 +135,23 @@ public class HarmonicObjective implements FitnessObjective<MusicPhenotype> {
                 fitness += invalidPitch;
             }
             if (chord[3] != -1) {
-                //Check 4th pitch is in Triad
-                if ((chord[3] != chord[0] && chord[3] != chord[1] && chord[3] != chord[2])) {
-                    fitness += dissonantPitch;
-                }
-                //Check if 4th pitch is in key and seventh
                 int rootInterval = chord[3] < chord[0] ? chord[3] - chord[0] + 12 : chord[3] - chord[0];
-                //Check if 4th note is a seventh.
-                if (rootInterval != 10 && rootInterval != 11) {
-                    fitness += invalidPitch;
+                //Pitch is a seventh.
+                if (rootInterval == 10 || rootInterval == 11) {
+                    if (p.getRepresentation().key.pitchInKey(chord[3]) == -1) {
+                        //Don't punish meaningful sevenths
+                        fitness += invalidPitch;
+                    }
+                    else if (!isResolvedBySemitone(p, i, 3)) {
+                        //Meaningful seventh. Don't punish
+                    }
+                    else {
+                        fitness += dissonantPitch;
+                    }
                 }
-                else if (p.getRepresentation().key.pitchInKey(chord[3]) == -1 && !melodyContainsPitch(p, i, 3)) {
-                    fitness += invalidPitch;
+                //Check 4th pitch is in Triad
+                else if ((chord[3] != chord[0] && chord[3] != chord[1] && chord[3] != chord[2]) ) {
+                    fitness += dissonantPitch;
                 }
             }
         }

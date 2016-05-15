@@ -90,8 +90,8 @@ public class AllObjectiveTest {
         hg.chords[5] = ChordBuilder.getChord(2, 3, 1, key);
         hg.chords[6] = ChordBuilder.getChord(4, 4, 1, key, true);
         hg.chords[7] = ChordBuilder.getChord(0, 3, 1, key);
-        /*
 
+        /*
         hg.chords[0] = ChordBuilder.getChord(0, 3, 1, key);
         hg.chords[1] = ChordBuilder.getChord(1, 3, 1, key);
         hg.chords[2] = ChordBuilder.getChord(2, 3, 1, key);
@@ -214,8 +214,9 @@ public class AllObjectiveTest {
                 System.out.println("Half measure counts: " + ((MusicPhenotype)(ea.population.getIndividual(index))).halfMeasureRhythmicPatterns.values());
                 System.out.println("Whole measure counts: " + ((MusicPhenotype)(ea.population.getIndividual(index))).wholeMeasureRhythmicPatterns.values());
                 System.out.println("Measure patterns: " + Arrays.toString(((MusicPhenotype) ea.population.getIndividual(index)).sequentialMeasurePatterns));
+                System.out.println("Rest patterns: " + Arrays.toString(((MusicPhenotype) ea.population.getIndividual(index)).sequentialMeasureRestPatterns));
                 pMelody = new Pattern(melody).setVoice(0).setInstrument(4);
-                pHarmony = new Pattern(chords).setVoice(1).setInstrument(0);
+                pHarmony = new Pattern(chords).setVoice(1).setInstrument(1);
                 player = new Player();
                 player.play(pMelody, pHarmony);
             }
