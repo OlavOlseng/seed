@@ -36,7 +36,7 @@ import java.util.List;
  */
 public class HarmonyObjectiveTest {
 
-    public static int POPULATION_SIZE = 200;
+    public static int POPULATION_SIZE = 600;
     public static int GENERATIONS = 10000;
 
     public static void main(String[] args) {

@@ -32,14 +32,15 @@ public class MelodyContainer {
      */
     public void init() {
         this.melody = new byte[MELODY_BAR_SUBDIVISION * MELODY_FOURTH_SUBDIVISION * bars];
-        for (int i = 0; i < melody.length; i += MELODY_FOURTH_SUBDIVISION) {
-            this.melody[i] = MELODY_REST;
-        }
+        melody[0] = MELODY_HOLD;
     }
 
     public MelodyContainer getCopy() {
         MelodyContainer copy = new MelodyContainer(bars, key);
-        copy.melody = Arrays.copyOf(melody, melody.length);
+        copy.init();
+        for (int i = 0; i < copy.melody.length; i++) {
+            copy.melody[i] = this.melody[i];
+        }
         return copy;
     }
 
@@ -124,7 +125,21 @@ public class MelodyContainer {
     }
 
     public void randomize(Random rand) {
-        
+        for (int i = 0; i < melody.length; i++) {
+            double value = rand.nextDouble();
+            if (value < 0.125) {
+                byte pitch = (byte) (rand.nextInt(MELODY_RANGE - 1) + MELODY_RANGE_MIN);
+                melody[i] = pitch;
+            }
+            else if (value < 0.125) {
+                melody[i] = MELODY_REST;
+            }
+        }
+        if (melody[0] == MELODY_HOLD) {
+            byte pitch = (byte) (rand.nextInt(MELODY_RANGE - 1) + MELODY_RANGE_MIN);
+            melody[0] = pitch;
+        }
+        concatenateRests();
     }
 
     public boolean containsInvalidPitches() {

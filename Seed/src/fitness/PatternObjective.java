@@ -11,59 +11,20 @@ import java.util.ArrayList;
  */
 public class PatternObjective implements FitnessObjective<MusicPhenotype> {
 
-    public double repeatedPitches = .1;
-    public double repeatedTimings = 0.5;
     public double rhythmicWholeBarRepetitions = 0.5;
-    public double rhythmicHalfBarUniqueness = 0.75;
-    public double rhythmicWholeBarSequenceValue = 1.;
-    public double onBeatPitchCoverage = .75;
+    public double rhythmicHalfBarUniqueness = 0.8;
+    public double rhythmicWholeBarSequenceValue = .7;
 
     @Override
     public float evaluate(MusicPhenotype p) {
         double fitness = 0;
 
-        //fitness += proximity(repeatedPitches, getRepeatedPitches(p));
-        //fitness += proximity(repeatedTimings, getRepeatedTimings(p));
         //fitness += proximity(rhythmicWholeBarRepetitions, getRhythmicWholeMeasureRepetitions(p));
         fitness += proximity(rhythmicHalfBarUniqueness, getRhythmicHalfMeasureUniqueness(p));
         fitness += proximity(rhythmicWholeBarSequenceValue, getRhythmicWholeBarSequenceRepetitions(p));
         fitness += proximity(rhythmicWholeBarSequenceValue, getRestWholeBarSequenceRepetitions(p));
-        //fitness += proximity(onBeatPitchCoverage, getOnBeatPitchCoverage(p));
 
         return (float)fitness;
-    }
-
-    public double getRepeatedPitches(MusicPhenotype p) {
-        double intervalCount = 0;
-        double repeatedPitches = 0;
-        for (int i = 0; i < p.melodyIntervals.size(); i++) {
-            ArrayList<Integer> intervals = p.melodyIntervals.get(i);
-            for (int j = 0; j < intervals.size(); j++) {
-                intervalCount++;
-                if (intervals.get(j) == 0) {
-                    repeatedPitches++;
-                }
-            }
-        }
-        if (intervalCount == 0) {
-            return 0;
-        }
-        return repeatedPitches / intervalCount;
-    }
-
-    public double getRepeatedTimings(MusicPhenotype p) {
-        double sequentialPitches = 0;
-        double repeatedSequentialPitches = 0;
-        for (int i = 0; i < p.sequentialPitchesDurations.size() - 1; i++) {
-            if (p.sequentialPitchesDurations.get(i) == p.sequentialPitchesDurations.get(i + 1)) {
-                repeatedSequentialPitches++;
-            }
-            sequentialPitches++;
-        }
-        if (sequentialPitches == 0) {
-            return 0;
-        }
-        return repeatedSequentialPitches / sequentialPitches;
     }
 
     private double getRhythmicWholeMeasureRepetitions(MusicPhenotype p) {
@@ -101,7 +62,7 @@ public class PatternObjective implements FitnessObjective<MusicPhenotype> {
     private double getRhythmicWholeBarSequenceRepetitions(MusicPhenotype p) {
         double positionalBarRepetitions = 0;
 
-        for (int i = 0; i < p.sequentialMeasurePatterns.length; i++) {
+        for (int i = 0; i < p.sequentialMeasurePatterns.length - 4; i++) {
             double barRepetitions = 0;
             if (i + 4 < p.sequentialMeasurePatterns.length) {
                 if (p.sequentialMeasurePatterns[i] == p.sequentialMeasurePatterns[i + 4]) {
@@ -124,14 +85,17 @@ public class PatternObjective implements FitnessObjective<MusicPhenotype> {
                 }
             }
         }
-        return positionalBarRepetitions / (double) (p.getRepresentation().bars - 1);
+        return positionalBarRepetitions / (double) (p.getRepresentation().bars - 4);
     }
 
     private double getRestWholeBarSequenceRepetitions(MusicPhenotype p) {
         double positionalBarRepetitions = 0;
 
-        for (int i = 0; i < p.sequentialMeasureRestPatterns.length; i++) {
+        for (int i = 0; i < p.sequentialMeasureRestPatterns.length - 4; i++) {
             double barRepetitions = 0;
+            if(p.sequentialMeasureRestPatterns[i] == 0) {
+                continue;
+            }
             if (i + 4 < p.sequentialMeasureRestPatterns.length) {
                 if (p.sequentialMeasureRestPatterns[i] == p.sequentialMeasureRestPatterns[i + 4]) {
                     positionalBarRepetitions++;
@@ -153,21 +117,7 @@ public class PatternObjective implements FitnessObjective<MusicPhenotype> {
                 }
             }
         }
-        return positionalBarRepetitions / (double) (p.getRepresentation().bars - 1);
-    }
-
-    private double getOnBeatPitchCoverage(MusicPhenotype p) {
-        double count = 0;
-        byte[] melody = p.getRepresentation().melodyContainer.melody;
-        for (int i = 0; i < melody.length; i += MelodyContainer.MELODY_FOURTH_SUBDIVISION) {
-            if (melody[i] >= MelodyContainer.MELODY_RANGE_MIN) {
-                count++;
-            }
-        }
-        if (p.pitchPositions.size() == 0) {
-            return 0;
-        }
-        return count / (double)p.pitchPositions.size();
+        return positionalBarRepetitions / (double) (p.getRepresentation().bars - 4);
     }
 
     private double proximityy(double d1, double d2) {

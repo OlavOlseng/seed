@@ -121,7 +121,7 @@ public class WuMelodyObjective implements FitnessObjective<MusicPhenotype> {
             if (scalePitches < chordPitches) {
                 fitness++;
             }
-            if(nonScalePitches < passingTones + neighbourTones) {
+            if(nonScalePitches <= passingTones + neighbourTones) {
                 fitness++;
             }
             if(passingTones <= scalePitches) {
@@ -145,6 +145,7 @@ public class WuMelodyObjective implements FitnessObjective<MusicPhenotype> {
             }
             fitness -= unresolvedNonScalePitches;
         }
+
         ArrayList<Byte> lastBar = phenotype.melodyPitches.get(phenotype.getRepresentation().bars - 1);
         if (lastBar.size() > 0) {
             int lastPitch = lastBar.get(lastBar.size() - 1) % 12;

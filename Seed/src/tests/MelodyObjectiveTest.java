@@ -11,7 +11,6 @@ import olseng.ea.fitness.ranking.FastNonDominatedSort;
 import olseng.ea.fitness.ranking.RankComparator;
 import olseng.ea.genetics.OperatorPool;
 import olseng.ea.genetics.Phenotype;
-import operators.crossover.SingleBarCrossover;
 import operators.crossover.SinglePointCrossover;
 import operators.melodic.*;
 import org.jfugue.pattern.Pattern;
@@ -26,20 +25,23 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by Olav on 02.03.2016.
  */
 public class MelodyObjectiveTest {
 
-    public static int POPULATION_SIZE = 200;
-    public static int GENERATIONS = 30000;
+    private static final int BAR_COUNT = 8;
+    private static int POPULATION_SIZE_RANDOMS = 100;
+    public static int POPULATION_SIZE_MAX = 200;
+    public static int GENERATIONS = 5000;
 
     public static void main(String[] args) {
         OperatorPool<MusicGenotype> op = new OperatorPool<>();
         op.addOperator(new NoteModeMutator(2));
-        op.addOperator(new NoteSwapMutator(1));
-        op.addOperator(new RandomPitchMutator(2));
+        op.addOperator(new NotePositionMutator(1));
+        op.addOperator(new RandomPitchMutator(0.5));
         op.addOperator(new PitchModulationMutator(1));
         op.addOperator(new HalfMeasureDuplicatorMutator(1));
 
@@ -54,24 +56,24 @@ public class MelodyObjectiveTest {
 
         factory.developmentalMethod = new MusicDevelopmentalMethod();
         factory.operatorPool = op;
-        factory.adultSelector = new RankedTournamentSelector(2, 0.05);
+        factory.adultSelector = new RankedTournamentSelector(3, 0.2);
         factory.rankingModule = new FastNonDominatedSort();
         factory.sortingModule = new RankComparator();
         ((FastNonDominatedSort)factory.rankingModule).duplicateCullingMode = FastNonDominatedSort.POPULATION_DUPLICATE_CULLING_FITNESS;
 
         EA<MusicGenotype, MusicPhenotype> ea = factory.build();
         ea.setThreadCount(32);
-        ea.populationMaxSize = POPULATION_SIZE;
+        ea.populationMaxSize = POPULATION_SIZE_MAX;
         ea.populationElitism = 1;
         ea.allowMutationAndCrossover = true;
 
         MusicalKey key = new MusicalKey(4, MusicalKey.Mode.MINOR);
-        MusicalContainer music = new MusicalContainer(16, key);
+        MusicalContainer music = new MusicalContainer(BAR_COUNT, key);
         music.init();
+        music.randomize(new Random());
         ChordContainer hg = music.chordContainer;
-        hg.init();
 
-                /*
+        /*
 
         hg.chords[0] = ChordBuilder.getChord(0, 3, 1, key);
         hg.chords[1] = ChordBuilder.getChord(2, 3, 1, key);
@@ -119,6 +121,7 @@ public class MelodyObjectiveTest {
         hg.chords[5] = ChordBuilder.getChord(3, 3, 1, key);
         hg.chords[6] = ChordBuilder.getChord(4, 4, 1, key, true);
         hg.chords[7] = ChordBuilder.getChord(0, 4, 1, key);
+        /*
         hg.chords[8] = ChordBuilder.getChord(3, 4, 1, key);
         hg.chords[9] = ChordBuilder.getChord(2, 3, 1, key);
         hg.chords[10] = ChordBuilder.getChord(4, 4, 1, key, true);
@@ -127,11 +130,10 @@ public class MelodyObjectiveTest {
         hg.chords[13] = ChordBuilder.getChord(2, 4, 1, key);
         hg.chords[14] = ChordBuilder.getChord(4, 4, 1, key, true);
         hg.chords[15] = ChordBuilder.getChord(0, 4, 1, key);
-
+        */
 
         MelodyContainer mc = music.melodyContainer;
         mc.init();
-        /*
         mc.melody[0] = 60 + 12;
         mc.melody[4] = 62 + 12;
         mc.melody[8] = 64 + 12;
@@ -154,12 +156,13 @@ public class MelodyObjectiveTest {
         mc.melody[104] = 62 + 12;
         mc.melody[108] = 62 + 12;
         mc.melody[112] = 60 + 12;
-        */
 
         MusicGenotype initialSeed = new MusicGenotype(music);
         List<Phenotype> initialPop = new ArrayList<>();
         MusicPhenotype p = ea.developmentalMethod.develop(initialSeed);
         ea.fitnessEvaluator.evaluate(p);
+
+
 
         MusicParser parser = new MusicParser();
         String melody = parser.parseMelody(music.melodyContainer);
@@ -177,7 +180,18 @@ public class MelodyObjectiveTest {
         System.out.println(p.getFitnessValue(0));
         initialPop.add(p);
 
-        Population pop = new Population(10);
+        for (int i = 0; i < POPULATION_SIZE_RANDOMS; i++) {
+            music = new MusicalContainer(BAR_COUNT, key);
+            music.init();
+            music.randomize(new Random());
+            music.chordContainer = hg;
+            initialSeed = new MusicGenotype(music);
+            p = ea.developmentalMethod.develop(initialSeed);
+            ea.fitnessEvaluator.evaluate(p);
+            initialPop.add(p);
+        }
+
+        Population pop = new Population(POPULATION_SIZE_MAX);
         pop.setPopulation(initialPop);
 
         ea.initialize(pop);

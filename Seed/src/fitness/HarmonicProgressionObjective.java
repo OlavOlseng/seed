@@ -15,10 +15,10 @@ public class HarmonicProgressionObjective implements FitnessObjective<MusicPheno
     public double noDominant = -20;
     public double dominantUnresolved = -20;
     public double diminshedUnresolved = -10;
-    public double quintMovement = 5;
+    public double quintMovement = 1;
     public double chordRepetition = -20;
     public double chordPattern = 1;
-    public double zipfValue = 5;
+    public double zipfValue = 1;
 
     @Override
     public float evaluate(MusicPhenotype phenotype) {
@@ -178,7 +178,7 @@ public class HarmonicProgressionObjective implements FitnessObjective<MusicPheno
             }
             lastValue = nextValue;
         }
-        return zipfScore;
+        return zipfScore * zipfValue;
 
     }
 

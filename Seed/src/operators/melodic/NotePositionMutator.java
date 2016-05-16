@@ -11,10 +11,13 @@ import java.util.Random;
 /**
  * Created by Olav on 02.02.2016.
  */
-public class NoteSwapMutator extends GeneticMutationOperator<MusicGenotype> {
+public class NotePositionMutator extends GeneticMutationOperator<MusicGenotype> {
 
-
-    public NoteSwapMutator(double weight) {
+    /**
+     * This operator moves the position of a note, and swaps in the value of the overwritten position.
+     * @param weight
+     */
+    public NotePositionMutator(double weight) {
         super(weight);
     }
 
@@ -24,25 +27,20 @@ public class NoteSwapMutator extends GeneticMutationOperator<MusicGenotype> {
         MelodyContainer mc = ms.melodyContainer;
         int index = rand.nextInt(mc.melody.length);
         int selectedNoteIndex = mc.getNoteStartIndex(index);
-        int swapNote = mc.getNextNoteIndex(selectedNoteIndex);
-        int previousNote = mc.getPreviousNoteIndex(selectedNoteIndex);
+        int movement = rand.nextInt(15) + 1;
+        movement = rand.nextDouble() < 0.5 ? movement : -movement;
+        int swapIndex = (MelodyContainer.MELODY_BAR_SUBDIVISION * MelodyContainer.MELODY_FOURTH_SUBDIVISION * ms.bars + selectedNoteIndex + movement) % (MelodyContainer.MELODY_BAR_SUBDIVISION * MelodyContainer.MELODY_FOURTH_SUBDIVISION * ms.bars);
         MusicGenotype child = new MusicGenotype();
 
-        if (swapNote < 0 || (rand.nextDouble() < 0.5 && previousNote > -1)) {
-            swapNote = previousNote;
-        }
-        if (swapNote < 0) {
-            System.out.println("PitchSwapMutator failed, as there is less than two notes in the genotype.");
-            child.setData(ms);
-            return child;
-        }
         byte buffer = mc.melody[selectedNoteIndex];
-        mc.melody[selectedNoteIndex] = mc.melody[swapNote];
-        mc.melody[swapNote] = buffer;
+        mc.melody[selectedNoteIndex] = mc.melody[swapIndex];
+        mc.melody[swapIndex] = buffer;
 
         //Ensure no consecutive pauses.
         mc.concatenateRests();
-
+        if (mc.melody[0] == MelodyContainer.MELODY_HOLD) {
+            mc.melody[0] = MelodyContainer.MELODY_REST;
+        }
         child.setData(ms);
 
         if (mc.containsInvalidPitches()) {

@@ -1,9 +1,6 @@
 package tests;
 
-import fitness.HarmonicObjective;
-import fitness.HarmonicProgressionObjective;
-import fitness.TowseyObjectiveMelody;
-import fitness.WuMelodyObjective;
+import fitness.*;
 import genetics.*;
 import olseng.ea.EAFactory;
 import olseng.ea.adultselection.RankedTournamentSelector;
@@ -13,12 +10,10 @@ import olseng.ea.fitness.ranking.FastNonDominatedSort;
 import olseng.ea.fitness.ranking.RankComparator;
 import olseng.ea.genetics.OperatorPool;
 import olseng.ea.genetics.Phenotype;
-import operators.crossover.SingleBarCrossover;
 import operators.crossover.SinglePointCrossover;
 import operators.harmonic.ChordChangeMutator;
 import operators.harmonic.ChordPitchModulatorMutator;
 import operators.harmonic.ChordSwapMutator;
-import operators.harmonic.InversionMutator;
 import operators.melodic.*;
 import org.jfugue.pattern.Pattern;
 import org.jfugue.player.Player;
@@ -32,19 +27,22 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by Olav on 02.03.2016.
  */
 public class AllObjectiveTest {
 
-    private static final int POPULATION_SIZE = 200;
-    private static final int GENERATIONS = 10000;
+    private static final int POPULATION_SIZE = 600;
+    private static final int GENERATIONS = 1000;
+    private static final int BAR_COUNT = 16;
+    private static final int POPULATION_SIZE_RANDOMS = 100;
 
     public static void main(String[] args) {
         OperatorPool<MusicGenotype> op = new OperatorPool<>();
         op.addOperator(new NoteModeMutator(2));
-        op.addOperator(new NoteSwapMutator(1));
+        op.addOperator(new NotePositionMutator(1));
         op.addOperator(new RandomPitchMutator(2));
         op.addOperator(new PitchModulationMutator(2));
         op.addOperator(new HalfMeasureDuplicatorMutator(0.5));
@@ -61,12 +59,13 @@ public class AllObjectiveTest {
 
         factory.addFitnessObjective(new WuMelodyObjective());
         factory.addFitnessObjective(new TowseyObjectiveMelody());
+        //factory.addFitnessObjective(new PatternObjective());
         factory.addFitnessObjective(new HarmonicObjective());
         factory.addFitnessObjective(new HarmonicProgressionObjective());
 
         factory.developmentalMethod = new MusicDevelopmentalMethod();
         factory.operatorPool = op;
-        factory.adultSelector = new RankedTournamentSelector(3, 0.1);
+        factory.adultSelector = new RankedTournamentSelector(2, 0.05);
         factory.rankingModule = new FastNonDominatedSort();
         factory.sortingModule = new RankComparator();
 
@@ -76,12 +75,13 @@ public class AllObjectiveTest {
         ea.populationElitism = 1;
         ea.allowMutationAndCrossover = true;
 
-        MusicalKey key = new MusicalKey(0, MusicalKey.Mode.MINOR);
-        MusicalContainer music = new MusicalContainer(16, key);
+        MusicalKey key = new MusicalKey(4, MusicalKey.Mode.MINOR);
+        MusicalContainer music = new MusicalContainer(BAR_COUNT, key);
         music.init();
         ChordContainer hg = music.chordContainer;
         hg.init();
 
+        /*
         hg.chords[0] = ChordBuilder.getChord(0, 3, 1, key);
         hg.chords[1] = ChordBuilder.getChord(2, 3, 1, key);
         hg.chords[2] = ChordBuilder.getChord(4, 3, 1, key, true);
@@ -104,9 +104,9 @@ public class AllObjectiveTest {
 
 
         MelodyContainer mc = music.melodyContainer;
-        mc.init();
 
         /*
+        mc.init();
         mc.melody[0] = 60 + 12;
         mc.melody[4] = 62 + 12;
         mc.melody[8] = 64 + 12;
@@ -152,6 +152,16 @@ public class AllObjectiveTest {
 
         System.out.println(p.getFitnessValue(0));
         initialPop.add(p);
+
+        for (int i = 0; i < POPULATION_SIZE_RANDOMS; i++) {
+            music = new MusicalContainer(BAR_COUNT, key);
+            music.init();
+            music.randomize(new Random());
+            initialSeed = new MusicGenotype(music);
+            p = ea.developmentalMethod.develop(initialSeed);
+            ea.fitnessEvaluator.evaluate(p);
+            initialPop.add(p);
+        }
 
         Population pop = new Population(10);
         pop.setPopulation(initialPop);

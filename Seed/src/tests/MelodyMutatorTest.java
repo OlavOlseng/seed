@@ -6,7 +6,7 @@ import genetics.MusicalContainer;
 import olseng.ea.genetics.OperatorPool;
 import operators.melodic.NoteModeMutator;
 import operators.melodic.PitchModulationMutator;
-import operators.melodic.NoteSwapMutator;
+import operators.melodic.NotePositionMutator;
 import org.jfugue.pattern.Pattern;
 import org.jfugue.player.Player;
 import util.MusicParser;
@@ -31,7 +31,7 @@ public class MelodyMutatorTest {
 
         OperatorPool<MusicGenotype> op = new OperatorPool<>();
         op.addOperator(new NoteModeMutator(0.5));
-        op.addOperator(new NoteSwapMutator(1));
+        op.addOperator(new NotePositionMutator(1));
         op.addOperator(new PitchModulationMutator(4));
         op.normalizeWeights();
 

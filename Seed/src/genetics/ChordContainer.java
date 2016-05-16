@@ -1,6 +1,7 @@
 package genetics;
 
 import org.jfugue.player.Player;
+import util.ChordBuilder;
 import util.MusicParser;
 import util.MusicalKey;
 
@@ -49,20 +50,8 @@ public class ChordContainer {
     }
 
     public void randomize(Random rand) {
-        for (byte[] chord : chords) {
-            ArrayList<Byte> pitches = new ArrayList<>();
-            for (byte i = 0; i < 12; i++) {
-                pitches.add(i);
-            }
-            for (int i = 0; i < chord.length - 1; i++) {
-                chord[i] = pitches.remove(rand.nextInt(pitches.size()));
-            }
-            if (rand.nextDouble() < 0.5) {
-                chord[chord.length - 1] = (byte) rand.nextInt(12);
-            }
-            else {
-                chord[chord.length - 1] = NO_PITCH;
-            }
+        for (int i = 0; i < chords.length; i++) {
+           chords[i] = ChordBuilder.getChord(rand.nextInt(key.scale.length), 3, 1, key);
         }
     }
 
