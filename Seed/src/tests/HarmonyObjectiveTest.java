@@ -51,7 +51,7 @@ public class HarmonyObjectiveTest {
 
         EAFactory<MusicGenotype, MusicPhenotype> factory = new EAFactory<>();
         factory.addFitnessObjective(new WuMelodyObjective());
-        //factory.addFitnessObjective(new TowseyObjectiveMelody());
+        factory.addFitnessObjective(new TowseyObjectiveMelody());
         factory.addFitnessObjective(new HarmonicObjective());
         factory.addFitnessObjective(new HarmonicProgressionObjective());
 

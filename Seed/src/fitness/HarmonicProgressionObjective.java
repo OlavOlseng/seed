@@ -18,26 +18,26 @@ public class HarmonicProgressionObjective implements FitnessObjective<MusicPheno
     public double quintMovement = 1;
     public double chordRepetition = -20;
     public double chordPattern = 1;
-    public double zipfValue = 1;
-
+    public double harmonicVarietyTarget = 6;
+    public double harmonicVarietyValue = -1;
     @Override
     public float evaluate(MusicPhenotype phenotype) {
         double fitness = 0;
 
-        fitness += getMssingTonics(phenotype);
+        fitness += getMissingTonics(phenotype);
         fitness += getNoDominant(phenotype);
         fitness += getDominantResolutions(phenotype);
         fitness += getDiminshedResolutions(phenotype);
         fitness += getChordRepetition(phenotype);
         fitness += getM7Unresolved(phenotype);
         fitness += getPositionalChordRepetitions(phenotype);
-        fitness += getZipfsValue(phenotype);
+        fitness += getHarmonicVariety(phenotype);
         //fitness += getQuintMovement(phenotype);
 
         return (float)fitness;
     }
 
-    private double getMssingTonics(MusicPhenotype p) {
+    private double getMissingTonics(MusicPhenotype p) {
         double fitness = 0;
         for (int i = 0; i < p.getRepresentation().bars; i += 8) {
             if (p.getRepresentation().chordContainer.getChord(i)[0] != p.getRepresentation().key.scale[0]) {
@@ -162,12 +162,12 @@ public class HarmonicProgressionObjective implements FitnessObjective<MusicPheno
         return fitness;
     }
 
-    private double getZipfsValue(MusicPhenotype p) {
+    private double getHarmonicVariety(MusicPhenotype p) {
         double[] chords = new double[12];
         for (int i = 0; i < p.getRepresentation().bars; i++) {
             chords[p.getRepresentation().chordContainer.getChord(i)[0]]++;
         }
-
+       /*
         int zipfScore = 0;
         Arrays.sort(chords);
         double lastValue = chords[chords.length - 1];
@@ -179,7 +179,14 @@ public class HarmonicProgressionObjective implements FitnessObjective<MusicPheno
             lastValue = nextValue;
         }
         return zipfScore * zipfValue;
-
+        */
+        double distinctChords = 0;
+        for (int i = 0; i < chords.length; i++) {
+            if (chords[i] > 0) {
+                distinctChords++;
+            }
+        }
+        return Math.abs(harmonicVarietyTarget - distinctChords) * harmonicVarietyValue;
     }
 
     private boolean getApproximatedHalf(double bigNum, double smallNum) {

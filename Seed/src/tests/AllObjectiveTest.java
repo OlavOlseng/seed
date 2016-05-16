@@ -34,10 +34,10 @@ import java.util.Random;
  */
 public class AllObjectiveTest {
 
-    private static final int POPULATION_SIZE = 600;
-    private static final int GENERATIONS = 1000;
+    private static final int POPULATION_SIZE = 1000;
+    private static final int GENERATIONS = 10000;
     private static final int BAR_COUNT = 16;
-    private static final int POPULATION_SIZE_RANDOMS = 100;
+    private static final int POPULATION_SIZE_RANDOMS = 0;
 
     public static void main(String[] args) {
         OperatorPool<MusicGenotype> op = new OperatorPool<>();
@@ -105,7 +105,6 @@ public class AllObjectiveTest {
 
         MelodyContainer mc = music.melodyContainer;
 
-        /*
         mc.init();
         mc.melody[0] = 60 + 12;
         mc.melody[4] = 62 + 12;
@@ -129,7 +128,8 @@ public class AllObjectiveTest {
         mc.melody[104] = 62 + 12;
         mc.melody[108] = 62 + 12;
         mc.melody[112] = 60 + 12;
-        */
+               /*
+ */
 
 
         MusicGenotype initialSeed = new MusicGenotype(music);

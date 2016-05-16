@@ -35,6 +35,8 @@ public class SinglePointCrossover extends GeneticCrossoverOperator<MusicGenotype
             mc1.melodyContainer.melody[i] = mc2.melodyContainer.melody[i];
         }
 
+        mc1.melodyContainer.concatenateRests();
+
         return new MusicGenotype(mc1);
     }
 

@@ -13,7 +13,7 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
 
     //Tonality Features
     public double pitchVarietyValue = 0.3;
-    public double pitchRangeValue = 0.5;
+    public double pitchRangeValue = 0.6;
     public double keyCenteredValue = 0.4; //
     public double nonScalePitchQuantaValue = 0.00;
     public double dissonantIntervalsValue = 0.00;
@@ -26,17 +26,18 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
     public double climaxStrength = 0.1; //
 
     //Rhythmic features
-    public double noteDensity = 0.2;
-    public double restDensity = 0.25; //
-    public double rhythmicVariety = 0.3;
+    public double noteFrequency = 0.3;
+    public double restFrequency = 0.1;
+    public double restDensity = 0.1; //
+    public double rhythmicVariety = 0.4;
     public double rhythmicRange = 0.75;
     public double syncopation = 0.00;
 
     //Pattern features
-    public double repeatedPitches = .4;
+    public double repeatedPitches = .3;
     public double repeatedTimings = 0.65;
     public double rhythmicWholeBarRepetitions = 0.5;
-    public double rhythmicHalfBarUniqueness = 0.18;
+    public double rhythmicHalfBarDistinctness = 0.2;
     public double rhythmicWholeBarSequenceValue = 1.;
     public double restWholeBarSequenceValue = 1.;
     public double onBeatPitchCoverage = 0.7;
@@ -60,19 +61,20 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
         fitness += proximity(nonScalePitchQuantaValue, getNonScalePitchQuantaValue(p));
         fitness += proximity(contourStability, getContourStability(p));
 
-        fitness += proximity(noteDensity, getNoteDensity(p));
+        fitness += proximity(noteFrequency, getNoteFrequency(p));
         fitness += proximity(restDensity, getRestDensity(p));
+        fitness += proximity(restFrequency, getRestFrequency(p));
         fitness += proximity(rhythmicVariety, getRhythmicVariety(p));
         //fitness += proximity(rhythmicRange, getRhythmicRange(p));
         fitness += proximity(syncopation, getSyncopation(p));
 
-        fitness += proximity(repeatedPitches, getRepeatedPitches(p));
 
+        fitness += proximity(repeatedPitches, getRepeatedPitches(p));
         fitness += proximity(repeatedTimings, getRepeatedTimings(p));
         fitness += proximity(onBeatPitchCoverage, getOnBeatPitchCoverage(p));
 
         //fitness += proximity(rhythmicWholeBarRepetitions, getRhythmicWholeMeasureRepetitions(p));
-        fitness += proximity(rhythmicHalfBarUniqueness, getRhythmicHalfMeasureUniqueness(p));
+        fitness += proximity(rhythmicHalfBarDistinctness, getRhythmicHalfMeasureDistinctness(p));
         fitness += proximity(rhythmicWholeBarSequenceValue, getRhythmicWholeBarSequenceRepetitions(p));
         fitness += proximity(rhythmicWholeBarSequenceValue, getRestWholeBarSequenceRepetitions(p));
 
@@ -269,7 +271,7 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
         return 1.0 / climax;
     }
 
-    private double getNoteDensity(MusicPhenotype p) {
+    private double getNoteFrequency(MusicPhenotype p) {
         double divisor = p.getRepresentation().melodyContainer.melody.length;
         if (divisor == 0) {
             return 0.0;
@@ -291,6 +293,20 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
                 isRest = false;
             }
             if (melody[i] == MelodyContainer.MELODY_HOLD && isRest) {
+                restQuantaCount++;
+            }
+        }
+        if (divisor == 0) {
+            return 0.0;
+        }
+        return restQuantaCount / divisor;
+    }
+    private double getRestFrequency(MusicPhenotype p) {
+        double divisor = p.getRepresentation().melodyContainer.melody.length;
+        byte[] melody = p.getRepresentation().melodyContainer.melody;
+        double restQuantaCount = 0;
+        for (int i = 0; i < divisor; i++) {
+            if (melody[i] == MelodyContainer.MELODY_REST) {
                 restQuantaCount++;
             }
         }
@@ -398,7 +414,7 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
         //return barRepetitions / (p.getRepresentation().bars - 1);
     }
 
-    private double getRhythmicHalfMeasureUniqueness(MusicPhenotype p) {
+    private double getRhythmicHalfMeasureDistinctness(MusicPhenotype p) {
         double repeatedPatterns = 0;
         double uniqueBars = p.halfMeasureRhythmicPatterns.size();
         for (int barRepeatCount : p.halfMeasureRhythmicPatterns.values()) {
@@ -516,7 +532,8 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
         s += "\nclimaxStrength: " + climaxStrength + "->" + getClimaxStrength(p); //
 
         //Rhythmic features
-        s += "\nnoteDensity: " + noteDensity + "->" + getNoteDensity(p);
+        s += "\nnoteFrequency: " + noteFrequency + "->" + getNoteFrequency(p);
+        s += "\nrestFrequency: " + restFrequency + "->" + getRestFrequency(p); //
         s += "\nrestDensity: " + restDensity + "->" + getRestDensity(p); //
         s += "\nrhythmicVariety: " + rhythmicVariety + "->" + getRhythmicVariety(p);
         s += "\nrhythmicRange: " + rhythmicRange + "->" + getRhythmicRange(p);
@@ -526,7 +543,7 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
         s += "\nrepeatedPitches: " + repeatedPitches + "->" + getRepeatedPitches(p);
         s += "\nrepeatedTimings: " + repeatedTimings + "->" + getRepeatedTimings(p);
         s += "\nrhythmicWholeBarRepetitions: " + rhythmicWholeBarRepetitions + "->" + getRhythmicWholeMeasureRepetitions(p);
-        s += "\nrhythmicHalfBarUniqueness: " + rhythmicHalfBarUniqueness + "->" + getRhythmicHalfMeasureUniqueness(p);
+        s += "\nrhythmicHalfBarDistinctness: " + rhythmicHalfBarDistinctness + "->" + getRhythmicHalfMeasureDistinctness(p);
         s += "\nrhythmicWholeBarSequenceValue: " + rhythmicWholeBarSequenceValue + "->" + getRhythmicWholeBarSequenceRepetitions(p);
         s += "\nrestWholeBarSequenceValue: " + restWholeBarSequenceValue + "->" + getRestWholeBarSequenceRepetitions(p);
         s += "\nonBeatPitchCoverage: " + onBeatPitchCoverage + "->" + getOnBeatPitchCoverage(p);
