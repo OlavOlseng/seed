@@ -17,10 +17,7 @@ import operators.harmonic.ChordSwapMutator;
 import operators.melodic.*;
 import org.jfugue.pattern.Pattern;
 import org.jfugue.player.Player;
-import util.ChordBuilder;
-import util.MidiWriter;
-import util.MusicParser;
-import util.MusicalKey;
+import util.*;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -34,9 +31,10 @@ import java.util.Random;
  */
 public class AllObjectiveTest {
 
-    private static final int POPULATION_SIZE = 1000;
+    private static final int POPULATION_SIZE = 200;
     private static final int GENERATIONS = 10000;
     private static final int BAR_COUNT = 16;
+    private static final int BAR_BAKE_COUNT = 12;
     private static final int POPULATION_SIZE_RANDOMS = 0;
 
     public static void main(String[] args) {
@@ -57,15 +55,17 @@ public class AllObjectiveTest {
 
         EAFactory<MusicGenotype, MusicPhenotype> factory = new EAFactory<>();
 
+        TowseyObjectiveMelody tObjective = new TowseyObjectiveMelody();
+
         factory.addFitnessObjective(new WuMelodyObjective());
-        factory.addFitnessObjective(new TowseyObjectiveMelody());
+        factory.addFitnessObjective(tObjective);
         //factory.addFitnessObjective(new PatternObjective());
         factory.addFitnessObjective(new HarmonicObjective());
         factory.addFitnessObjective(new HarmonicProgressionObjective());
 
         factory.developmentalMethod = new MusicDevelopmentalMethod();
         factory.operatorPool = op;
-        factory.adultSelector = new RankedTournamentSelector(2, 0.05);
+        factory.adultSelector = new RankedTournamentSelector(2, 0.1);
         factory.rankingModule = new FastNonDominatedSort();
         factory.sortingModule = new RankComparator();
 
@@ -75,8 +75,11 @@ public class AllObjectiveTest {
         ea.populationElitism = 1;
         ea.allowMutationAndCrossover = true;
 
-        MusicalKey key = new MusicalKey(4, MusicalKey.Mode.MINOR);
-        MusicalContainer music = new MusicalContainer(BAR_COUNT, key);
+
+        MusicalKey key = new MusicalKey(0, MusicalKey.Mode.MINOR);
+
+
+        MusicalContainer music = new MusicalContainer(BAR_BAKE_COUNT, key);
         music.init();
         ChordContainer hg = music.chordContainer;
         hg.init();
@@ -106,36 +109,15 @@ public class AllObjectiveTest {
         MelodyContainer mc = music.melodyContainer;
 
         mc.init();
-        mc.melody[0] = 60 + 12;
-        mc.melody[4] = 62 + 12;
-        mc.melody[8] = 64 + 12;
-        mc.melody[12] = 65 + 12;
-        mc.melody[16] = 67 + 12;
-        mc.melody[24] = 67 + 12;
-        mc.melody[32] = 69 + 12;
-        mc.melody[36] = 69 + 12;
-        mc.melody[40] = 69 + 12;
-        mc.melody[44] = 69 + 12;
-        mc.melody[48] = 67 + 12;
-        mc.melody[64] = 65 + 12;
-        mc.melody[68] = 65 + 12;
-        mc.melody[72] = 65 + 12;
-        mc.melody[76] = 65 + 12;
-        mc.melody[80] = 64 + 12;
-        mc.melody[88] = 64 + 12;
-        mc.melody[96] = 62 + 12;
-        mc.melody[100] = 62 + 12;
-        mc.melody[104] = 62 + 12;
-        mc.melody[108] = 62 + 12;
-        mc.melody[112] = 60 + 12;
-               /*
- */
+        //MusicBank.putLisaMelody(mc);
+        MusicBank.putHitMe(mc);
 
 
         MusicGenotype initialSeed = new MusicGenotype(music);
         List<Phenotype> initialPop = new ArrayList<>();
         MusicPhenotype p = ea.developmentalMethod.develop(initialSeed);
         ea.fitnessEvaluator.evaluate(p);
+        tObjective.bake(p);
 
         MusicParser parser = new MusicParser();
         String melody = parser.parseMelody(music.melodyContainer);
@@ -143,14 +125,20 @@ public class AllObjectiveTest {
         melody = " Rw | " + melody;
         String chords = "Rw | " + parser.parseChords(music.chordContainer);
         System.out.println(chords);
-        System.out.println(new TowseyObjectiveMelody().getEvaluationString(p));
-        Pattern pMelody = new Pattern(melody).setVoice(0).setInstrument(0);
+        System.out.println(tObjective.getEvaluationString(p));
+        Pattern pMelody = new Pattern(melody).setVoice(0).setInstrument(4);
         Pattern pHarmony = new Pattern(chords).setVoice(1).setInstrument(0);
         Player player = new Player();
-        //player.play(pMelody, pHarmony);
+       // player.play(pMelody, pHarmony);
 
 
         System.out.println(p.getFitnessValue(0));
+        music = new MusicalContainer(BAR_COUNT, key);
+        music.init();
+        MusicBank.putHitMe(music.melodyContainer);
+
+        p = ea.developmentalMethod.develop(new MusicGenotype(music));
+        ea.fitnessEvaluator.evaluate(p);
         initialPop.add(p);
 
         for (int i = 0; i < POPULATION_SIZE_RANDOMS; i++) {
@@ -210,7 +198,7 @@ public class AllObjectiveTest {
                     continue;
                 }
 
-                System.out.println(new TowseyObjectiveMelody().getEvaluationString((MusicPhenotype) ea.population.getIndividual(index)));
+                System.out.println(tObjective.getEvaluationString((MusicPhenotype) ea.population.getIndividual(index)));
                 System.out.println(ea.population.getIndividual(index).getRepresentation());
                 System.out.println(ea.population.getIndividual(index));
 

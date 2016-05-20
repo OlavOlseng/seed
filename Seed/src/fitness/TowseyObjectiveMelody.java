@@ -76,7 +76,7 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
         //fitness += proximity(rhythmicWholeBarRepetitions, getRhythmicWholeMeasureRepetitions(p));
         fitness += proximity(rhythmicHalfBarDistinctness, getRhythmicHalfMeasureDistinctness(p));
         fitness += proximity(rhythmicWholeBarSequenceValue, getRhythmicWholeBarSequenceRepetitions(p));
-        fitness += proximity(rhythmicWholeBarSequenceValue, getRestWholeBarSequenceRepetitions(p));
+        fitness += proximity(restWholeBarSequenceValue, getRestWholeBarSequenceRepetitions(p));
 
         return (float) fitness;
     }
@@ -514,6 +514,41 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
      */
     private double proximity(double d1, double d2) {
         return 1 - Math.abs(d1 - d2);
+    }
+
+    /**
+     * Reads a melody, and sets the paramters in the fitness function to match the analysed music
+     */
+    public void bake(MusicPhenotype p) {
+        this.keyCenteredValue = getKeyCenteredValue(p);
+        this.dissonantIntervalsValue = getDissonantIntervalsValue(p);
+
+        this.contourDirection = getContourDirection(p);
+        this.climaxStrength = getClimaxStrength(p);
+
+        this.pitchVarietyValue = getPitchVarietyValue(p);
+        this.pitchRangeValue = getPitchRangeValue(p);
+
+        this.stepMovement = getStepMovement(p);
+        this.nonScalePitchQuantaValue = getNonScalePitchQuantaValue(p);
+        this.contourStability = getContourStability(p);
+
+        this.noteFrequency = getNoteFrequency(p);
+        this.restDensity = getRestDensity(p);
+        this.restFrequency = getRestFrequency(p);
+        this.rhythmicVariety = getRhythmicVariety(p);
+        this.rhythmicRange = getRhythmicRange(p);
+        this.syncopation = getSyncopation(p);
+
+
+        this.repeatedPitches = getRepeatedPitches(p);
+        this.repeatedTimings = getRepeatedTimings(p);
+        this.onBeatPitchCoverage = getOnBeatPitchCoverage(p);
+
+        this.rhythmicWholeBarRepetitions = getRhythmicWholeMeasureRepetitions(p);
+        this.rhythmicHalfBarDistinctness = getRhythmicHalfMeasureDistinctness(p);
+        this.rhythmicWholeBarSequenceValue = getRhythmicWholeBarSequenceRepetitions(p);
+        this.restWholeBarSequenceValue = getRestWholeBarSequenceRepetitions(p);
     }
 
     public String getEvaluationString(MusicPhenotype p) {

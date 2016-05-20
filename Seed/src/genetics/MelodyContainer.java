@@ -13,7 +13,7 @@ public class MelodyContainer {
     public static final byte MELODY_REST = 1;
     public static final byte MELODY_HOLD = 0;
     public static final int MELODY_RANGE_MAX = 85;
-    public static final int MELODY_RANGE_MIN = 67;
+    public static final int MELODY_RANGE_MIN = 65;
     public static final int MELODY_RANGE = MELODY_RANGE_MAX - MELODY_RANGE_MIN;
     public static final int MELODY_BAR_SUBDIVISION = 4;
     public static final int MELODY_FOURTH_SUBDIVISION = 4;
