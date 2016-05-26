@@ -35,7 +35,7 @@ public class PitchModulationMutator extends GeneticMutationOperator<MusicGenotyp
             int noteIndex = indices.get(rand.nextInt(indices.size()));
             int pitchValue = mc.melody[noteIndex];
 
-            byte toModulate = (byte) (rand.nextInt(4\item) + 1);
+            byte toModulate = (byte) (rand.nextInt(4) + 1);
 
             if (rand.nextDouble() < 0.5) {
                 toModulate *= -1;
