@@ -1,7 +1,7 @@
 package tests;
 
-import fitness.TowseyObjectiveMelody;
-import fitness.WuMelodyObjective;
+import fitness.StatiscalMelodyObjective;
+import fitness.MelodicVoiceObjective;
 import genetics.*;
 import olseng.ea.EAFactory;
 import olseng.ea.adultselection.RankedTournamentSelector;
@@ -50,8 +50,8 @@ public class MelodyObjectiveTest {
         op.setCrossoverProbability(0.8);
 
         EAFactory<MusicGenotype, MusicPhenotype> factory = new EAFactory<>();
-        factory.addFitnessObjective(new WuMelodyObjective());
-        factory.addFitnessObjective(new TowseyObjectiveMelody());
+        factory.addFitnessObjective(new MelodicVoiceObjective());
+        factory.addFitnessObjective(new StatiscalMelodyObjective());
         //factory.addFitnessObjective(new PatternObjective());
 
         factory.developmentalMethod = new MusicDevelopmentalMethod();
@@ -170,7 +170,7 @@ public class MelodyObjectiveTest {
         melody = " Rw | " + melody;
         String chords = "Rw | " + parser.parseChords(music.chordContainer);
         System.out.println(chords);
-        System.out.println(new TowseyObjectiveMelody().getEvaluationString(p));
+        System.out.println(new StatiscalMelodyObjective().getEvaluationString(p));
         Pattern pMelody = new Pattern(melody).setVoice(0).setInstrument(0);
         Pattern pHarmony = new Pattern(chords).setVoice(1).setInstrument(0);
         Player player = new Player();
@@ -240,7 +240,7 @@ public class MelodyObjectiveTest {
                     continue;
                 }
 
-                System.out.println(new TowseyObjectiveMelody().getEvaluationString((MusicPhenotype) ea.population.getIndividual(index)));
+                System.out.println(new StatiscalMelodyObjective().getEvaluationString((MusicPhenotype) ea.population.getIndividual(index)));
                 System.out.println(ea.population.getIndividual(index).getRepresentation());
                 System.out.println(ea.population.getIndividual(index));
 

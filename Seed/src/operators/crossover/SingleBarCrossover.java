@@ -24,7 +24,7 @@ public class SingleBarCrossover extends GeneticCrossoverOperator<MusicGenotype> 
         MusicalContainer mc1 = parent1Root ? parent1.getDeepCopy() : parent2.getDeepCopy();
         MusicalContainer mc2 = parent1Root ? parent2.getDeepCopy() : parent1.getDeepCopy();
 
-        int splicingBar = rand.nextInt(mc1.bars);
+        int splicingBar = rand.nextInt(mc1.bars - 1);
 
         //Splice in chords, doesn't matter that only the reference is copied, since they are both deep copies of their parents.
         mc1.chordContainer.chords[splicingBar] = mc2.chordContainer.chords[splicingBar];

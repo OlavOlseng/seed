@@ -10,6 +10,7 @@ import olseng.ea.fitness.ranking.FastNonDominatedSort;
 import olseng.ea.fitness.ranking.RankComparator;
 import olseng.ea.genetics.OperatorPool;
 import olseng.ea.genetics.Phenotype;
+import operators.crossover.SingleBarCrossover;
 import operators.crossover.SinglePointCrossover;
 import operators.harmonic.ChordChangeMutator;
 import operators.harmonic.ChordPitchModulatorMutator;
@@ -31,36 +32,45 @@ import java.util.Random;
  */
 public class AllObjectiveTest {
 
-    private static final int POPULATION_SIZE = 200;
+    private static final int POPULATION_SIZE = 600;
     private static final int GENERATIONS = 10000;
     private static final int BAR_COUNT = 16;
-    private static final int BAR_BAKE_COUNT = 12;
-    private static final int POPULATION_SIZE_RANDOMS = 0;
+    private static final int BAR_BAKE_COUNT = 16;
+    private static final int POPULATION_SIZE_RANDOMS = 100;
+    private static final boolean BAKE = false;
+    private static final boolean USE_SEED = true;
+    private static final boolean MELODY_OPERATORS_ENABLED = true;
+    private static final boolean HARMONY_OPERATORS_ENABLED = true;
+
 
     public static void main(String[] args) {
         OperatorPool<MusicGenotype> op = new OperatorPool<>();
-        op.addOperator(new NoteModeMutator(2));
-        op.addOperator(new NotePositionMutator(1));
-        op.addOperator(new RandomPitchMutator(2));
-        op.addOperator(new PitchModulationMutator(2));
-        op.addOperator(new HalfMeasureDuplicatorMutator(0.5));
+        if (MELODY_OPERATORS_ENABLED) {
+            op.addOperator(new NoteModeMutator(2));
+            op.addOperator(new NotePositionMutator(1));
+            op.addOperator(new RandomPitchMutator(2));
+            op.addOperator(new PitchModulationMutator(2));
+            op.addOperator(new HalfMeasureDuplicatorMutator(0.5));
+        }
 
-        op.addOperator(new ChordChangeMutator(2));
-        op.addOperator(new ChordPitchModulatorMutator(2));
-        op.addOperator(new ChordSwapMutator(1));
+        if (HARMONY_OPERATORS_ENABLED) {
+            op.addOperator(new ChordChangeMutator(2));
+            op.addOperator(new ChordPitchModulatorMutator(2));
+            op.addOperator(new ChordSwapMutator(1));
+        }
 
-        //op.addOperator(new SingleBarCrossover(1));
-        op.addOperator(new SinglePointCrossover(1));
-        op.setCrossoverProbability(0.8);
+        op.addOperator(new SingleBarCrossover(1));
+        op.addOperator(new SinglePointCrossover(2));
+        op.setCrossoverProbability(0.5);
 
         EAFactory<MusicGenotype, MusicPhenotype> factory = new EAFactory<>();
 
-        TowseyObjectiveMelody tObjective = new TowseyObjectiveMelody();
+        StatiscalMelodyObjective tObjective = new StatiscalMelodyObjective();
 
-        factory.addFitnessObjective(new WuMelodyObjective());
+        factory.addFitnessObjective(new MelodicVoiceObjective());
         factory.addFitnessObjective(tObjective);
         //factory.addFitnessObjective(new PatternObjective());
-        factory.addFitnessObjective(new HarmonicObjective());
+        factory.addFitnessObjective(new HarmonizationObjective());
         factory.addFitnessObjective(new HarmonicProgressionObjective());
 
         factory.developmentalMethod = new MusicDevelopmentalMethod();
@@ -117,7 +127,9 @@ public class AllObjectiveTest {
         List<Phenotype> initialPop = new ArrayList<>();
         MusicPhenotype p = ea.developmentalMethod.develop(initialSeed);
         ea.fitnessEvaluator.evaluate(p);
-        tObjective.bake(p);
+        if (BAKE) {
+            tObjective.bake(p);
+        }
 
         MusicParser parser = new MusicParser();
         String melody = parser.parseMelody(music.melodyContainer);
@@ -132,14 +144,18 @@ public class AllObjectiveTest {
        // player.play(pMelody, pHarmony);
 
 
+        /*
         System.out.println(p.getFitnessValue(0));
         music = new MusicalContainer(BAR_COUNT, key);
         music.init();
         MusicBank.putHitMe(music.melodyContainer);
-
+        */
         p = ea.developmentalMethod.develop(new MusicGenotype(music));
         ea.fitnessEvaluator.evaluate(p);
-        initialPop.add(p);
+
+        if (USE_SEED) {
+            initialPop.add(p);
+        }
 
         for (int i = 0; i < POPULATION_SIZE_RANDOMS; i++) {
             music = new MusicalContainer(BAR_COUNT, key);

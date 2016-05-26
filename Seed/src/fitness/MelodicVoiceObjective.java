@@ -11,7 +11,7 @@ import java.util.ArrayList;
 /**
  * Created by Olav on 02.03.2016.
  */
-public class WuMelodyObjective implements FitnessObjective<MusicPhenotype> {
+public class MelodicVoiceObjective implements FitnessObjective<MusicPhenotype> {
 
     @Override
     public float evaluate(MusicPhenotype phenotype) {

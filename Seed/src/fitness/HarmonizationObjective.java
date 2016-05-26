@@ -7,7 +7,7 @@ import util.MusicalKey;
 /**
  * Created by Olav on 28.04.2016.
  */
-public class HarmonicObjective implements FitnessObjective<MusicPhenotype> {
+public class HarmonizationObjective implements FitnessObjective<MusicPhenotype> {
 
     private double invalidRoot = -50;
     private double invalidPitch = -30;

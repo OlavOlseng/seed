@@ -9,7 +9,7 @@ import java.util.ArrayList;
 /**
  * Created by Olav on 03.03.2016.
  */
-public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
+public class StatiscalMelodyObjective implements FitnessObjective<MusicPhenotype> {
 
     //Tonality Features
     public double pitchVarietyValue = 0.3;
@@ -57,7 +57,7 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
         fitness += proximity(pitchVarietyValue, getPitchVarietyValue(p));
         fitness += proximity(pitchRangeValue, getPitchRangeValue(p));
 
-        //fitness += proximity(stepMovement, getStepMovement(p));
+        fitness += proximity(stepMovement, getStepMovement(p));
         fitness += proximity(nonScalePitchQuantaValue, getNonScalePitchQuantaValue(p));
         fitness += proximity(contourStability, getContourStability(p));
 
@@ -73,7 +73,7 @@ public class TowseyObjectiveMelody implements FitnessObjective<MusicPhenotype> {
         fitness += proximity(repeatedTimings, getRepeatedTimings(p));
         fitness += proximity(onBeatPitchCoverage, getOnBeatPitchCoverage(p));
 
-        //fitness += proximity(rhythmicWholeBarRepetitions, getRhythmicWholeMeasureRepetitions(p));
+        fitness += proximity(rhythmicWholeBarRepetitions, getRhythmicWholeMeasureRepetitions(p));
         fitness += proximity(rhythmicHalfBarDistinctness, getRhythmicHalfMeasureDistinctness(p));
         fitness += proximity(rhythmicWholeBarSequenceValue, getRhythmicWholeBarSequenceRepetitions(p));
         fitness += proximity(restWholeBarSequenceValue, getRestWholeBarSequenceRepetitions(p));

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
+ * This operator copies a random half measure of the melody and overwrites another half measure in the same genome.
  * Created by Olav on 21.04.2016.
  */
 public class HalfMeasureDuplicatorMutator extends GeneticMutationOperator<MusicGenotype> {
